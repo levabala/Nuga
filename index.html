@@ -1,0 +1,50 @@
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="css/card.css">
+  <link rel="stylesheet" type="text/css" href="css/bio.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+
+<body>
+  <div id="test-div" style="padding: 10px;"></div>
+
+
+  <template id="card-template">
+    <div class="card">
+    </div>
+  </template>
+
+  <template id="bio-content-template">
+    <div>
+      <div id="info">
+        <i class="material-icons" style="float:right;">list</i>
+        <img src="images/avatar.png" style="float:right;" alt="Avatar" class="avatar">
+        <div id="bio-table" class="bioTable">
+          <div id="name" class="bioHead">Алексей Долматов</div>
+          <div class="bioRow">
+            <div class="bioCell bioProperty" id="cell1">Aдресс</div>
+            <div class="bioCell bioValue" id="cell2">Москва</div>
+          </div>
+          <div class="bioRow">
+            <div class="bioCell bioProperty" id="cell4">Телефон</div>
+            <div class="bioCell bioValue" id="cell5">+74566576123</div>
+          </div>
+          <div class="bioRow">
+            <div class="bioCell bioProperty" id="cell4">Возраст</div>
+            <div class="bioCell bioValue" id="cell5"><a href="">30 лет</a></div>
+          </div>
+          <div class="bioRow">
+            <div class="bioCell bioProperty" id="cell4">Рейтинг</div>
+            <div class="bioCell bioValue" id="cell5">20</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script src="main.js"></script>
+</body>
+
+</html>

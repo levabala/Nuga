@@ -1,0 +1,38 @@
+.bioHead,
+.bioCell {
+  padding: 5px;
+}
+
+.bioHead {
+  font-size: 20px;
+  padding: 10px 5px;
+  padding-top: 0px;
+}
+
+.bioTable {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.bioRow {
+  display: table-row;
+  clear: both;
+  width: 100%;
+}
+
+.bioCell {
+  display: table-cell;
+  padding-right: 25px;
+  padding-bottom: 8px;
+}
+
+.bioProperty {
+  color: rgb(91, 91, 91);
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.bioValue {
+  font-size: 14px;
+}
