@@ -11,7 +11,7 @@
 
 .bioTable {
   display: block;
-  width: 100%;
+  width: 70%;
   margin-bottom: 10px;
 }
 
@@ -23,11 +23,13 @@
 
 .bioCell {
   display: table-cell;
+  white-space: nowrap;
   padding-right: 25px;
   padding-bottom: 8px;
 }
 
 .bioProperty {
+  vertical-align: top;
   color: rgb(91, 91, 91);
   font-weight: bold;
   font-size: 16px;
@@ -35,4 +37,5 @@
 
 .bioValue {
   font-size: 14px;
+  vertical-align: bottom;
 }

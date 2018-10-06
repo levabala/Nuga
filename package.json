@@ -1,0 +1,59 @@
+{
+  "name": "nuga",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+    "babel": "babel --presets @babel/preset-env src/js/main.js -o build/main.bundle.js",
+    "start_server": "live-server",
+    "webpack": "webpack",
+    "webpack_watch": "webpack --watch",
+    "flow": "flow",
+    "start_all": "concurrently \"npm:start_server\" \"npm:webpack_watch\"",
+    "update_config": "npm install --dev-save eslint-config-levabala@latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/levabala/Nuga.git"
+  },
+  "author": "levabala",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/levabala/Nuga/issues"
+  },
+  "homepage": "https://github.com/levabala/Nuga#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/plugin-proposal-json-strings": "^7.0.0",
+    "@babel/plugin-proposal-pipeline-operator": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
+    "@babel/plugin-syntax-import-meta": "^7.0.0",
+    "@babel/plugin-transform-flow-strip-types": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-flow": "^7.0.0",
+    "babel-eslint": "^9.0.0",
+    "babel-loader": "^8.0.0",
+    "babel-plugin-transform-flow-comments": "^6.22.0",
+    "babel-plugin-transform-metadata": "^4.0.2",
+    "css-loader": "^1.0.0",
+    "eslint": "^5.5.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-levabala": "^1.0.0",
+    "eslint-config-prettier": "^3.0.1",
+    "eslint-plugin-babel": "^5.2.1",
+    "eslint-plugin-flowtype": "^2.50.3",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-no-not-accumulator-reassign": "^0.1.0",
+    "http-server": "^0.11.1",
+    "live-server": "^1.2.0",
+    "redom": "^3.14.1",
+    "style-loader": "^0.23.0",
+    "webpack": "^4.17.2",
+    "webpack-cli": "^3.1.0"
+  },
+  "dependencies": {
+    "redom": "^3.14.1",
+    "tippy.js": "^3.0.3"
+  }
+}
