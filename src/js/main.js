@@ -1,5 +1,4 @@
 import { mount } from 'redom';
-import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 import BioCard from './components/BioCard';
 import PersonData from './classes/PersonData';
@@ -38,5 +37,3 @@ card.el.setAttribute(
   `${card.el.getAttribute('style')} position: absolute; left: 50px; top: 50px`,
 );
 mount(document.body, card);
-
-tippy('.personDataElement');

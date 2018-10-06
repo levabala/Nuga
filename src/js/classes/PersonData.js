@@ -1,5 +1,6 @@
 // import tippy from 'tippy.js';
 import { el } from 'redom';
+import tippy from 'tippy.js';
 import DataInterface from './DataInterface';
 
 class PersonData implements DataInterface {
@@ -14,14 +15,17 @@ class PersonData implements DataInterface {
   }
 
   generateElement() {
-    return el(
+    const element = el(
       'div',
       {
-        class: 'tooltip personDataElement',
         'data-tippy-content': "I'm a Tippy tooltip!",
       },
       [el('a', { href: '' }, this.toString())],
     );
+    tippy(element, {
+      placement: 'bottom-start',
+    });
+    return element;
   }
 
   generateElementOneOfMany(final: boolean) {
