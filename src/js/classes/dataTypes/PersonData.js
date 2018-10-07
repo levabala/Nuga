@@ -1,8 +1,8 @@
 // import tippy from 'tippy.js';
 import { el } from 'redom';
 import tippy from 'tippy.js';
-import DataInterface from './DataInterface';
-import PersonTooltip from './PersonTooltip';
+import DataInterface from '../DataInterface';
+import PersonTooltip from '../PersonTooltip';
 
 class PersonData implements DataInterface {
   constructor({ name, surname, url = '' }) {

@@ -1,5 +1,7 @@
 :root {
   --padding-base: 20px 20px;
+  --padding-single: 20px;
+  --padding-single-half: 10px;
 }
 
 body {

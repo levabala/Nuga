@@ -1,5 +1,5 @@
 import { el } from 'redom';
-import DataInterface from './DataInterface';
+import DataInterface from '../DataInterface';
 
 class MoneyData implements DataInterface {
   constructor({ amount, currency = 'eur' }) {

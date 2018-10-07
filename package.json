@@ -53,6 +53,8 @@
     "webpack-cli": "^3.1.0"
   },
   "dependencies": {
+    "materialize-css": "^1.0.0-rc.2",
+    "moment": "^2.22.2",
     "redom": "^3.14.1",
     "tippy.js": "^3.0.3"
   }

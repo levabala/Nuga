@@ -1,5 +1,5 @@
 import { el } from 'redom';
-import PersonData from './PersonData';
+import PersonData from './dataTypes/PersonData';
 
 class PersonTooltip {
   /* eslint-disable-next-line */

@@ -1,4 +1,4 @@
-import PersonData from './PersonData';
+import PersonData from './dataTypes/PersonData';
 
 class PersonsList {
   constructor(persons: Array<PersonData> = []) {
