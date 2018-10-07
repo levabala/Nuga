@@ -2,6 +2,7 @@
 import { el } from 'redom';
 import tippy from 'tippy.js';
 import DataInterface from './DataInterface';
+import PersonTooltip from './PersonTooltip';
 
 class PersonData implements DataInterface {
   constructor({ name, surname, url = '' }) {
@@ -15,15 +16,18 @@ class PersonData implements DataInterface {
   }
 
   generateElement() {
-    const element = el(
-      'div',
-      {
-        'data-tippy-content': "I'm a Tippy tooltip!",
-      },
-      [el('a', { href: '' }, this.toString())],
-    );
+    const element = el('div', { style: 'display: inline-block' }, [
+      el('a', { href: '' }, this.toString()),
+    ]);
     tippy(element, {
-      placement: 'bottom-start',
+      placement: 'bottom',
+      theme: 'white',
+      content: new PersonTooltip().el,
+      size: 'small',
+      interactive: true,
+      showOnInit: true,
+      arrow: false, // TODO: realize sharp svg arrow
+      arrowType: 'round',
     });
     return element;
   }

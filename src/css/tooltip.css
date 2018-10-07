@@ -1,0 +1,41 @@
+.tippy-tooltip.white-theme,
+.tippy-tooltip.white-theme .tippy-backdrop {
+  background-color: white;
+  border: solid lightgray 1px;
+}
+
+.tippy-tooltip.white-theme .row {
+  display: table-row;
+  clear: both;
+  width: 100%;
+}
+
+.tippy-tooltip.white-theme .table {
+  display: block;
+  padding: 6px 14px;
+}
+
+.tippy-tooltip.white-theme .cell {
+  display: table-cell;
+  white-space: nowrap;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.tippy-tooltip.white-theme i {
+  font-size: 12px;
+  padding-right: 20px;
+}
+
+.tippy-tooltip.white-theme a {
+  font-size: 14px;
+  text-align: left;
+  color: black;
+}
+
+.tippy-popper[x-placement^='bottom']
+  .tippy-tooltip.white-theme
+  .tippy-roundarrow {
+  fill: none;
+  stroke: black;
+}

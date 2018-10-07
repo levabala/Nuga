@@ -21,6 +21,31 @@ a:visited {
   color: rgb(0, 17, 255);
 }
 
+.forIcon {
+  vertical-align: top;
+}
+
+.material-icons.smallIcon {
+  font-size: 9px;
+}
+
+.material-icons.smallIcon.black {
+  color: black;
+}
+
+.linkAsText {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.linkAsText:link {
+  color: gray;
+}
+
+.linkAsText:visited {
+  color: gray;
+}
+
 i,
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
