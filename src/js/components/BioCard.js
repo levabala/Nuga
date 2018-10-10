@@ -1,4 +1,4 @@
-import { el } from 'redom';
+import { el, mount } from 'redom';
 import Card from './Card';
 import DataInterface from '../classes/DataInterface';
 
@@ -40,25 +40,22 @@ class BioTable {
 class BioCard extends Card {
   constructor({ title, data, avatarURL }) {
     super({ width: '700px' });
-    this.el.appendChild(
+    const child = el('div', { id: 'info' }, [
       el(
-        'div',
-        el('div', { id: 'info' }, [
-          el(
-            'i',
-            { class: 'material-icons ripple', style: 'float: right' },
-            'list',
-          ),
-          el('img', {
-            src: avatarURL,
-            style: 'float:right',
-            alt: 'Avatar',
-            class: 'avatar',
-          }),
-          new BioTable(title, data),
-        ]),
+        'i',
+        { class: 'material-icons ripple', style: 'float: right' },
+        'list',
       ),
-    );
+      el('img', {
+        src: avatarURL,
+        style: 'float:right',
+        alt: 'Avatar',
+        class: 'avatar',
+      }),
+      new BioTable(title, data),
+    ]);
+    console.log(child);
+    mount(this.el, child);
   }
 }
 

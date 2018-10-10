@@ -1,0 +1,8 @@
+@import '@material/button/mdc-button';
+@import '@material/card/mdc-card';
+@import '@material/elevation/mdc-elevation';
+@import '~tippy.js/dist/tippy';
+
+.mdc-card {
+  padding: 1rem;
+}

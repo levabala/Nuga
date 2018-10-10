@@ -1,0 +1,44 @@
+.calendar-head,
+.calendar-table-cell {
+  padding: 5px;
+}
+
+.calendar-head {
+  font-size: 20px;
+  padding: 10px 5px;
+  padding-top: 0px;
+}
+
+.calendar-table {
+  display: block;
+  width: 70%;
+  margin-bottom: 10px;
+}
+
+.calendar-table-row {
+  display: table-row;
+  clear: both;
+  width: 100%;
+}
+
+.calendar-table-cell {
+  display: table-cell;
+  white-space: nowrap;
+  max-width: 100px;
+  /*padding-bottom: 8px;*/
+}
+
+.calendar-table-cell.regField,
+.calendar-table-cell.position {
+  max-width: 130px;
+}
+
+.calendar-table-cell.regTime {
+  /*width: 30px;*/
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+/*.calendar-table-cell.regTime:empty {
+  content: '\00a0';
+}*/

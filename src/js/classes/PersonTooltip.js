@@ -11,14 +11,14 @@ class PersonTooltip {
         el(
           'i',
           {
-            class: 'material-icons smallIcon black cell',
+            class: 'material-icons smallIcon blackIcon cell',
           },
           'edit',
         ),
         el('a', { href: editURL, class: 'linkAsText cell' }, 'Редактировать'),
       ]),
       el('div', { class: 'row' }, [
-        el('i', { class: 'material-icons smallIcon black cell' }, 'link'),
+        el('i', { class: 'material-icons smallIcon blackIcon cell' }, 'link'),
         el(
           'a',
           { href: followURL, class: 'linkAsText cell' },

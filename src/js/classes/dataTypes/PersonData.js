@@ -1,9 +1,10 @@
 // import tippy from 'tippy.js';
-import { el } from 'redom';
+import { el, mount, setAttr } from 'redom';
 import tippy from 'tippy.js';
 import DataInterface from '../DataInterface';
 import PersonTooltip from '../PersonTooltip';
 
+const person_tooltips_shown = {};
 class PersonData implements DataInterface {
   constructor({ name, surname, url = '' }) {
     this.name = name;
@@ -19,25 +20,33 @@ class PersonData implements DataInterface {
     const element = el('div', { style: 'display: inline-block' }, [
       el('a', { href: '' }, this.toString()),
     ]);
-    tippy(element, {
+    const tip = tippy(element, {
       placement: 'bottom',
       theme: 'white',
       content: new PersonTooltip().el,
       size: 'small',
       interactive: true,
-      showOnInit: true,
+      showOnInit: false,
       arrow: false, // TODO: realize sharp svg arrow
       arrowType: 'round',
+      onShown: () => {
+        // we have a separated "tippy" object for each PersonData so count of instances would be 0
+        const instance = tip.instances[0];
+        person_tooltips_shown[instance.id] = instance;
+      },
+      onHidden: () => {
+        const instance = tip.instances[0];
+        delete person_tooltips_shown[instance.id];
+      },
     });
     return element;
   }
 
   generateElementOneOfMany(final: boolean) {
-    const str = this.toString();
-    return el('div', { style: 'display: block-inline; float: left' }, [
-      el('a', { href: '' }, str),
-      final ? '' : ',\u00a0', // hard space
-    ]);
+    const element = this.generateElement();
+    setAttr(element, { style: 'display: block-inline; float: left' });
+    mount(element, el('a', final ? '' : ',\u00a0'));
+    return element;
   }
 }
 

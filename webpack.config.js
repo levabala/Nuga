@@ -1,10 +1,11 @@
 const path = require('path');
+const autoprefixer = require('autoprefixer');
 
 module.exports = {
-  entry: './src/js/main.js',
+  entry: ['./src/js/main.js', './src/app.scss'],
   output: {
     path: path.resolve(__dirname, 'build'),
-    filename: 'main.bundle.js',
+    filename: 'bundle.js',
   },
   module: {
     rules: [
@@ -33,6 +34,31 @@ module.exports = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'bundle.css',
+            },
+          },
+          { loader: 'extract-loader' },
+          { loader: 'css-loader' },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: () => [autoprefixer()],
+            },
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              includePaths: ['./node_modules'],
+            },
+          },
+        ],
       },
     ],
   },

@@ -29,8 +29,10 @@ class HistoryCard {
     const block = el('div', {
       class: `history-add-block ${realtime ? 'collapsed' : ''}`,
     });
-    // TODO: calc 'even' right way
-    const even = this.events.length % 2 === 0;
+    const firstBlock = this.el.querySelector('.history-add-block');
+    const even = firstBlock
+      .querySelector('.history-event')
+      .classList.contains('odd');
     const element = this.constructor.createEventElement(historyEvent, even);
 
     const add_divider =
@@ -41,7 +43,6 @@ class HistoryCard {
     block.appendChild(element);
     if (add_divider) block.appendChild(this.createDateDivider(historyEvent));
 
-    const firstBlock = this.el.querySelector('.history-add-block');
     firstBlock.parentNode.insertBefore(block, firstBlock);
 
     if (realtime) {
