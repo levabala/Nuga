@@ -1,3 +1,5 @@
+// @flow
+
 import { mount } from 'redom';
 // import { historyCardDemo } from './demo/historyCardDemo';
 // import { bioCardDemo } from './demo/bioCardDemo';

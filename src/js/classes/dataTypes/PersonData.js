@@ -1,7 +1,7 @@
 // import tippy from 'tippy.js';
 import { el, mount, setAttr } from 'redom';
 import tippy from 'tippy.js';
-import DataInterface from '../DataInterface';
+import DataInterface from './DataInterface';
 import PersonTooltip from '../PersonTooltip';
 
 const person_tooltips_shown = {};

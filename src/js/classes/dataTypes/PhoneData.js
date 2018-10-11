@@ -1,5 +1,5 @@
 import { el } from 'redom';
-import DataInterface from '../DataInterface';
+import DataInterface from './DataInterface';
 
 class PhoneData implements DataInterface {
   constructor({ phone_number }) {

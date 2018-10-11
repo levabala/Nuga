@@ -1,19 +1,25 @@
-import { el, mount } from 'redom';
+// @flow
+
+import { el, mount, Element } from 'redom';
 import Card from './Card';
-import DataInterface from '../classes/DataInterface';
+import type { IDataElement } from '../classes/dataTypes/DataInterface';
 
 class BioTableHead {
+  el: Element;
+
   constructor(title) {
     this.el = el('div', { id: 'name', class: 'bioHead' }, title);
   }
 }
 
 class BioTableRow {
-  constructor(property, value: DataInterface | Array<DataInterface>) {
+  el: Element;
+
+  constructor(property, value: IDataElement) {
     let valueElement;
     if (Array.isArray(value))
       valueElement = el('div', [
-        ...value.map((d: DataInterface, index, { length }) =>
+        ...value.map((d: IDataElement, index, { length }) =>
           d.generateElementOneOfMany(index === length - 1),
         ),
       ]);
@@ -26,19 +32,29 @@ class BioTableRow {
   }
 }
 
+type DataType = Map<string, IDataElement>;
+export type BioData = {
+  title: string,
+  avatarURL: string,
+  data: DataType,
+}
+
 class BioTable {
-  constructor(title: String, data: Array<Object<String, String>>) {
+  el: Element;
+
+  constructor(title: string, data: DataType) {
     this.el = el('div', { id: 'bio-table', class: 'bioTable' }, [
       new BioTableHead(title),
-      ...Object.entries(data).map(
-        entrie => new BioTableRow(entrie[0], entrie[1]),
+      ...Array.from(data,
+        ([prop, val]) =>
+          new BioTableRow(prop, val),
       ),
     ]);
   }
 }
 
 class BioCard extends Card {
-  constructor({ title, data, avatarURL }) {
+  constructor({ title, data, avatarURL }: BioData) {
     super({ width: '700px' });
     const child = el('div', { id: 'info' }, [
       el(

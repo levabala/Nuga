@@ -1,0 +1,3 @@
+declare module 'redom' {
+  declare module.exports: any;
+} 

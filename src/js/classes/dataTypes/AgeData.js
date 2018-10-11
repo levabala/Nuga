@@ -1,5 +1,5 @@
 import { el } from 'redom';
-import DataInterface from '../DataInterface';
+import DataInterface from './DataInterface';
 
 class AgeData implements DataInterface {
   constructor({ birthDate, age }: { birthDate: Date, age: Number }) {
