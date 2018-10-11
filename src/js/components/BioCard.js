@@ -43,7 +43,10 @@ class BioCard extends Card {
     const child = el('div', { id: 'info' }, [
       el(
         'i',
-        { class: 'material-icons ripple', style: 'float: right' },
+        {
+          class: 'material-icons mdc-icon-button',
+          style: 'float: right; margin-right: -0.75rem; margin-top: -0.75rem;',
+        },
         'list',
       ),
       el('img', {
@@ -54,7 +57,7 @@ class BioCard extends Card {
       }),
       new BioTable(title, data),
     ]);
-    console.log(child);
+
     mount(this.el, child);
   }
 }

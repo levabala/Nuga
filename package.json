@@ -59,8 +59,10 @@
     "webpack-cli": "^3.1.0"
   },
   "dependencies": {
+    "@material/ripple": "^0.40.1",
     "material-components-web": "^0.40.1",
     "materialize-css": "^1.0.0-rc.2",
+    "mdc-data-table": "^1.1.0",
     "moment": "^2.22.2",
     "redom": "^3.14.1",
     "tippy.js": "^3.0.3"

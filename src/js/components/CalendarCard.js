@@ -1,4 +1,4 @@
-import { el } from 'redom';
+import { el, mount } from 'redom';
 import Card from './Card';
 
 class CalendarPosition {
@@ -48,15 +48,45 @@ class CalendarRowTop {
   }
 }
 
-class CalendarTable {
+class CalendarTable extends Card {
   constructor(data) {
+    super();
+
     this.data = data;
 
-    this.el = el('div', { class: 'calendar-table' }, [
+    /* this.el = el('div', { class: 'calendar-table' }, [
       new CalendarRowTop(),
       new CalendarRow(),
       new CalendarRow(),
-    ]);
+    ]); */
+
+    const child = el(
+      'div',
+      { class: 'mdc-data-table' },
+      el('table', { class: 'mdc-data-table__content' }, [
+        el(
+          'thead',
+          el(
+            'tr',
+            { class: 'mdc-data-table__row' },
+            el('th', { class: 'mdc-data-table__header' }, 'Column header text'),
+          ),
+        ),
+        el(
+          'tbody',
+          el(
+            'tr',
+            { class: 'mdc-data-table__row' },
+            el('td', { class: 'mdc-data-table__cell' }, 'Cell text'),
+            el('td', { class: 'mdc-data-table__cell' }, 'Cell text'),
+            el('td', { class: 'mdc-data-table__cell' }, 'Cell text'),
+            el('td', { class: 'mdc-data-table__cell' }, 'Cell text'),
+          ),
+        ),
+      ]),
+    );
+
+    mount(this.el, child);
   }
 }
 
