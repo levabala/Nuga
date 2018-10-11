@@ -4,25 +4,10 @@
 @import '@material/icon-button/mdc-icon-button';
 @import '~tippy.js/dist/tippy';
 @import '~mdc-data-table/mdc-data-table';
+@import './scss/bio.scss';
+@import './scss/calendar.scss';
+@import './scss/card.scss';
+@import './scss/history.scss';
+@import './scss/style.scss';
+@import './scss/tooltip.scss';
 
-.mdc-card {
-  padding: 1rem;
-}
-
-.mdc-data-table__cell:first-of-type {
-  @include mdc-data-table__cell;
-}
-
-.mdc-data-table__cell:last-of-type {
-  border-right: solid black 1px;
-}
-
-.mdc-data-table__cell {
-  padding-left: 0.5rem;
-  border: solid black 1px;
-  border-right: 0px;
-}
-
-.mdc-data-table__content {
-  border-collapse: unset;
-}
