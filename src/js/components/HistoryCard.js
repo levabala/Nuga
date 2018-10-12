@@ -1,20 +1,23 @@
+// @flow
+
 import { el } from 'redom';
-import * as moment from 'moment';
+import type Moment from 'moment';
 import HistoryEvent from '../classes/HistoryEvent';
 
 class HistoryCard {
   events: Array<HistoryEvent>;
-  animationDuration: Number;
-  animationFinishTime: Date;
+  animationDuration: number;
+  animationFinishTime: number;
   animationFinished: boolean;
-  animationsPendingCount: Number;
-  minAnimationTimeout: Number;
+  animationsPendingCount: number;
+  minAnimationTimeout: number;
+  el: Element;
 
-  constructor(events) {
+  constructor(events: Array<HistoryEvent>) {
     this.events = [];
     this.minAnimationTimeout = 100;
     this.animationFinished = true;
-    this.animationFinishTime = new Date(0);
+    this.animationFinishTime = 0;
     this.animationsPendingCount = 0;
     this.animationDuration = 2100;
 
@@ -29,10 +32,15 @@ class HistoryCard {
     const block = el('div', {
       class: `history-add-block ${realtime ? 'collapsed' : ''}`,
     });
-    const firstBlock = this.el.querySelector('.history-add-block');
-    const even = firstBlock
-      .querySelector('.history-event')
-      .classList.contains('odd');
+    const firstBlock: ?Element = this.el.querySelector('.history-add-block');
+    // we need to check if block exists to pass flow checking
+    if (!(firstBlock instanceof Element))
+      throw new Error();
+    const firstEvent = firstBlock.querySelector('.history-event');
+    if (!(firstEvent instanceof Element))
+      throw new Error();
+
+    const even = firstEvent.classList.contains('odd');
     const element = this.constructor.createEventElement(historyEvent, even);
 
     const add_divider =
@@ -42,6 +50,9 @@ class HistoryCard {
     this.events.unshift(historyEvent);
     block.appendChild(element);
     if (add_divider) block.appendChild(this.createDateDivider(historyEvent));
+
+    if (!(firstBlock.parentNode instanceof Element))
+      throw new Error();
 
     firstBlock.parentNode.insertBefore(block, firstBlock);
 
@@ -64,6 +75,8 @@ class HistoryCard {
 
     // remove (if exists) last date divider
     if (this.events.length > 0) {
+      if (!(this.el.lastChild instanceof Element))
+        throw new Error();
       const dates = this.el.lastChild.querySelectorAll('.history-date');
       const toRemove = dates[dates.length - 1];
       toRemove.remove();
@@ -107,7 +120,7 @@ class HistoryCard {
     if (realtime) setTimeout(() => block.classList.toggle('collapsed'));
   }
 
-  static createEventElement(historyEvent, even) {
+  static createEventElement(historyEvent: HistoryEvent, even: boolean) {
     const evennessClass = even ? 'even' : 'odd';
     return el(
       'div',
@@ -129,7 +142,7 @@ class HistoryCard {
     );
   }
 
-  createDateDivider(event) {
+  createDateDivider(event: HistoryEvent) {
     return el(
       'div',
       { class: 'history-date' },
@@ -137,7 +150,7 @@ class HistoryCard {
     );
   }
 
-  static getDateString(date: moment.Moment): String {
+  static getDateString(date: Moment): string {
     return date.calendar();
   }
 }

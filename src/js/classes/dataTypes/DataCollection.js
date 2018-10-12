@@ -1,8 +1,10 @@
+// @flow
+
 import { el, setAttr, mount, setChildren } from 'redom';
 import type { IDataElement } from './DataInterface';
 
 class DataCollection implements IDataElement {
-
+  collection: Array<IDataElement>;
   constructor(elements: Array<IDataElement>) {
     this.collection = elements;
   }

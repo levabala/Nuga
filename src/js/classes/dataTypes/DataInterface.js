@@ -3,7 +3,7 @@
 import { Element } from 'redom';
 
 interface DataElement {
-  toString(): String;
+  toString(): string;
   generateElement(): Element;
   generateElementOneOfMany(boolean): Element;
 }
