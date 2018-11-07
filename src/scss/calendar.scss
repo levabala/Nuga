@@ -1,44 +1,95 @@
-.calendar-head,
-.calendar-table-cell {
-  padding: 5px;
-}
+@import 'bio.scss';
 
-.calendar-head {
-  font-size: 20px;
-  padding: 10px 5px;
-  padding-top: 0px;
-}
+$padding-horizontal: 8px;
 
-.calendar-table {
-  display: block;
-  width: 70%;
-  margin-bottom: 10px;
-}
-
-.calendar-table-row {
-  display: table-row;
-  clear: both;
-  width: 100%;
-}
-
-.calendar-table-cell {
-  display: table-cell;
+.table {
+  display: table;
+  display: inline-block;
+  overflow-x: auto;
   white-space: nowrap;
-  max-width: 100px;
-  /*padding-bottom: 8px;*/
+  border: solid lightgray;
 }
 
-.calendar-table-cell.regField,
-.calendar-table-cell.position {
-  max-width: 130px;
+.table-title {
+  display: table-caption;
+  text-align: center;
+  font-weight: bold;
+  font-size: larger;
 }
 
-.calendar-table-cell.regTime {
-  /*width: 30px;*/
-  font-size: 12px;
-  vertical-align: middle;
+.table-heading {
+  display: table-row;
+  font-weight: bold;
+  text-align: center;
 }
 
-/*.calendar-table-cell.regTime:empty {
-  content: '\00a0';
-}*/
+.table-row {
+  display: table-row;
+}
+
+.table-cell {
+  display: table-cell;
+  border: solid lightgray;
+  border-width: thin;
+  padding-left: $padding-horizontal;
+  padding-right: $padding-horizontal;
+}
+
+.calendarCell {
+  //display: flex;
+  //justify-content: space-between;
+  text-align: center;
+}
+
+.calendarCell .block {
+  display: inline-block;
+  text-align: center;
+}
+
+.calendarCell .text-info {
+  display: inline-block;
+  position: relative;
+  text-align: left;
+  transform: translateY(25%);
+}
+
+.calendarCell .text-info .primary-info {
+  font-size: 15px;
+}
+
+.calendarCell .text-info .secondary-info {
+  font-size: 10px;
+  color: lightgray;
+}
+
+.calendarCell .points {
+  $size: 13px;
+  $padding-rate: 14;
+  $left-margin: 15px;
+
+  display: inline-block;
+
+  border-radius: 50%;
+
+  width: $size;
+  height: $size;
+  padding: $size / 3 - $size / $padding-rate;
+
+  background: rgba(221, 221, 221, 0.514);
+  text-align: center;
+
+  font-size: $size - $size / $padding-rate;
+
+  margin-left: $left-margin;
+}
+
+.avatar {
+  @extend .avatar;
+
+  .calendarCell & {
+    width: 40px;
+    height: 40px;
+    margin-left: 0px;
+    display: inline-block;
+  }
+}

@@ -1,4 +1,5 @@
 extends:
   - levabala
+  - prettier
 plugins:
   - flowtype
