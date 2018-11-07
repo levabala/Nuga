@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "babel": "babel --presets @babel/preset-env src/js/main.js -o build/main.bundle.js",
-    "start_server": "live-server",
+    "start_server": "live-server --port=14400",
     "webpack": "webpack",
     "webpack_watch": "webpack --watch",
     "flow": "flow",
