@@ -28,12 +28,14 @@ function dragMoveListener(event) {
 const dragConfig = {
   // enable inertial throwing
   inertia: true,
+
   // keep the element within the area of it's parent
-  restrict: {
+  /* restrict: {
     restriction: 'parent',
     endOnly: true,
     elementRect: { top: 0, left: 0, bottom: 1, right: 1 },
-  },
+  }, */
+
   // enable autoScroll
   autoScroll: true,
 
@@ -52,6 +54,8 @@ const dragConfig = {
     const { target } = event;
     target.classList.remove('isDragging');
     target.setAttribute('style', `width: auto`);
+    target.setAttribute('data-x', 0);
+    target.setAttribute('data-y', 0);
   },
 };
 

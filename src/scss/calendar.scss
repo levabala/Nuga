@@ -42,6 +42,12 @@ $padding-horizontal: 8px;
   padding-right: $padding-horizontal;
   display: flex;
   justify-content: space-between;
+  transition: background 0.5s;
+}
+
+.personCell:hover {
+  background: rgb(243, 243, 243);
+  transition: background 0.5s;
 }
 
 .isDragging {
@@ -51,15 +57,16 @@ $padding-horizontal: 8px;
   position: absolute;
 }
 
+.readyToGetDrop {
+  background: rgba(191, 210, 255, 0.3);
+  transition: background 0.5s;
+}
+
 .calendarCell {
   //display: flex;
   //justify-content: space-between;
   text-align: center;
-
-  // make it centered vertically
-  /*position: relative;
-  top: 50%;
-  transform: translateY(-50%);*/
+  transition: background 0.5s;
 }
 
 .calendarCell .block {

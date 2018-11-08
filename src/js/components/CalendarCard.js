@@ -1,9 +1,10 @@
 import * as moment from 'moment';
 import interact from 'interactjs';
-import { el, mount } from 'redom';
+import { el, mount, setChildren } from 'redom';
 import Card from './Card';
 import PersonData from '../classes/dataTypes/PersonData';
 import dragConfig from '../scripts/drag';
+import dropConfig from '../scripts/drop';
 
 const emptyPerson = new PersonData({ name: '', surname: '' });
 
@@ -14,7 +15,12 @@ class PersonCell {
     // FIXIT: disable placing mocking empty element
     this.el = el(
       'div',
-      { class: 'personCell', style: `${person ? '' : 'visibility: hidden'}` },
+      {
+        class: 'personCell',
+        style: `${
+          person ? '' : 'visibility: hidden; background: transparent;'
+        }`,
+      },
       [
         el(
           'div',
@@ -52,6 +58,22 @@ class PersonCell {
 class CalendarCell {
   constructor(person: ?PersonData) {
     this.el = el('div', { class: 'calendarCell' }, new PersonCell(person));
+
+    const config = dropConfig;
+    config.ondrop = event => {
+      const draggableElement = event.relatedTarget;
+      const dropzoneElement = event.target;
+
+      console.log('drop');
+
+      setChildren(draggableElement.parentNode, new PersonCell());
+      setChildren(dropzoneElement, draggableElement);
+
+      dropzoneElement.classList.remove('readyToGetDrop');
+      draggableElement.setAttribute('data-x', 0);
+      draggableElement.setAttribute('data-y', 0);
+    };
+    interact(this.el).dropzone(config);
   }
 }
 
