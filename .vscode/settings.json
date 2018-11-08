@@ -1,7 +1,7 @@
 {
   "editor.formatOnSave": true,
   "window.zoomLevel": 0.8,
-  "editor.fontSize": 18,
+  "editor.fontSize": 16,
   "git.ignoreLimitWarning": true,
   "javascript.validate.enable": false,
 }

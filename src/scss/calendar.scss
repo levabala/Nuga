@@ -1,12 +1,15 @@
+@import '@material/elevation/mdc-elevation';
 @import 'bio.scss';
+@import 'card.scss';
 
 $padding-horizontal: 8px;
 
 .table {
   display: table;
-  display: inline-block;
+  table-layout: fixed;
   overflow-x: auto;
   white-space: nowrap;
+  width: 100%;
   border: solid lightgray;
 }
 
@@ -31,14 +34,32 @@ $padding-horizontal: 8px;
   display: table-cell;
   border: solid lightgray;
   border-width: thin;
+}
+
+.personCell {
+  background: white;
   padding-left: $padding-horizontal;
   padding-right: $padding-horizontal;
+  display: flex;
+  justify-content: space-between;
+}
+
+.isDragging {
+  @extend .mdc-elevation--z8;
+  transition: box-shadow 0.3s ease-in-out;
+  z-index: 999;
+  position: absolute;
 }
 
 .calendarCell {
   //display: flex;
   //justify-content: space-between;
   text-align: center;
+
+  // make it centered vertically
+  /*position: relative;
+  top: 50%;
+  transform: translateY(-50%);*/
 }
 
 .calendarCell .block {
@@ -67,7 +88,10 @@ $padding-horizontal: 8px;
   $padding-rate: 14;
   $left-margin: 15px;
 
-  display: inline-block;
+  // make it centered vertically
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 
   border-radius: 50%;
 

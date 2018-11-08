@@ -5,6 +5,14 @@ class PersonsList {
     this.persons = persons;
   }
 
+  get count() {
+    return this.persons.length
+  }
+
+  getByIndex(index) {
+    return this.persons[index]
+  }
+
   get(name: String, surname: String) {
     return this.persons.find(
       person =>
