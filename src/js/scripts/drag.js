@@ -1,11 +1,3 @@
-function unFocus() {
-  if (document.selection) {
-    document.selection.empty();
-  } else {
-    window.getSelection().removeAllRanges();
-  }
-}
-
 function dragMoveListener(event) {
   const { target } = event;
   // keep the dragged position in the data-x/data-y attributes
@@ -21,8 +13,6 @@ function dragMoveListener(event) {
   // update the posiion attributes
   target.setAttribute('data-x', x);
   target.setAttribute('data-y', y);
-
-  unFocus();
 }
 
 const dragConfig = {

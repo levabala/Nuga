@@ -56,8 +56,17 @@ class PersonCell {
 }
 
 class CalendarCell {
-  constructor(person: ?PersonData) {
-    this.el = el('div', { class: 'calendarCell' }, new PersonCell(person));
+  constructor(x: number, y: number, person: ?PersonData) {
+    this.el = el(
+      'div',
+      {
+        class: 'calendarCell',
+        'data-empty': person !== null,
+        'data-coord-x': x,
+        'data-coord-y': y,
+      },
+      new PersonCell(person),
+    );
 
     const config = dropConfig;
     config.ondrop = event => {
@@ -66,10 +75,14 @@ class CalendarCell {
 
       console.log('drop');
 
+      dropzoneElement.classList.remove('readyToGetDrop');
+
+      // check if something is in
+      if (dropzoneElement.attributes['data-empty'].value === 'true') return;
+
       setChildren(draggableElement.parentNode, new PersonCell());
       setChildren(dropzoneElement, draggableElement);
 
-      dropzoneElement.classList.remove('readyToGetDrop');
       draggableElement.setAttribute('data-x', 0);
       draggableElement.setAttribute('data-y', 0);
     };
@@ -92,6 +105,8 @@ class CalendarTable {
             'div',
             { class: 'table-cell' },
             new CalendarCell(
+              i2,
+              i,
               exist
                 ? data[Math.round(Math.random() * (data.length - 1))].client
                 : null,
@@ -104,6 +119,14 @@ class CalendarTable {
     }
 
     this.el = el('div', { class: 'table' }, arr);
+    this.cells = arr;
+  }
+
+  /* eslint-disable-next-line */
+  _insertCell(dropzone) {
+    const x = parseInt(dropzone.attributes['data-coord-x'].value, 10);
+    const y = parseInt(dropzone.attributes['data-coord-y'].value, 10);
+    //TODO: inserting
   }
 }
 

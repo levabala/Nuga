@@ -1,10 +1,13 @@
 @import '@material/elevation/mdc-elevation';
 @import 'bio.scss';
 @import 'card.scss';
+@import 'style.scss';
 
 $padding-horizontal: 8px;
 
 .table {
+  @extend .non-selectable;
+
   display: table;
   table-layout: fixed;
   overflow-x: auto;
