@@ -13,6 +13,7 @@ class PersonCell {
   constructor(x: number, y: number, person: ?PersonData) {
     const personToAdd = person || emptyPerson;
 
+    this.mock = person === null;
     this.x = x;
     this.y = y;
 
@@ -150,21 +151,21 @@ class CalendarTable {
 
     const targetCalendarCell = target;
     const originCalendarCell = this.cells[py][px];
-    const { personCell } = originCalendarCell;
 
     const tx = targetCalendarCell.x;
     const ty = targetCalendarCell.y;
 
-    console.log(targetCalendarCell);
-    console.log(originCalendarCell);
-    console.log(personCell);
+    const success = this.freeCell(tx, ty);
+    if (!success) return;
 
-    const isEmpty = targetCalendarCell.el.attributes['data-empty'].value;
-    if (!isEmpty) {
-      // need to free the cell
-      const success = this.freeCell(tx, ty);
-      if (!success) return;
-    }
+    this.constructor.movePersonCell(originCalendarCell, targetCalendarCell);
+  }
+
+  static movePersonCell(originCalendarCell, targetCalendarCell) {
+    const tx = targetCalendarCell.x;
+    const ty = targetCalendarCell.y;
+
+    const { personCell } = originCalendarCell;
 
     // update empty-state for calendar cells
     setAttr(originCalendarCell, 'data-empty', true);
@@ -181,9 +182,9 @@ class CalendarTable {
     originCalendarCell.setChildPerson(null);
   }
 
-  /* eslint-disable-next-line */
   freeCell(x, y) {
     const checkDeltas = [
+      [0, 0], // center
       [-1, 0], // left
       [-1, -1], // left-top
       [0, -1], // top
@@ -194,19 +195,46 @@ class CalendarTable {
       [-1, 1], // bottom-left
     ];
 
-    function isValid(tx, ty, cells) {
-      return tx > 0 && tx < cells[0].length && tx > 0 && ty < cells.length;
+    function findPos(tx, ty, cells) {
+      console.log(tx, ty);
+      try {
+        console.log(cells[ty][tx].personCell.mock);
+      } catch (e) {
+        /**/
+      }
+      if (
+        tx >= 0 &&
+        tx < cells[0].length &&
+        ty >= 0 &&
+        ty < cells.length &&
+        cells[ty][tx].personCell.mock
+      )
+        return [tx, ty];
+
+      return false;
     }
 
+    let pos = false;
     for (let i = 0; i < checkDeltas.length; i++) {
       const delta = checkDeltas[i];
-      if (isValid(delta, this.cells)) {
-        // do moving
-        return true;
-      }
+      console.log(delta[0], delta[1]);
+      pos = findPos(x + delta[0], y + delta[1], this.cells);
+      if (pos) break;
     }
 
-    return false;
+    // if no available cells around
+    if (!pos) return false;
+
+    // if delta == [0, 0]
+    if (pos[0] === x && pos[1] === y) return true;
+
+    // if a cell is free
+    this.constructor.movePersonCell(
+      this.cells[y][x],
+      this.cells[pos[1]][pos[0]],
+    );
+
+    return true;
   }
 }
 

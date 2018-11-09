@@ -1,6 +1,6 @@
 const dropConfig = {
   accept: '.personCell',
-  overlap: 0.75,
+  overlap: 0.6,
   ondropactivate: () => {},
   ondragenter: event => {
     // const draggableElement = event.relatedTarget;
