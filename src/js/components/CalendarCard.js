@@ -186,13 +186,13 @@ class CalendarTable {
     const checkDeltas = [
       [0, 0], // center
       [-1, 0], // left
-      [-1, -1], // left-top
-      [0, -1], // top
-      [1, -1], // right-top
+      // [-1, -1], // left-top
+      // [0, -1], // top
+      // [1, -1], // right-top
       [1, 0], // right
-      [1, 1], // right-bottom
-      [0, 1], // bottom
-      [-1, 1], // bottom-left
+      // [1, 1], // right-bottom
+      // [0, 1], // bottom
+      // [-1, 1], // bottom-left
     ];
 
     function findPos(tx, ty, cells) {
