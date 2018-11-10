@@ -13,6 +13,12 @@ const persons = new PersonsList([
   new PersonData({ name: 'John', surname: 'Chester' }),
   new PersonData({ name: 'Joanne', surname: 'Cooper' }),
   new PersonData({ name: 'Timothy', surname: 'George' }),
+  new PersonData({ name: 'Twister', surname: 'Karry' }),
+  new PersonData({ name: 'Martin', surname: 'Milkway' }),
+  new PersonData({ name: 'Kitty', surname: 'South' }),
+  new PersonData({ name: 'Lammy', surname: 'Blacksm' }),
+  new PersonData({ name: 'Mundak', surname: 'Rismatch' }),
+  new PersonData({ name: 'Bally', surname: 'Perpy' }),
 ]);
 
 const clients = [];

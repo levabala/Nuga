@@ -46,17 +46,13 @@ class PersonCell {
               { class: 'primary-info' },
               `${this.person.surname} ${this.person.name}`,
             ),
-            el('div', { class: 'secondary-info' }, '248811134'),
+            el('div', { class: 'secondary-info' }, this.person.code),
           ]),
         ),
         el(
           'div',
           { class: 'block' },
-          el(
-            'div',
-            { class: 'points' },
-            Math.round(Math.random() * 20).toString(),
-          ),
+          el('div', { class: 'points' }, this.person.points),
         ),
       ],
     );
@@ -211,55 +207,23 @@ class CalendarTable {
   }
 
   freeCell(insertedCell, x, y) {
-    const checkDeltas = [
-      [0, 0], // center
-      [-1, 0], // left
-      // [-1, -1], // left-top
-      // [0, -1], // top
-      // [1, -1], // right-top
-      [1, 0], // right
-      // [1, 1], // right-bottom
-      // [0, 1], // bottom
-      // [-1, 1], // bottom-left
-    ];
+    if (this.cells[y][x].personCell.mock) return true;
 
-    function findPos(tx, ty, cells) {
-      if (
-        tx >= 0 &&
-        tx < cells[0].length &&
-        ty >= 0 &&
-        ty < cells.length &&
-        cells[ty][tx].personCell.mock
-      )
-        return [tx, ty];
-
-      return false;
-    }
-
-    let pos = false;
-    for (let i = 0; i < checkDeltas.length; i++) {
-      const delta = checkDeltas[i];
-      console.log(delta[0], delta[1]);
-      pos = findPos(x + delta[0], y + delta[1], this.cells);
-      if (pos) break;
-    }
-
-    // if no available cells around
-    if (!pos) return this.tryShiftRow(insertedCell, x, y);
-
-    // if delta == [0, 0]
-    if (pos[0] === x && pos[1] === y) return true;
-
-    // if a cell is free
-    this.constructor.movePersonCell(
-      this.cells[y][x],
-      this.cells[pos[1]][pos[0]],
-    );
-
-    return true;
+    return this.tryShiftRow(insertedCell, x, y);
   }
 
   tryShiftRow(insertedCell, x, y) {
+    // special case
+    if (
+      x > 0 &&
+      insertedCell.x === x + 1 &&
+      insertedCell.y === y &&
+      this.cells[y][x - 1].personCell.mock
+    ) {
+      this.shiftRow(this.cells[y].slice(x, x + 2), -1);
+      return false;
+    }
+
     // check if moving in one time (x axis)
     let elementsToShift = [];
     if (insertedCell.y === y) {
@@ -276,6 +240,7 @@ class CalendarTable {
         this.shiftRow(elementsToShift.reverse(), 1);
       }
 
+      // if (filled) this.cells[y][x].setChildPerson(movingPerson);
       this.cells[y][x].setChildPerson(movingPerson);
 
       return false;
