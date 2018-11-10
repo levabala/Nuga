@@ -60,6 +60,11 @@ $padding-horizontal: 8px;
   position: absolute;
 }
 
+.movingBack {
+  transition: all 1s;
+  pointer-events: none;
+}
+
 .readyToGetDrop {
   background: rgba(191, 210, 255, 0.3);
   transition: background 0.5s;

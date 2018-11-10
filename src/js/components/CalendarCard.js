@@ -10,15 +10,15 @@ import dropConfig from '../scripts/drop';
 const emptyPerson = new PersonData({ name: '', surname: '' });
 
 class PersonCell {
-  constructor(x: number, y: number, person: ?PersonData) {
+  constructor(id: string, x: number, y: number, person: ?PersonData) {
     const personToAdd = person || emptyPerson;
 
     this.mock = person === null;
     this.x = x;
     this.y = y;
 
-    // TODO: make advanced id generation
-    const id = `${personToAdd.name}_${personToAdd.surname}`
+    this.id = null;
+    this.setId(id);
 
     // FIXIT: disable placing mocking empty element
     this.el = el(
@@ -30,7 +30,7 @@ class PersonCell {
         'data-coord-y': y,
         style: `${
           person ? '' : 'visibility: hidden; background: transparent;'
-          }`,
+        }`,
       },
       [
         el(
@@ -62,7 +62,25 @@ class PersonCell {
       ],
     );
 
-    interact(this.el).draggable(generateConfig(id));
+    interact(this.el).draggable(generateConfig());
+
+    this.el.addEventListener('animationend', e => {
+      // check if something is in
+      console.log('END', e);
+
+      this.discardMoveBackAnimation();
+    });
+  }
+
+  discardMoveBackAnimation() {
+    this.el.setAttribute('style', `width: auto`);
+    this.el.classList.remove('isDragging');
+    this.el.classList.remove('movingBack');
+  }
+
+  setId(id) {
+    this.id = id;
+    setAttr(this, 'id', id);
   }
 }
 
@@ -74,9 +92,12 @@ class CalendarCell extends Reactor {
     this.x = x;
     this.y = y;
     this.personCell = null;
+    this.id = `tableCell_${this.x}_${this.y}`;
+    this.personId = `${this.id}_person`;
 
     this.el = el('div', {
       class: 'calendarCell',
+      id: this.id,
       'data-empty': person === null,
       'data-coord-x': x,
       'data-coord-y': y,
@@ -92,8 +113,8 @@ class CalendarCell extends Reactor {
       console.log('drop');
 
       dropzoneElement.classList.remove('readyToGetDrop');
+      draggableElement.dispatchEvent(new Event('animationend'));
 
-      // check if something is in
       cell.dispatchEvent('insertElement', {
         target: cell,
         relatedTarget: draggableElement,
@@ -105,14 +126,15 @@ class CalendarCell extends Reactor {
   }
 
   setChildPerson(person: PersonData) {
-    this.personCell = new PersonCell(this.x, this.y, person);
-    setChildren(this, this.personCell);
+    const personCell = new PersonCell(this.personId, this.x, this.y, person);
+    this.setChildPersonCell(personCell);
   }
 
   setChildPersonCell(personCell) {
     this.personCell = personCell;
     this.personCell.x = this.x;
     this.personCell.y = this.y;
+    this.personCell.setId(this.personId);
     setChildren(this, this.personCell);
   }
 }
