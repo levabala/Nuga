@@ -11,8 +11,7 @@ const emptyPerson = new PersonData({ name: '', surname: '' });
 
 class PersonCell {
   constructor(id: string, x: number, y: number, person: ?PersonData) {
-    const personToAdd = person || emptyPerson;
-
+    this.person = person || emptyPerson;
     this.mock = person === null;
     this.x = x;
     this.y = y;
@@ -45,7 +44,7 @@ class PersonCell {
             el(
               'div',
               { class: 'primary-info' },
-              `${personToAdd.surname} ${personToAdd.name}`,
+              `${this.person.surname} ${this.person.name}`,
             ),
             el('div', { class: 'secondary-info' }, '248811134'),
           ]),
@@ -115,6 +114,7 @@ class CalendarCell extends Reactor {
       console.log('drop');
 
       dropzoneElement.classList.remove('readyToGetDrop');
+      draggableElement.classList.remove('readyToBeDropped');
 
       cell.dispatchEvent('insertElement', {
         target: cell,
@@ -150,7 +150,7 @@ class CalendarTable {
     for (let i = 0; i < 5; i++) {
       const arr2 = [];
       this.cells.push([]);
-      for (let i2 = 0; i2 < 5; i2++) {
+      for (let i2 = 0; i2 < 4; i2++) {
         const exist = Math.random() > 0.7;
 
         const cell = new CalendarCell(
@@ -183,8 +183,8 @@ class CalendarTable {
     const tx = targetCalendarCell.x;
     const ty = targetCalendarCell.y;
 
-    const success = this.freeCell(tx, ty);
-    if (!success) return;
+    const needMoveYourself = this.freeCell(originCalendarCell, tx, ty);
+    if (!needMoveYourself) return;
 
     this.constructor.movePersonCell(originCalendarCell, targetCalendarCell);
   }
@@ -210,7 +210,7 @@ class CalendarTable {
     originCalendarCell.setChildPerson(null);
   }
 
-  freeCell(x, y) {
+  freeCell(insertedCell, x, y) {
     const checkDeltas = [
       [0, 0], // center
       [-1, 0], // left
@@ -224,12 +224,6 @@ class CalendarTable {
     ];
 
     function findPos(tx, ty, cells) {
-      console.log(tx, ty);
-      try {
-        console.log(cells[ty][tx].personCell.mock);
-      } catch (e) {
-        /**/
-      }
       if (
         tx >= 0 &&
         tx < cells[0].length &&
@@ -251,10 +245,7 @@ class CalendarTable {
     }
 
     // if no available cells around
-    if (!pos) {
-      if (this.tryShiftRow(x, y)) return true;
-      return false;
-    }
+    if (!pos) return this.tryShiftRow(insertedCell, x, y);
 
     // if delta == [0, 0]
     if (pos[0] === x && pos[1] === y) return true;
@@ -268,11 +259,30 @@ class CalendarTable {
     return true;
   }
 
-  tryShiftRow(x, y) {
+  tryShiftRow(insertedCell, x, y) {
     // check if moving in one time (x axis)
+    let elementsToShift = [];
+    if (insertedCell.y === y) {
+      const movingPerson = insertedCell.personCell.person;
+
+      if (x > insertedCell.x) {
+        // then shift left
+        elementsToShift = this.cells[y].slice(insertedCell.x + 1, x + 1);
+        this.shiftRow(elementsToShift, -1);
+      }
+      // then shift right
+      else {
+        elementsToShift = this.cells[y].slice(x, insertedCell.x);
+        this.shiftRow(elementsToShift.reverse(), 1);
+      }
+
+      this.cells[y][x].setChildPerson(movingPerson);
+
+      return false;
+    }
 
     // check left side
-    let elementsToShift = [];
+    elementsToShift = [];
     let doShift = false;
     for (let xt = x; xt >= 0; xt--) {
       const cell = this.cells[y][xt];
@@ -285,7 +295,7 @@ class CalendarTable {
     }
 
     if (doShift) {
-      this.shiftRow(elementsToShift, -1);
+      this.shiftRow(elementsToShift.reverse(), -1);
       return true;
     }
 
@@ -303,7 +313,7 @@ class CalendarTable {
     }
 
     if (doShift) {
-      this.shiftRow(elementsToShift, 1);
+      this.shiftRow(elementsToShift.reverse(), 1);
       return true;
     }
 
@@ -311,7 +321,7 @@ class CalendarTable {
   }
 
   shiftRow(cellsToShift, deltaX) {
-    const cells = cellsToShift.reverse();
+    const cells = cellsToShift;
     for (let i = 0; i < cells.length; i++) {
       const cellToMove = cells[i];
       const newX = cellToMove.x + deltaX;

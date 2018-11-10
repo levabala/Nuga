@@ -57,13 +57,18 @@ $points-circle-size: 16px;
 
 .personCell.isDragging {
   @extend .mdc-elevation--z8;
-  transition: box-shadow 0.3s ease-in-out;
+  transition: box-shadow 0.3s ease-in-out, background 0.5s;
   z-index: 999;
   position: absolute;
 }
 
+.personCell.readyToBeDropped {
+  background: rgb(241, 247, 255);
+  transition: background 0.5s;
+}
+
 .personCell.movingBack {
-  transition: all $move-back-duration;
+  transition: all $move-back-duration, background 0.5s;
   pointer-events: none;
 }
 
