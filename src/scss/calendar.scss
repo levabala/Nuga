@@ -4,6 +4,8 @@
 @import 'style.scss';
 
 $padding-horizontal: 8px;
+$move-back-duration: 1s;
+$points-circle-size: 16px;
 
 .table {
   @extend .non-selectable;
@@ -53,26 +55,24 @@ $padding-horizontal: 8px;
   transition: background 0.5s;
 }
 
-.isDragging {
+.personCell.isDragging {
   @extend .mdc-elevation--z8;
   transition: box-shadow 0.3s ease-in-out;
   z-index: 999;
   position: absolute;
 }
 
-.movingBack {
-  transition: all 1s;
+.personCell.movingBack {
+  transition: all $move-back-duration;
   pointer-events: none;
 }
 
-.readyToGetDrop {
+.calendarCell.readyToGetDrop {
   background: rgba(191, 210, 255, 0.3);
   transition: background 0.5s;
 }
 
 .calendarCell {
-  //display: flex;
-  //justify-content: space-between;
   text-align: center;
   transition: background 0.5s;
 }
@@ -99,8 +99,7 @@ $padding-horizontal: 8px;
 }
 
 .calendarCell .points {
-  $size: 13px;
-  $padding-rate: 14;
+  $padding-rate: 25;
   $left-margin: 15px;
 
   // make it centered vertically
@@ -110,14 +109,14 @@ $padding-horizontal: 8px;
 
   border-radius: 50%;
 
-  width: $size;
-  height: $size;
-  padding: $size / 3 - $size / $padding-rate;
+  width: $points-circle-size;
+  height: $points-circle-size;
+  padding: $points-circle-size / 3 - $points-circle-size / $padding-rate;
 
   background: rgba(221, 221, 221, 0.514);
   text-align: center;
 
-  font-size: $size - $size / $padding-rate;
+  font-size: $points-circle-size - $points-circle-size / $padding-rate;
 
   margin-left: $left-margin;
 }

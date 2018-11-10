@@ -65,6 +65,8 @@ class PersonCell {
     interact(this.el).draggable(generateConfig());
 
     this.el.addEventListener('animationend', e => {
+      if (this.mock) return;
+
       // check if something is in
       console.log('END', e);
 
@@ -113,7 +115,6 @@ class CalendarCell extends Reactor {
       console.log('drop');
 
       dropzoneElement.classList.remove('readyToGetDrop');
-      draggableElement.dispatchEvent(new Event('animationend'));
 
       cell.dispatchEvent('insertElement', {
         target: cell,
@@ -135,6 +136,7 @@ class CalendarCell extends Reactor {
     this.personCell.x = this.x;
     this.personCell.y = this.y;
     this.personCell.setId(this.personId);
+    this.personCell.el.dispatchEvent(new Event('animationend'));
     setChildren(this, this.personCell);
   }
 }
@@ -148,7 +150,7 @@ class CalendarTable {
     for (let i = 0; i < 5; i++) {
       const arr2 = [];
       this.cells.push([]);
-      for (let i2 = 0; i2 < 3; i2++) {
+      for (let i2 = 0; i2 < 5; i2++) {
         const exist = Math.random() > 0.7;
 
         const cell = new CalendarCell(
@@ -249,7 +251,10 @@ class CalendarTable {
     }
 
     // if no available cells around
-    if (!pos) return false;
+    if (!pos) {
+      if (this.tryShiftRow(x, y)) return true;
+      return false;
+    }
 
     // if delta == [0, 0]
     if (pos[0] === x && pos[1] === y) return true;
@@ -261,6 +266,60 @@ class CalendarTable {
     );
 
     return true;
+  }
+
+  tryShiftRow(x, y) {
+    // check if moving in one time (x axis)
+
+    // check left side
+    let elementsToShift = [];
+    let doShift = false;
+    for (let xt = x; xt >= 0; xt--) {
+      const cell = this.cells[y][xt];
+      if (cell.personCell.mock) {
+        doShift = true;
+        break;
+      }
+
+      elementsToShift.push(cell);
+    }
+
+    if (doShift) {
+      this.shiftRow(elementsToShift, -1);
+      return true;
+    }
+
+    // TODO: put checking into sub-function
+    // check right side
+    elementsToShift = [];
+    for (let xt = x; xt < this.cells[0].length; xt++) {
+      const cell = this.cells[y][xt];
+      if (cell.personCell.mock) {
+        doShift = true;
+        break;
+      }
+
+      elementsToShift.push(cell);
+    }
+
+    if (doShift) {
+      this.shiftRow(elementsToShift, 1);
+      return true;
+    }
+
+    return false;
+  }
+
+  shiftRow(cellsToShift, deltaX) {
+    const cells = cellsToShift.reverse();
+    for (let i = 0; i < cells.length; i++) {
+      const cellToMove = cells[i];
+      const newX = cellToMove.x + deltaX;
+      this.constructor.movePersonCell(
+        cellToMove,
+        this.cells[cellToMove.y][newX],
+      );
+    }
   }
 }
 
