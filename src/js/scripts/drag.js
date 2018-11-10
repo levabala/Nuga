@@ -15,38 +15,40 @@ function dragMoveListener(event) {
   target.setAttribute('data-y', y);
 }
 
-const dragConfig = {
-  // enable inertial throwing
-  inertia: true,
+function generateConfig(id) {
+  return {
+    // enable inertial throwing
+    inertia: true,
 
-  // keep the element within the area of it's parent
-  /* restrict: {
-    restriction: 'parent',
-    endOnly: true,
-    elementRect: { top: 0, left: 0, bottom: 1, right: 1 },
-  }, */
+    // keep the element within the area of it's parent
+    restrict: {
+      restriction: `#${id}`,
+      endOnly: true,
+      elementRect: { top: 0, left: 0, bottom: 1, right: 1 },
+    },
 
-  // enable autoScroll
-  autoScroll: true,
+    // enable autoScroll
+    autoScroll: true,
 
-  // call this function on every dragmove event
-  onmove: dragMoveListener,
-  onstart: event => {
-    const { target } = event;
+    // call this function on every dragmove event
+    onmove: dragMoveListener,
+    onstart: event => {
+      const { target } = event;
 
-    // fixing width
-    target.setAttribute('style', `width: ${getComputedStyle(target).width}`);
+      // fixing width
+      target.setAttribute('style', `width: ${getComputedStyle(target).width}`);
 
-    // add box shadow
-    target.classList.add('isDragging');
-  },
-  onend: event => {
-    const { target } = event;
-    target.classList.remove('isDragging');
-    target.setAttribute('style', `width: auto`);
-    target.setAttribute('data-x', 0);
-    target.setAttribute('data-y', 0);
-  },
-};
+      // add box shadow
+      target.classList.add('isDragging');
+    },
+    onend: event => {
+      const { target } = event;
+      target.classList.remove('isDragging');
+      target.setAttribute('style', `width: auto`);
+      target.setAttribute('data-x', 0);
+      target.setAttribute('data-y', 0);
+    },
+  };
+}
 
-export default dragConfig;
+export default generateConfig;

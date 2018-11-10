@@ -1,13 +1,10 @@
 const dropConfig = {
   accept: '.personCell',
   overlap: 0.6,
-  ondropactivate: () => {},
+  ondropactivate: () => { },
   ondragenter: event => {
     // const draggableElement = event.relatedTarget;
     const dropzoneElement = event.target;
-
-    console.log(dropzoneElement);
-
     dropzoneElement.classList.add('readyToGetDrop');
   },
   ondragleave: event => {

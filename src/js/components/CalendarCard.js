@@ -1,10 +1,10 @@
 import * as moment from 'moment';
 import interact from 'interactjs';
 import { el, mount, setChildren, setAttr } from 'redom';
-import { Reactor } from 'assemblies';
+import Reactor from '../scripts/reactor';
 import Card from './Card';
 import PersonData from '../classes/dataTypes/PersonData';
-import dragConfig from '../scripts/drag';
+import generateConfig from '../scripts/drag';
 import dropConfig from '../scripts/drop';
 
 const emptyPerson = new PersonData({ name: '', surname: '' });
@@ -17,16 +17,20 @@ class PersonCell {
     this.x = x;
     this.y = y;
 
+    // TODO: make advanced id generation
+    const id = `${personToAdd.name}_${personToAdd.surname}`
+
     // FIXIT: disable placing mocking empty element
     this.el = el(
       'div',
       {
+        id,
         class: 'personCell',
         'data-coord-x': x,
         'data-coord-y': y,
         style: `${
           person ? '' : 'visibility: hidden; background: transparent;'
-        }`,
+          }`,
       },
       [
         el(
@@ -58,7 +62,7 @@ class PersonCell {
       ],
     );
 
-    interact(this.el).draggable(dragConfig);
+    interact(this.el).draggable(generateConfig(id));
   }
 }
 
