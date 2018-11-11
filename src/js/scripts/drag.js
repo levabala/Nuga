@@ -1,21 +1,25 @@
-function dragMoveListener(event) {
-  const { target } = event;
-  // keep the dragged position in the data-x/data-y attributes
-  const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-  const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+function createDragMoveListener(tableDiv) {
+  return event => {
+    const { target } = event;
+    const srcl = tableDiv.scrollLeft;
 
-  // translate the element
-  const tfr = `translate(${x}px, ${y}px)`;
-  // target.setAttribute('style', `webkitTransform: ${tfr}; transform: ${tfr}`);
-  target.style.webkitTransform = tfr;
-  target.style.transform = tfr;
+    // keep the dragged position in the data-x/data-y attributes
+    const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+    const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
-  // update the posiion attributes
-  target.setAttribute('data-x', x);
-  target.setAttribute('data-y', y);
+    // translate the element
+    const tfr = `translate(${x - srcl}px, ${y}px)`;
+    // target.setAttribute('style', `webkitTransform: ${tfr}; transform: ${tfr}`);
+    target.style.webkitTransform = tfr;
+    target.style.transform = tfr;
+
+    // update the position attributes
+    target.setAttribute('data-x', x);
+    target.setAttribute('data-y', y);
+  };
 }
 
-function generateConfig() {
+function generateConfig(tableDiv) {
   let timeout1 = null;
   let timeout2 = null;
   return {
@@ -24,16 +28,16 @@ function generateConfig() {
 
     // keep the element within the area of it's parent
     /* restrict: {
-      restriction: `#${id}`,
+      restriction: tableDiv,
       endOnly: true,
       elementRect: { top: 0, left: 0, bottom: 1, right: 1 },
-    }, */
+    },
 
     // enable autoScroll
-    autoScroll: true,
+    autoScroll: true, */
 
     // call this function on every dragmove event
-    onmove: dragMoveListener,
+    onmove: createDragMoveListener(tableDiv),
     onstart: event => {
       clearTimeout(timeout1);
       clearTimeout(timeout2);
@@ -55,20 +59,21 @@ function generateConfig() {
       const y = parseFloat(target.getAttribute('data-y')) || 0;
 
       // translate the element
-      const tfr = `translate(${x}px, ${y}px)`;
+      const srcl = tableDiv.scrollLeft;
+      const tfr = `translate(${x - srcl}px, ${y}px)`;
       target.style.webkitTransform = tfr;
       target.style.transform = tfr;
 
       target.classList.add('movingBack');
 
+      // update the position attributes
+      target.setAttribute('data-x', 0);
+      target.setAttribute('data-y', 0);
+
       timeout1 = setTimeout(() => {
-        const tfrZERO = `translate(0px, 0px)`;
+        const tfrZERO = `translate(${-srcl}px, 0px)`;
         target.style.webkitTransform = tfrZERO;
         target.style.transform = tfrZERO;
-
-        // update the posiion attributes
-        target.setAttribute('data-x', 0);
-        target.setAttribute('data-y', 0);
 
         const duration =
           parseFloat(getComputedStyle(target).transitionDuration) * 1000;
@@ -79,6 +84,8 @@ function generateConfig() {
 
         // TOOO: critical bug!!! jumping with time < 100
       }, 100);
+
+      target.addEventListener('animationend', () => clearTimeout(timeout1));
     },
   };
 }

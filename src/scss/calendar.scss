@@ -5,17 +5,19 @@
 
 $padding-horizontal: 8px;
 $move-back-duration: 1s;
-$points-circle-size: 16px;
+$points-circle-size: 13px;
 
 .table {
   @extend .non-selectable;
 
-  display: table;
+  display: block;
   table-layout: fixed;
   overflow-x: auto;
   white-space: nowrap;
-  width: 100%;
-  border: solid lightgray;
+  // width: calc(100% - 16px);
+  border-spacing: 0px;
+  border-collapse: collapse;
+  margin-bottom: 16px;
 }
 
 .table-title {
@@ -39,6 +41,28 @@ $points-circle-size: 16px;
   display: table-cell;
   border: solid lightgray;
   border-width: thin;
+}
+
+.table-cell.positionCell {
+  border: none;
+  padding-top: 0px;
+  padding-left: 20px;
+  padding-bottom: 10px;
+  font-size: 14px;
+}
+
+.table-cell.timeCell {
+  border: none;
+  padding-right: 16px;
+  padding-left: 0px;
+  font-size: 14px;
+  width: 40px;
+  text-align: center;
+}
+
+.secondaryTime {
+  font-size: 10px;
+  color: gray;
 }
 
 .personCell {
@@ -80,6 +104,7 @@ $points-circle-size: 16px;
 .calendarCell {
   text-align: center;
   transition: background 0.5s;
+  width: 250px;
 }
 
 .calendarCell .block {
@@ -116,7 +141,7 @@ $points-circle-size: 16px;
 
   width: $points-circle-size;
   height: $points-circle-size;
-  padding: $points-circle-size / 3 - $points-circle-size / $padding-rate;
+  padding: $points-circle-size / 2 - $points-circle-size / $padding-rate;
 
   background: rgba(221, 221, 221, 0.514);
   text-align: center;

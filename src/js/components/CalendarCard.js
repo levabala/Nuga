@@ -57,8 +57,6 @@ class PersonCell {
       ],
     );
 
-    interact(this.el).draggable(generateConfig());
-
     this.el.addEventListener('animationend', e => {
       if (this.mock) return;
 
@@ -82,10 +80,11 @@ class PersonCell {
 }
 
 class CalendarCell extends Reactor {
-  constructor(x: number, y: number, person: ?PersonData) {
+  constructor(x: number, y: number, person: ?PersonData, tableDiv: Node) {
     super();
 
     const cell = this;
+    this.parentTableDiv = tableDiv;
     this.x = x;
     this.y = y;
     this.personCell = null;
@@ -134,6 +133,8 @@ class CalendarCell extends Reactor {
     this.personCell.setId(this.personId);
     this.personCell.el.dispatchEvent(new Event('animationend'));
     setChildren(this, this.personCell);
+
+    interact(this.personCell.el).draggable(generateConfig(this.parentTableDiv));
   }
 }
 
@@ -143,10 +144,42 @@ class CalendarTable {
     this.cells = [];
 
     const arr = [];
-    for (let i = 0; i < 5; i++) {
+    const height = 5;
+    const width = 8;
+
+    this.el = el('div', { class: 'table' });
+
+    // create positions row
+    const positionCells = [
+      // create empty left-top cell
+      el('div', { class: 'table-cell timeCell' }, ''),
+    ];
+    for (let i2 = 0; i2 < width; i2++) {
+      const element = el(
+        'div',
+        { class: 'table-cell positionCell' },
+        `Position ${i2 + 1}`,
+      );
+
+      positionCells.push(element);
+    }
+    arr.push(el('div', { class: 'table-row' }, positionCells));
+
+    // create main grid
+    for (let i = 0; i < height; i++) {
       const arr2 = [];
       this.cells.push([]);
-      for (let i2 = 0; i2 < 4; i2++) {
+
+      // create time cell
+      const timeCell = el(
+        'div',
+        { class: 'table-cell timeCell' },
+        el('span', `${10 + i}`),
+        el('span', { class: 'secondaryTime' }, `:00`),
+      );
+      arr2.push(timeCell);
+
+      for (let i2 = 0; i2 < width; i2++) {
         const exist = Math.random() > 0.7;
 
         const cell = new CalendarCell(
@@ -155,6 +188,7 @@ class CalendarTable {
           exist
             ? data[Math.round(Math.random() * (data.length - 1))].client
             : null,
+          this.el,
         );
         cell.addEventListener('insertElement', this.insertCell.bind(this));
 
@@ -165,7 +199,7 @@ class CalendarTable {
       arr.push(el('div', { class: 'table-row' }, arr2));
     }
 
-    this.el = el('div', { class: 'table' }, arr);
+    setChildren(this.el, arr);
   }
 
   insertCell(args) {
@@ -179,10 +213,11 @@ class CalendarTable {
     const tx = targetCalendarCell.x;
     const ty = targetCalendarCell.y;
 
-    const needMoveYourself = this.freeCell(originCalendarCell, tx, ty);
-    if (!needMoveYourself) return;
-
-    this.constructor.movePersonCell(originCalendarCell, targetCalendarCell);
+    const success = this.freeCell(originCalendarCell, tx, ty);
+    if (success) {
+      // discard move back animation
+      relatedTarget.dispatchEvent(new Event('animationend'));
+    }
   }
 
   static movePersonCell(originCalendarCell, targetCalendarCell) {
@@ -207,7 +242,10 @@ class CalendarTable {
   }
 
   freeCell(insertedCell, x, y) {
-    if (this.cells[y][x].personCell.mock) return true;
+    if (this.cells[y][x].personCell.mock) {
+      this.constructor.movePersonCell(insertedCell, this.cells[y][x]);
+      return true;
+    }
 
     return this.tryShiftRow(insertedCell, x, y);
   }
@@ -221,7 +259,7 @@ class CalendarTable {
       this.cells[y][x - 1].personCell.mock
     ) {
       this.shiftRow(this.cells[y].slice(x, x + 2), -1);
-      return false;
+      return true;
     }
 
     // check if moving in one time (x axis)
@@ -243,7 +281,7 @@ class CalendarTable {
       // if (filled) this.cells[y][x].setChildPerson(movingPerson);
       this.cells[y][x].setChildPerson(movingPerson);
 
-      return false;
+      return true;
     }
 
     // check left side
@@ -261,6 +299,7 @@ class CalendarTable {
 
     if (doShift) {
       this.shiftRow(elementsToShift.reverse(), -1);
+      this.constructor.movePersonCell(insertedCell, this.cells[y][x]);
       return true;
     }
 
@@ -279,6 +318,7 @@ class CalendarTable {
 
     if (doShift) {
       this.shiftRow(elementsToShift.reverse(), 1);
+      this.constructor.movePersonCell(insertedCell, this.cells[y][x]);
       return true;
     }
 
@@ -298,12 +338,18 @@ class CalendarTable {
   }
 }
 
+class CalendarDay {
+  constructor(data) {
+    this.el = el('div', new CalendarTable(data));
+  }
+}
+
 class CalendarCard extends Card {
   constructor(data: Array<{ date: moment.Moment, client: PersonData }>) {
     super();
 
     this.data = data;
-    const child = el('div', new CalendarTable(data));
+    const child = el('div', new CalendarDay(data));
 
     mount(this.el, child);
   }
