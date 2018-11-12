@@ -57,12 +57,8 @@ class PersonCell {
       ],
     );
 
-    this.el.addEventListener('animationend', e => {
+    this.el.addEventListener('animationend', () => {
       if (this.mock) return;
-
-      // check if something is in
-      console.log('END', e);
-
       this.discardMoveBackAnimation();
     });
   }
@@ -145,9 +141,11 @@ class CalendarTable {
 
     const arr = [];
     const height = 5;
-    const width = 8;
+    const width = 10;
 
     this.el = el('div', { class: 'table' });
+    this.scrolledCellIndex = 0;
+    this.cellsPerPage = 3;
 
     // create positions row
     const positionCells = [
@@ -200,6 +198,40 @@ class CalendarTable {
     }
 
     setChildren(this.el, arr);
+
+    window.onkeyup = event => {
+      if (event.keyCode === 39) this.turnPageRight();
+      if (event.keyCode === 37) this.turnPageLeft();
+    };
+  }
+
+  updateTableScrool(direction) {
+    console.log(
+      `scroll to index ${this.scrolledCellIndex}(${this.scrolledCellIndex +
+        1})`,
+    );
+    const element = this.cells[0][this.scrolledCellIndex].el;
+    element.parentNode.scrollIntoView({
+      behavior: 'smooth',
+      block: direction,
+      inline: direction,
+    });
+  }
+
+  turnPageRight() {
+    this.scrolledCellIndex = Math.min(
+      this.scrolledCellIndex + this.cellsPerPage,
+      this.cells[0].length - 1,
+    );
+    this.updateTableScrool('start');
+  }
+
+  turnPageLeft() {
+    this.scrolledCellIndex = Math.max(
+      this.scrolledCellIndex - this.cellsPerPage,
+      0,
+    );
+    this.updateTableScrool('end');
   }
 
   insertCell(args) {
