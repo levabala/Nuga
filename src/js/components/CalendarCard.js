@@ -136,7 +136,7 @@ class CalendarCell extends Reactor {
 }
 
 class CalendarTable {
-  constructor(data: DayData) {
+  constructor(data: DayData, isFirst: boolean) {
     this.data = data;
     this.cells = [];
 
@@ -144,7 +144,7 @@ class CalendarTable {
     const height = 5;
     const width = 10;
 
-    this.el = el('div', { class: 'calendar-table' });
+    this.el = el('div', { class: `calendar-table ${isFirst ? 'first' : ''}` });
     this.scrolledCellIndex = 0;
     this.cellsPerPage = 3;
     this.lastScrollDirection = 'start';
@@ -218,7 +218,7 @@ class CalendarTable {
 
     setChildren(this.el, arr);
 
-    window.onkeyup = event => {
+    this.el.onkeyup = event => {
       if (event.keyCode === 39) this.turnPageRight();
       if (event.keyCode === 37) this.turnPageLeft();
     };
@@ -395,13 +395,23 @@ class CalendarDayFooter {
   constructor(data: DayData) {
     this.data = data;
 
-    this.el = el('div', data.date.weekday());
+    this.el = el(
+      'div',
+      { class: 'calendar-footer' },
+      el('span', { class: 'primary-info' }, data.date.format('dddd ')),
+      el('span', { class: 'secondary-info' }, data.date.format('DD.MM.gg')),
+    );
   }
 }
 
 class CalendarDay {
-  constructor(data: DayData) {
-    this.el = el('div', new CalendarTable(data), new CalendarDayFooter(data));
+  constructor(data: DayData, isFirst: boolean = false) {
+    this.el = el(
+      'div',
+      { class: 'calendar-day' },
+      new CalendarTable(data, isFirst),
+      new CalendarDayFooter(data),
+    );
   }
 }
 
@@ -410,9 +420,19 @@ class CalendarCard extends Card {
     super();
 
     this.data = data;
-    const child = el('div', new CalendarDay(data[0]));
+    const child = el(
+      'div',
+      { class: 'calendar-card' },
+      new CalendarDay(data[0], true),
+    );
+    const child2 = el(
+      'div',
+      { class: 'calendar-card' },
+      new CalendarDay(data[0]),
+    );
 
     mount(this.el, child);
+    mount(this.el, child2);
   }
 }
 
