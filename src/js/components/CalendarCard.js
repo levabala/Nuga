@@ -146,6 +146,23 @@ class CalendarTable {
     this.el = el('div', { class: 'table' });
     this.scrolledCellIndex = 0;
     this.cellsPerPage = 3;
+    this.lastScrollDirection = 'start';
+    this.turnCooldownTime = 3000;
+    this.turnCooldownBorder = Date.now();
+
+    this.el.addEventListener('draggableMoved', event => {
+      if (Date.now() < this.turnCooldownBorder) return;
+
+      const boundRect = this.el.getBoundingClientRect();
+      const l = event.detail.x + event.detail.width / 2;
+      const r = boundRect.x + boundRect.width - 60;
+      console.log(l, r);
+      if (l > r) {
+        this.turnPageRight();
+      }
+
+      this.turnCooldownBorder += this.turnCooldownTime;
+    });
 
     // create positions row
     const positionCells = [
@@ -213,8 +230,8 @@ class CalendarTable {
     const element = this.cells[0][this.scrolledCellIndex].el;
     element.parentNode.scrollIntoView({
       behavior: 'smooth',
+      inline: 'start',
       block: direction,
-      inline: direction,
     });
   }
 
@@ -223,6 +240,7 @@ class CalendarTable {
       this.scrolledCellIndex + this.cellsPerPage,
       this.cells[0].length - 1,
     );
+    this.lastScrollDirection = 'start';
     this.updateTableScrool('start');
   }
 
@@ -231,6 +249,7 @@ class CalendarTable {
       this.scrolledCellIndex - this.cellsPerPage,
       0,
     );
+    this.lastScrollDirection = 'end';
     this.updateTableScrool('end');
   }
 

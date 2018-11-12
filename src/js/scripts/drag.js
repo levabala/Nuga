@@ -10,12 +10,20 @@ function createDragMoveListener(tableDiv) {
     // translate the element
     const tfr = `translate(${x - srcl}px, ${y}px)`;
     // target.setAttribute('style', `webkitTransform: ${tfr}; transform: ${tfr}`);
+    target.style.position = 'absolute';
     target.style.webkitTransform = tfr;
     target.style.transform = tfr;
 
     // update the position attributes
     target.setAttribute('data-x', x);
     target.setAttribute('data-y', y);
+
+    const boundRect = target.getBoundingClientRect();
+    tableDiv.dispatchEvent(
+      new CustomEvent('draggableMoved', {
+        detail: boundRect,
+      }),
+    );
   };
 }
 
