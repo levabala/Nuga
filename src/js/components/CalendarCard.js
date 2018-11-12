@@ -92,7 +92,7 @@ class CalendarCell extends Reactor {
     this.personId = `${this.id}_person`;
 
     this.el = el('div', {
-      class: 'calendarCell',
+      class: `calendarCell`,
       id: this.id,
       'data-empty': person === null,
       'data-coord-x': x,
@@ -173,7 +173,7 @@ class CalendarTable {
       // create time cell
       const timeCell = el(
         'div',
-        { class: 'table-cell timeCell' },
+        { class: 'table-cell  timeCell ' },
         el('span', `${10 + i}`),
         el('span', { class: 'secondaryTime' }, `:00`),
       );

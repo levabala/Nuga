@@ -6,6 +6,7 @@
 $padding-horizontal: 8px;
 $move-back-duration: 1s;
 $points-circle-size: 13px;
+$time-cell-width: 60px;
 
 .table {
   @extend .non-selectable;
@@ -18,6 +19,7 @@ $points-circle-size: 13px;
   border-spacing: 0px;
   border-collapse: collapse;
   margin-bottom: 16px;
+  margin-left: $time-cell-width;
 }
 
 .table-title {
@@ -56,8 +58,10 @@ $points-circle-size: 13px;
   padding-right: 16px;
   padding-left: 0px;
   font-size: 14px;
-  width: 40px;
-  text-align: center;
+  width: $time-cell-width;
+  text-align: left;
+  position: absolute;
+  left: $time-cell-width / 2;
 }
 
 .secondaryTime {
