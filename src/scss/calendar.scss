@@ -11,47 +11,52 @@ $calendar-cell-width: 250px;
 $calendar-cells-per-page: 3;
 $cell-border-width: 1px;
 
-.table {
+.calendar-table {
   @extend .non-selectable;
 
   display: block;
   table-layout: fixed;
   overflow-x: hidden;
   white-space: nowrap;
-  // width: calc(100% - 16px);
   border-spacing: 0px;
   border-collapse: collapse;
   margin-bottom: 16px;
   margin-right: 0px;
   margin-left: $time-cell-width;
-  calendar-cells-per-page: $calendar-cells-per-page;
-  width: ($calendar-cell-width + $cell-border-width) * $calendar-cells-per-page;
+  width: ($calendar-cell-width + $cell-border-width) * $calendar-cells-per-page +
+    $cell-border-width;
+
+  // FIXIT: fix bug with little zoom (~70%) when right border disappears
 }
 
-.table-title {
+.calendar-table-title {
   display: table-caption;
   text-align: center;
   font-weight: bold;
   font-size: larger;
 }
 
-.table-heading {
+.calendar-table-heading {
   display: table-row;
   font-weight: bold;
   text-align: center;
 }
 
-.table-row {
+.calendar-table-row {
   display: table-row;
 }
 
-.table-cell {
+.calendar-table-cell {
+  @extend .calendar-border;
   display: table-cell;
+}
+
+.calendar-border {
   border: solid lightgray;
   border-width: $cell-border-width;
 }
 
-.table-cell.positionCell {
+.calendar-table-cell.positionCell {
   border: none;
   padding-top: 0px;
   padding-left: 20px;
@@ -59,7 +64,7 @@ $cell-border-width: 1px;
   font-size: 14px;
 }
 
-.table-cell.timeCell {
+.calendar-table-cell.timeCell {
   border: none;
   padding-right: 16px;
   padding-left: 0px;

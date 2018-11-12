@@ -2,6 +2,7 @@ import * as moment from 'moment';
 import CalendarCard from '../components/CalendarCard';
 import PersonData from '../classes/dataTypes/PersonData';
 import PersonsList from '../classes/PersonsList';
+import DayData from '../classes/dataTypes/DayData';
 
 const persons = new PersonsList([
   new PersonData({ name: 'Michael', surname: 'Allen' }),
@@ -21,10 +22,9 @@ const persons = new PersonsList([
   new PersonData({ name: 'Bally', surname: 'Perpy' }),
 ]);
 
-const clients = [];
-
+const visits = [];
 for (let i = 0; i < persons.count; i++)
-  clients.push({
+  visits.push({
     date: moment({
       y: 2018,
       M: 11,
@@ -35,7 +35,20 @@ for (let i = 0; i < persons.count; i++)
     client: persons.getByIndex(i),
   });
 
-const card = new CalendarCard(clients);
+const days: Array<DayData> = [
+  new DayData({
+    date: moment({
+      y: 2018,
+      M: 11,
+      d: Math.round(Math.random() * 21),
+      h: Math.round(Math.random() * 23),
+      m: Math.round(Math.random() * 59),
+    }),
+    visits,
+  }),
+];
+
+const card = new CalendarCard(days);
 
 export default card;
 export const calendarCardDemo = card;

@@ -6,6 +6,7 @@ import Card from './Card';
 import PersonData from '../classes/dataTypes/PersonData';
 import generateConfig from '../scripts/drag';
 import dropConfig from '../scripts/drop';
+import DayData from '../classes/dataTypes/DayData';
 
 const emptyPerson = new PersonData({ name: '', surname: '' });
 
@@ -135,7 +136,7 @@ class CalendarCell extends Reactor {
 }
 
 class CalendarTable {
-  constructor(data: Array<{ date: moment.Moment, client: PersonData }>) {
+  constructor(data: DayData) {
     this.data = data;
     this.cells = [];
 
@@ -143,7 +144,7 @@ class CalendarTable {
     const height = 5;
     const width = 10;
 
-    this.el = el('div', { class: 'table' });
+    this.el = el('div', { class: 'calendar-table' });
     this.scrolledCellIndex = 0;
     this.cellsPerPage = 3;
     this.lastScrollDirection = 'start';
@@ -167,18 +168,18 @@ class CalendarTable {
     // create positions row
     const positionCells = [
       // create empty left-top cell
-      el('div', { class: 'table-cell timeCell' }, ''),
+      el('div', { class: 'calendar-table-cell timeCell' }, ''),
     ];
     for (let i2 = 0; i2 < width; i2++) {
       const element = el(
         'div',
-        { class: 'table-cell positionCell' },
+        { class: 'calendar-table-cell positionCell' },
         `Position ${i2 + 1}`,
       );
 
       positionCells.push(element);
     }
-    arr.push(el('div', { class: 'table-row' }, positionCells));
+    arr.push(el('div', { class: 'calendar-table-row' }, positionCells));
 
     // create main grid
     for (let i = 0; i < height; i++) {
@@ -188,7 +189,7 @@ class CalendarTable {
       // create time cell
       const timeCell = el(
         'div',
-        { class: 'table-cell  timeCell ' },
+        { class: 'calendar-table-cell  timeCell ' },
         el('span', `${10 + i}`),
         el('span', { class: 'secondaryTime' }, `:00`),
       );
@@ -201,17 +202,18 @@ class CalendarTable {
           i2,
           i,
           exist
-            ? data[Math.round(Math.random() * (data.length - 1))].client
+            ? data.visits[Math.round(Math.random() * (data.visits.length - 1))]
+                .client
             : null,
           this.el,
         );
         cell.addEventListener('insertElement', this.insertCell.bind(this));
 
-        arr2.push(el('div', { class: 'table-cell' }, cell));
+        arr2.push(el('div', { class: 'calendar-table-cell' }, cell));
         this.cells[i].push(cell);
       }
 
-      arr.push(el('div', { class: 'table-row' }, arr2));
+      arr.push(el('div', { class: 'calendar-table-row' }, arr2));
     }
 
     setChildren(this.el, arr);
@@ -389,18 +391,26 @@ class CalendarTable {
   }
 }
 
+class CalendarDayFooter {
+  constructor(data: DayData) {
+    this.data = data;
+
+    this.el = el('div', data.date.weekday());
+  }
+}
+
 class CalendarDay {
-  constructor(data) {
-    this.el = el('div', new CalendarTable(data));
+  constructor(data: DayData) {
+    this.el = el('div', new CalendarTable(data), new CalendarDayFooter(data));
   }
 }
 
 class CalendarCard extends Card {
-  constructor(data: Array<{ date: moment.Moment, client: PersonData }>) {
+  constructor(data: Array<DayData>) {
     super();
 
     this.data = data;
-    const child = el('div', new CalendarDay(data));
+    const child = el('div', new CalendarDay(data[0]));
 
     mount(this.el, child);
   }
