@@ -2,9 +2,13 @@ let initialSrcl = 0;
 
 function createDragMoveListener(tableDiv) {
   return event => {
+    // TODO: make hover visible after turning page
+    // (note: mouse pointer shifts by translate value - it's very strange)
+
     const { target } = event;
     const srcl = tableDiv.scrollLeft;
-    console.log(initialSrcl, srcl);
+
+    // console.log(initialSrcl, srcl);
 
     // keep the dragged position in the data-x/data-y attributes
     const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;

@@ -171,20 +171,20 @@ class CalendarTable {
       const l = targetBoundRect.width / 2 + 60;
       const n = targetBoundRect.x + targetBoundRect.width / 2;
       const r = boundRect.x + boundRect.width - 60;
-      console.log(Math.floor(n - l));
+      // console.log(Math.floor(n - l));
 
       if (Date.now() < this.turnCooldownBorder) {
-        console.log('cooldowning...');
         return;
       }
 
+      // TODO: optimize
       if (n > r) {
         this.turnPageRight();
-        console.warn('TURN IT');
+        console.warn('TURN IT RIGHT');
         this.turnCooldownBorder = Date.now() + this.turnCooldownTime;
       } else if (n < l) {
         this.turnPageLeft();
-        console.warn('TURN IT');
+        console.warn('TURN IT LEFT');
         this.turnCooldownBorder = Date.now() + this.turnCooldownTime;
       }
     });
