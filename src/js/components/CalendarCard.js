@@ -102,6 +102,7 @@ class CalendarCell extends Reactor {
       'data-empty': person === null,
       'data-coord-x': x,
       'data-coord-y': y,
+      onmouseenter: () => console.log('enter me!'),
     });
 
     this.setChildPerson(person);
@@ -159,21 +160,33 @@ class CalendarTable {
     this.scrolledCellIndex = 0;
     this.cellsPerPage = 3;
     this.lastScrollDirection = 'start';
-    this.turnCooldownTime = 3000;
+    this.turnCooldownTime = 1500;
     this.turnCooldownBorder = Date.now();
 
     this.el.addEventListener('draggableMoved', event => {
-      if (Date.now() < this.turnCooldownBorder) return;
+      const target = event.detail;
+      const targetBoundRect = target.getBoundingClientRect();
 
       const boundRect = this.el.getBoundingClientRect();
-      const l = event.detail.x + event.detail.width / 2;
+      const l = targetBoundRect.width / 2 + 60;
+      const n = targetBoundRect.x + targetBoundRect.width / 2;
       const r = boundRect.x + boundRect.width - 60;
-      console.log(l, r);
-      if (l > r) {
-        this.turnPageRight();
+      console.log(Math.floor(n - l));
+
+      if (Date.now() < this.turnCooldownBorder) {
+        console.log('cooldowning...');
+        return;
       }
 
-      this.turnCooldownBorder += this.turnCooldownTime;
+      if (n > r) {
+        this.turnPageRight();
+        console.warn('TURN IT');
+        this.turnCooldownBorder = Date.now() + this.turnCooldownTime;
+      } else if (n < l) {
+        this.turnPageLeft();
+        console.warn('TURN IT');
+        this.turnCooldownBorder = Date.now() + this.turnCooldownTime;
+      }
     });
 
     // create positions row
@@ -258,6 +271,22 @@ class CalendarTable {
       inline: 'start',
       block: 'nearest',
     });
+
+    // make new elements visible for mouse events
+    for (
+      let x = this.scrolledCellIndex;
+      x <
+      Math.min(
+        this.scrolledCellIndex + this.cellsPerPage,
+        this.cells[0].length,
+      );
+      x++
+    ) {
+      for (let y = 0; y < this.cells.length; y++) {
+        const cell = this.cells[y][x].el;
+        // now how?
+      }
+    }
   }
 
   turnPageRight() {

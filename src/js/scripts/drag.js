@@ -1,14 +1,17 @@
+let initialSrcl = 0;
+
 function createDragMoveListener(tableDiv) {
   return event => {
     const { target } = event;
     const srcl = tableDiv.scrollLeft;
+    console.log(initialSrcl, srcl);
 
     // keep the dragged position in the data-x/data-y attributes
     const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
     const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
     // translate the element
-    const tfr = `translate(${x - srcl}px, ${y}px)`;
+    const tfr = `translate(${x - srcl + (srcl - initialSrcl)}px, ${y}px)`;
     // target.setAttribute('style', `webkitTransform: ${tfr}; transform: ${tfr}`);
 
     target.style.webkitTransform = tfr;
@@ -18,10 +21,9 @@ function createDragMoveListener(tableDiv) {
     target.setAttribute('data-x', x);
     target.setAttribute('data-y', y);
 
-    const boundRect = target.getBoundingClientRect();
     tableDiv.dispatchEvent(
       new CustomEvent('draggableMoved', {
-        detail: boundRect,
+        detail: target,
       }),
     );
   };
@@ -40,9 +42,9 @@ function generateConfig(tableDiv) {
       endOnly: true,
       elementRect: { top: 0, left: 0, bottom: 1, right: 1 },
     },
+*/
 
-    // enable autoScroll
-    autoScroll: true, */
+    autoScroll: false,
 
     // call this function on every dragmove event
     onmove: createDragMoveListener(tableDiv),
@@ -57,6 +59,8 @@ function generateConfig(tableDiv) {
 
       // add box shadow
       target.classList.add('isDragging');
+
+      initialSrcl = tableDiv.scrollLeft;
     },
     onend: event => {
       const { target } = event;
@@ -79,7 +83,8 @@ function generateConfig(tableDiv) {
       target.setAttribute('data-y', 0);
 
       timeout1 = setTimeout(() => {
-        const tfrZERO = `translate(${-srcl}px, 0px)`;
+        const tfrZERO = `translate(${-initialSrcl -
+          (srcl - initialSrcl)}px, 0px)`;
         target.style.webkitTransform = tfrZERO;
         target.style.transform = tfrZERO;
 
@@ -90,7 +95,8 @@ function generateConfig(tableDiv) {
           target.dispatchEvent(new Event('animationend'));
         }, duration);
 
-        // TOOO: critical bug!!! jumping with time < 100
+        // FIXIT: critical bug!!! jumping with time < 100
+        // posibile reason: border-shadow transition not finished when moveBack animation starts
       }, 100);
 
       target.addEventListener('animationend', () => clearTimeout(timeout1));
