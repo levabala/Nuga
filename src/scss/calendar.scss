@@ -8,11 +8,13 @@ $move-back-duration: 1s;
 $points-circle-size: 13px;
 $time-cell-width: 60px;
 $calendar-cell-width: 250px;
+$calendar-cell-height: 60px;
 $calendar-cells-per-page: 3;
 $cell-border-width: 1px;
 
 .calendar-footer {
   margin-left: $time-cell-width + $padding-horizontal * 2;
+  padding-top: $padding-horizontal;
 }
 
 .calendar-footer .primary-info {
@@ -25,6 +27,15 @@ $cell-border-width: 1px;
   vertical-align: text-top;
 }
 
+.calendar-card {
+  padding-bottom: 32px;
+  position: relative;
+}
+
+.calendar-day-divider {
+  margin-top: 16px;
+}
+
 .calendar-table {
   @extend .non-selectable;
 
@@ -34,7 +45,6 @@ $cell-border-width: 1px;
   white-space: nowrap;
   border-spacing: 0px;
   border-collapse: collapse;
-  margin-bottom: 16px;
   margin-right: 0px;
   margin-left: $time-cell-width;
   width: ($calendar-cell-width + $cell-border-width) * $calendar-cells-per-page +
@@ -76,23 +86,24 @@ $cell-border-width: 1px;
   padding-left: 20px;
   padding-bottom: 10px;
   font-size: 14px;
-}
+  // here you can control if non-first headers will be displayed
+  // display: none;
 
-.calendar-table.first,
-.calendar-table-cell.positionCell {
-  //
-  display: none;
+  .calendar-table.first & {
+    display: table-cell;
+  }
 }
 
 .calendar-table-cell.timeCell {
   border: none;
-  padding-right: 16px;
+  // padding-right: 16px;
   padding-left: 0px;
   font-size: 14px;
-  width: $time-cell-width;
   text-align: left;
   position: absolute;
-  left: $time-cell-width / 2;
+  width: $time-cell-width;
+  left: $time-cell-width / 4;
+  height: $calendar-cell-height;
 }
 
 .secondaryTime {
@@ -107,6 +118,7 @@ $cell-border-width: 1px;
   display: flex;
   justify-content: space-between;
   transition: background 0.5s;
+  height: $calendar-cell-height;
 }
 
 .personCell:hover {
@@ -142,9 +154,16 @@ $cell-border-width: 1px;
   width: $calendar-cell-width;
 }
 
-.calendarCell .block {
+.calendarCell .wrapper-block {
   display: inline-block;
   text-align: center;
+}
+
+.content-block {
+  // make it centered vertically
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .calendarCell .text-info {
@@ -168,9 +187,6 @@ $cell-border-width: 1px;
   $left-margin: 15px;
 
   // make it centered vertically
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
 
   border-radius: 50%;
 

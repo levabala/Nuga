@@ -40,7 +40,51 @@ const days: Array<DayData> = [
     date: moment({
       y: 2018,
       M: 11,
-      d: Math.round(Math.random() * 21),
+      d: 2,
+      h: Math.round(Math.random() * 23),
+      m: Math.round(Math.random() * 59),
+    }),
+    visits,
+  }),
+
+  new DayData({
+    date: moment({
+      y: 2018,
+      M: 11,
+      d: 3,
+      h: Math.round(Math.random() * 23),
+      m: Math.round(Math.random() * 59),
+    }),
+    visits,
+  }),
+
+  new DayData({
+    date: moment({
+      y: 2018,
+      M: 11,
+      d: 4,
+      h: Math.round(Math.random() * 23),
+      m: Math.round(Math.random() * 59),
+    }),
+    visits,
+  }),
+
+  new DayData({
+    date: moment({
+      y: 2018,
+      M: 11,
+      d: 5,
+      h: Math.round(Math.random() * 23),
+      m: Math.round(Math.random() * 59),
+    }),
+    visits,
+  }),
+
+  new DayData({
+    date: moment({
+      y: 2018,
+      M: 11,
+      d: 6,
       h: Math.round(Math.random() * 23),
       m: Math.round(Math.random() * 59),
     }),

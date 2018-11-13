@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+// import * as moment from 'moment';
 import interact from 'interactjs';
 import { el, mount, setChildren, setAttr } from 'redom';
 import Reactor from '../scripts/reactor';
@@ -35,25 +35,33 @@ class PersonCell {
       [
         el(
           'div',
-          { class: 'block' },
-          el('img', {
-            src: 'images/avatar.png',
-            alt: 'Avatar',
-            class: 'avatar',
-          }),
-          el('div', { class: 'text-info' }, [
-            el(
-              'div',
-              { class: 'primary-info' },
-              `${this.person.surname} ${this.person.name}`,
-            ),
-            el('div', { class: 'secondary-info' }, this.person.code),
-          ]),
+          { class: 'wrapper-block' },
+          el(
+            'div',
+            { class: 'content-block' },
+            el('img', {
+              src: 'images/avatar.png',
+              alt: 'Avatar',
+              class: 'avatar',
+            }),
+            el('div', { class: 'text-info' }, [
+              el(
+                'div',
+                { class: 'primary-info' },
+                `${this.person.surname} ${this.person.name}`,
+              ),
+              el('div', { class: 'secondary-info' }, this.person.code),
+            ]),
+          ),
         ),
         el(
           'div',
-          { class: 'block' },
-          el('div', { class: 'points' }, this.person.points),
+          { class: 'wrapper-block' },
+          el(
+            'div',
+            { class: 'content-block' },
+            el('div', { class: 'points' }, this.person.points),
+          ),
         ),
       ],
     );
@@ -144,7 +152,10 @@ class CalendarTable {
     const height = 5;
     const width = 10;
 
-    this.el = el('div', { class: `calendar-table ${isFirst ? 'first' : ''}` });
+    this.el = el('div', {
+      class: `calendar-table ${isFirst ? 'first' : ''}`,
+      tabindex: 0,
+    });
     this.scrolledCellIndex = 0;
     this.cellsPerPage = 3;
     this.lastScrollDirection = 'start';
@@ -189,9 +200,15 @@ class CalendarTable {
       // create time cell
       const timeCell = el(
         'div',
-        { class: 'calendar-table-cell  timeCell ' },
-        el('span', `${10 + i}`),
-        el('span', { class: 'secondaryTime' }, `:00`),
+        {
+          class: 'calendar-table-cell  timeCell ',
+        },
+        el(
+          'div',
+          { class: 'content-block' },
+          el('span', `${10 + i}`),
+          el('span', { class: 'secondaryTime' }, `:00`),
+        ),
       );
       arr2.push(timeCell);
 
@@ -219,12 +236,18 @@ class CalendarTable {
     setChildren(this.el, arr);
 
     this.el.onkeyup = event => {
-      if (event.keyCode === 39) this.turnPageRight();
-      if (event.keyCode === 37) this.turnPageLeft();
+      if (event.keyCode === 39) {
+        this.turnPageRight();
+        event.preventDefault();
+      }
+      if (event.keyCode === 37) {
+        this.turnPageLeft();
+        event.preventDefault();
+      }
     };
   }
 
-  updateTableScrool(direction) {
+  updateTableScrool() {
     console.log(
       `scroll to index ${this.scrolledCellIndex}(${this.scrolledCellIndex +
         1})`,
@@ -233,7 +256,7 @@ class CalendarTable {
     element.parentNode.scrollIntoView({
       behavior: 'smooth',
       inline: 'start',
-      block: direction,
+      block: 'nearest',
     });
   }
 
@@ -420,19 +443,15 @@ class CalendarCard extends Card {
     super();
 
     this.data = data;
-    const child = el(
-      'div',
-      { class: 'calendar-card' },
-      new CalendarDay(data[0], true),
-    );
-    const child2 = el(
-      'div',
-      { class: 'calendar-card' },
-      new CalendarDay(data[0]),
-    );
-
-    mount(this.el, child);
-    mount(this.el, child2);
+    for (let i = 0; i < data.length; i++) {
+      const child = el(
+        'div',
+        { class: 'calendar-card' },
+        new CalendarDay(data[i], i === 0),
+        el('hr', { class: 'calendar-day-divider' }),
+      );
+      mount(this.el, child);
+    }
   }
 }
 

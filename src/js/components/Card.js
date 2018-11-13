@@ -5,7 +5,7 @@ class Card {
   el: Element;
   constructor({ width }: { [string]: string } = { width: 'auto' }) {
     this.el = el('div', {
-      class: 'mdc-card mdc-elevation--z8',
+      class: 'card',
       style: `width: ${width};`,
     });
   }
