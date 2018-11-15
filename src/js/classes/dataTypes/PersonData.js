@@ -12,6 +12,8 @@ class PersonData implements DataInterface {
     this.url = url;
     this.points = Math.round(Math.random() * 20).toString();
     this.code = Math.round(Math.random() * 10000000 + 1000000).toString();
+    this.position = Math.round(Math.random() * 13);
+    this.visits = [];
   }
 
   toString() {

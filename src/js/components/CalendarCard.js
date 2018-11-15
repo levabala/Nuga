@@ -18,9 +18,9 @@ class PersonCell {
     this.mock = person === null;
     this.x = x;
     this.y = y;
+    this.dayId = '';
 
     this.id = null;
-    this.setId(id);
 
     // FIXIT: disable placing mocking empty element
     this.el = el(
@@ -67,6 +67,7 @@ class PersonCell {
         ),
       ],
     );
+    this.setId(id);
 
     this.el.addEventListener('animationend', () => {
       if (this.mock) return;
@@ -82,12 +83,23 @@ class PersonCell {
 
   setId(id) {
     this.id = id;
-    setAttr(this, 'id', id);
+    setAttr(this, 'data-person-id', id);
+  }
+
+  setDayId(id) {
+    this.dayId = id;
+    setAttr(this, 'data-day-id', id);
   }
 }
 
 class CalendarCell extends Reactor {
-  constructor(x: number, y: number, person: ?PersonData, tableDiv: Node) {
+  constructor(
+    x: number,
+    y: number,
+    person: ?PersonData,
+    tableDiv: Node,
+    dayId: string,
+  ) {
     super();
 
     const cell = this;
@@ -97,6 +109,7 @@ class CalendarCell extends Reactor {
     this.personCell = null;
     this.id = `tableCell_${this.x}_${this.y}`;
     this.personId = `${this.id}_person`;
+    this.dayId = dayId;
 
     this.el = el('div', {
       class: `calendarCell`,
@@ -138,17 +151,26 @@ class CalendarCell extends Reactor {
     this.personCell.x = this.x;
     this.personCell.y = this.y;
     this.personCell.setId(this.personId);
+    this.personCell.setDayId(this.dayId);
     this.personCell.el.dispatchEvent(new Event('animationend'));
     setChildren(this, this.personCell);
 
     interact(this.personCell.el).draggable(generateConfig(this.parentTableDiv));
   }
+
+  // modifyPersonByCell(cell) {}
 }
 
 class CalendarTable {
-  constructor(data: DayData, isFirst: boolean) {
+  constructor(
+    data: DayData,
+    isFirst: boolean,
+    otherDays: Array<CalendarTable>,
+  ) {
     this.data = data;
     this.cells = [];
+    this.otherDays = otherDays;
+    this.id = data.date.format('DD MMM YY');
 
     const arr = [];
     const height = 5;
@@ -163,6 +185,29 @@ class CalendarTable {
     this.lastScrollDirection = 'start';
     this.turnCooldownTime = 1500;
     this.turnCooldownBorder = Date.now();
+
+    let [dx, dy] = [0, 0];
+    const turnBorder = 500;
+    let clearDeltaTimeout = null;
+    const clearDeltaTime = 1000;
+    this.el.addEventListener('wheel', event => {
+      dx += event.deltaX;
+      dy += event.deltaY;
+
+      if (Math.abs(dx) > turnBorder) {
+        if (Math.sign(dx) === -1) this.turnPageLeft();
+        else this.turnPageRight();
+
+        [dx, dy] = [0, 0];
+      }
+
+      clearTimeout(clearDeltaTimeout);
+      clearDeltaTimeout = setTimeout(() => {
+        [dx, dy] = [0, 0];
+      }, clearDeltaTime);
+
+      event.preventDefault();
+    });
 
     this.el.addEventListener('draggableMoved', event => {
       const target = event.detail;
@@ -181,11 +226,9 @@ class CalendarTable {
       // TODO: optimize
       if (n > r) {
         this.turnPageRight();
-        console.warn('TURN IT RIGHT');
         this.turnCooldownBorder = Date.now() + this.turnCooldownTime;
       } else if (n < l) {
         this.turnPageLeft();
-        console.warn('TURN IT LEFT');
         this.turnCooldownBorder = Date.now() + this.turnCooldownTime;
       }
     });
@@ -237,6 +280,7 @@ class CalendarTable {
                 .client
             : null,
           this.el,
+          this.id,
         );
         cell.addEventListener('insertElement', this.insertCell.bind(this));
 
@@ -298,9 +342,12 @@ class CalendarTable {
     const { target, relatedTarget } = args;
     const px = relatedTarget.attributes['data-coord-x'].value;
     const py = relatedTarget.attributes['data-coord-y'].value;
+    const dayId = relatedTarget.attributes['data-day-id'].value;
+    const originDay = this.otherDays.find(day => day.table.id === dayId);
+    const originTable = originDay.table;
 
     const targetCalendarCell = target;
-    const originCalendarCell = this.cells[py][px];
+    const originCalendarCell = originTable.cells[py][px];
 
     const tx = targetCalendarCell.x;
     const ty = targetCalendarCell.y;
@@ -444,11 +491,17 @@ class CalendarDayFooter {
 }
 
 class CalendarDay {
-  constructor(data: DayData, isFirst: boolean = false) {
+  constructor(
+    data: DayData,
+    isFirst: boolean = false,
+    otherDays: Array<CalendarDay>,
+  ) {
+    this.otherDays = otherDays;
+    this.table = new CalendarTable(data, isFirst, otherDays);
     this.el = el(
       'div',
       { class: 'calendar-day' },
-      new CalendarTable(data, isFirst),
+      this.table,
       new CalendarDayFooter(data),
     );
   }
@@ -459,13 +512,16 @@ class CalendarCard extends Card {
     super();
 
     this.data = data;
+    this.days = [];
     for (let i = 0; i < data.length; i++) {
+      const day = new CalendarDay(data[i], i === 0, this.days);
       const child = el(
         'div',
         { class: 'calendar-card' },
-        new CalendarDay(data[i], i === 0),
+        day,
         el('hr', { class: 'calendar-day-divider' }),
       );
+      this.days.push(day);
       mount(this.el, child);
     }
   }
