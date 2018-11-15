@@ -10,6 +10,8 @@ import DayData from '../classes/dataTypes/DayData';
 
 const emptyPerson = new PersonData({ name: '', surname: '' });
 
+interact.dynamicDrop(true);
+
 class PersonCell {
   constructor(id: string, x: number, y: number, person: ?PersonData) {
     this.person = person || emptyPerson;
@@ -271,22 +273,6 @@ class CalendarTable {
       inline: 'start',
       block: 'nearest',
     });
-
-    // make new elements visible for mouse events
-    for (
-      let x = this.scrolledCellIndex;
-      x <
-      Math.min(
-        this.scrolledCellIndex + this.cellsPerPage,
-        this.cells[0].length,
-      );
-      x++
-    ) {
-      for (let y = 0; y < this.cells.length; y++) {
-        const cell = this.cells[y][x].el;
-        // now how?
-      }
-    }
   }
 
   turnPageRight() {
