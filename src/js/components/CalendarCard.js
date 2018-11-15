@@ -104,7 +104,6 @@ class CalendarCell extends Reactor {
       'data-empty': person === null,
       'data-coord-x': x,
       'data-coord-y': y,
-      onmouseenter: () => console.log('enter me!'),
     });
 
     this.setChildPerson(person);
@@ -294,6 +293,8 @@ class CalendarTable {
   }
 
   insertCell(args) {
+    // TODO: realize cross-days moving cells
+
     const { target, relatedTarget } = args;
     const px = relatedTarget.attributes['data-coord-x'].value;
     const py = relatedTarget.attributes['data-coord-y'].value;
