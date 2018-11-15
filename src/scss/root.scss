@@ -1,0 +1,32 @@
+$padding-normal: 0.5em;
+$thin-border-size: 0.0625em; // 1px
+$border-primary-color: black;
+$border-secondary-color: lightgray;
+
+.font-header {
+  font-size: 1.5em;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.font-primary {
+  font-size: 1em;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.font-secondary {
+  font-size: 0.85em;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  color: gray;
+}
+
+.elevation-max {
+  @extend .mdc-elevation--z16;
+}
+
+.elevation-normal {
+  @extend .mdc-elevation--z8;
+}
+
+.elevation-min {
+  @extend .mdc-elevation--z4;
+}
