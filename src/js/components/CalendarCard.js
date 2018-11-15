@@ -181,11 +181,13 @@ class CalendarTable {
       tabindex: 0,
     });
     this.scrolledCellIndex = 0;
+    this.scrollEnded = true;
     this.cellsPerPage = 3;
     this.lastScrollDirection = 'start';
     this.turnCooldownTime = 1500;
     this.turnCooldownBorder = Date.now();
 
+    /* eslint-disable-next-line */
     let [dx, dy] = [0, 0];
     const turnBorder = 500;
     let clearDeltaTimeout = null;
@@ -209,9 +211,28 @@ class CalendarTable {
       event.preventDefault();
     });
 
+    const cooldownAfterScroolMax = 1000;
+    let cooldownAfterScroolBorder = Date.now();
     this.el.addEventListener('draggableMoved', event => {
       const target = event.detail;
       const targetBoundRect = target.getBoundingClientRect();
+      const targetBottomBorder = targetBoundRect.y + targetBoundRect.height;
+      const targetTopBorder = targetBoundRect.y;
+      const windowHeight = window.innerHeight;
+
+      if (
+        targetBottomBorder > windowHeight &&
+        Date.now() > cooldownAfterScroolBorder
+      ) {
+        this.scrollToNextDay();
+        cooldownAfterScroolBorder = Date.now() + cooldownAfterScroolMax;
+      } else if (
+        targetTopBorder < 0 &&
+        Date.now() > cooldownAfterScroolBorder
+      ) {
+        this.scrollToPreviousDay();
+        cooldownAfterScroolBorder = Date.now() + cooldownAfterScroolMax;
+      }
 
       const boundRect = this.el.getBoundingClientRect();
       const l = targetBoundRect.width / 2 + 60;
@@ -303,6 +324,109 @@ class CalendarTable {
         event.preventDefault();
       }
     };
+  }
+
+  static isInViewport(t) {
+    let target = t;
+    let top = target.offsetTop;
+    let left = target.offsetLeft;
+    const width = target.offsetWidth;
+    const height = target.offsetHeight;
+
+    while (target.offsetParent) {
+      target = target.offsetParent;
+      top += target.offsetTop;
+      left += target.offsetLeft;
+    }
+
+    const isVisible =
+      top < window.pageYOffset + window.innerHeight &&
+      left < window.pageXOffset + window.innerWidth &&
+      top + height > window.pageYOffset &&
+      left + width > window.pageXOffset;
+    return isVisible;
+  }
+
+  lastDayIndexInViewport() {
+    const arr = [];
+    for (let i = 0; i < this.otherDays.length; i++) {
+      const target = this.otherDays[i].el;
+      arr.push(this.constructor.isInViewport(target));
+    }
+    return arr.length - 1 - arr.reverse().indexOf(true);
+  }
+
+  firstDayIndexInViewport() {
+    const arr = [];
+    for (let i = 0; i < this.otherDays.length; i++) {
+      const target = this.otherDays[i].el;
+      arr.push(this.constructor.isInViewport(target));
+    }
+    return arr.indexOf(true);
+  }
+
+  scrollToNextDay() {
+    const currentDayIndex = this.otherDays.findIndex(
+      day => day.table.id === this.id,
+    );
+    if (currentDayIndex === this.otherDays.length - 1) return;
+
+    const lastDayIndex = this.lastDayIndexInViewport();
+    const dayToScrollIndex = lastDayIndex;
+    const nextDay = this.otherDays[dayToScrollIndex];
+
+    console.log(`scroll down to ${dayToScrollIndex}`);
+    nextDay.el.scrollIntoView({
+      behavior: 'smooth',
+      inline: 'start',
+      block: 'start',
+    });
+
+    this.scrollEnded = false;
+    let scrollTimeout = null;
+
+    const callback = () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        console.log('Scroll ended');
+        this.scrollEnded = true;
+        this.el.removeEventListener('scroll', callback);
+      }, 100);
+    };
+
+    this.el.addEventListener('scroll', callback);
+  }
+
+  scrollToPreviousDay() {
+    const currentDayIndex = this.otherDays.findIndex(
+      day => day.table.id === this.id,
+    );
+    if (currentDayIndex === 0) return;
+
+    const firstDayIndex = this.firstDayIndexInViewport();
+    const dayToScrollIndex = Math.max(firstDayIndex - 1, 0);
+    const nextDay = this.otherDays[dayToScrollIndex];
+
+    console.log(`scroll down to ${dayToScrollIndex}`);
+    nextDay.el.scrollIntoView({
+      behavior: 'smooth',
+      inline: 'start',
+      block: 'start',
+    });
+
+    this.scrollEnded = false;
+    let scrollTimeout = null;
+
+    const callback = () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        console.log('Scroll ended');
+        this.scrollEnded = true;
+        this.el.removeEventListener('scroll', callback);
+      }, 100);
+    };
+
+    this.el.addEventListener('scroll', callback);
   }
 
   updateTableScrool() {
