@@ -12,6 +12,21 @@ const emptyPerson = new PersonData({ name: '', surname: '' });
 
 interact.dynamicDrop(true);
 
+class ReadyToAddCell {
+  constructor() {
+    this.el = el(
+      'div',
+      { class: 'wrapper-block' },
+
+      el('img', {
+        src: 'images/avatar.png',
+        alt: 'Avatar',
+        class: 'avatar',
+      }),
+    );
+  }
+}
+
 class PersonCell {
   constructor(id: string, x: number, y: number, person: ?PersonData) {
     this.person = person || emptyPerson;
@@ -120,6 +135,17 @@ class CalendarCell extends Reactor {
     });
 
     this.setChildPerson(person);
+
+    this.el.addEventListener('mouseenter', () => {
+      if (this.personCell.mock) {
+        this.el.parentNode.classList.add('readyToAdd');
+        setChildren(this, new ReadyToAddCell());
+      }
+    });
+
+    this.el.addEventListener('mouseleave', () => {
+      this.el.parentNode.classList.remove('readyToAdd');
+    });
 
     const config = dropConfig;
     config.ondrop = event => {

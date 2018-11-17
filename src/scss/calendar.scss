@@ -3,6 +3,8 @@
 @import 'card.scss';
 @import 'style.scss';
 @import 'root.scss';
+@import 'colors.scss';
+@import 'fonts.scss';
 
 $move-back-duration: 1s;
 $points-circle-size: 0.7em;
@@ -73,7 +75,7 @@ $calendar-cells-per-page: 3;
 }
 
 .calendar-border {
-  border: solid $border-secondary-color;
+  border: solid $color-secondary-border;
   border-width: $thin-border-size;
 }
 
@@ -116,7 +118,7 @@ $calendar-cells-per-page: 3;
 }
 
 .personCell:hover {
-  background: rgb(243, 243, 243);
+  background: $color-hover;
   transition: background 0.5s;
 }
 
@@ -146,6 +148,7 @@ $calendar-cells-per-page: 3;
   text-align: center;
   transition: background 0.5s;
   width: $calendar-cell-width;
+  height: $calendar-cell-height;
 }
 
 .calendarCell .wrapper-block {
@@ -174,6 +177,11 @@ $calendar-cells-per-page: 3;
 .calendarCell .text-info .secondary-info {
   @extend .font-secondary;
   color: lightgray;
+}
+
+.calendar-table-cell.draggingOrigin {
+  border-style: dashed;
+  border-width: $thin-border-size;
 }
 
 .calendarCell .points {
@@ -209,4 +217,17 @@ $calendar-cells-per-page: 3;
     margin-left: 0px;
     display: inline-block;
   }
+}
+
+.calendar-table-cell.readyToAdd {
+  border: $thin-border-size solid $color-select-border;
+  background: $color-select-background;
+  border-style: double;
+}
+
+.readyToAddCell {
+  display: inline-block;
+  position: relative;
+  text-align: left;
+  height: $calendar-cell-height;
 }

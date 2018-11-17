@@ -64,6 +64,10 @@ function generateConfig(tableDiv) {
       // add box shadow
       target.classList.add('isDragging');
 
+      // add origin cell style
+      // TODO: realize overflowing
+      // target.parentNode.parentNode.classList.add('draggingOrigin');
+
       initialSrcl = tableDiv.scrollLeft;
     },
     onend: event => {
