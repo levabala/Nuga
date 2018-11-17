@@ -10,7 +10,7 @@ $move-back-duration: 1s;
 $points-circle-size: 0.7em;
 $time-cell-width: 4em;
 $calendar-cell-width: 15em;
-$calendar-cell-height: 4em;
+$calendar-cell-height: 5em;
 $calendar-cells-per-page: 3;
 
 .calendar-footer {
@@ -72,6 +72,8 @@ $calendar-cells-per-page: 3;
 .calendar-table-cell {
   @extend .calendar-border;
   display: table-cell;
+  // height: $calendar-cell-height;
+  padding: 0;
 }
 
 .calendar-border {
@@ -113,8 +115,8 @@ $calendar-cells-per-page: 3;
   padding-right: $padding-normal;
   display: flex;
   justify-content: space-between;
-  transition: background 0.5s;
   height: $calendar-cell-height;
+  transition: background 0.5s;
 }
 
 .personCell:hover {
@@ -148,7 +150,8 @@ $calendar-cells-per-page: 3;
   text-align: center;
   transition: background 0.5s;
   width: $calendar-cell-width;
-  height: $calendar-cell-height;
+  // height: $calendar-cell-height;
+  height: 100%;
 }
 
 .calendarCell .wrapper-block {
@@ -226,8 +229,8 @@ $calendar-cells-per-page: 3;
 }
 
 .readyToAddCell {
-  display: inline-block;
-  position: relative;
-  text-align: left;
+  display: flex;
+  justify-content: space-between;
   height: $calendar-cell-height;
+  vertical-align: top;
 }

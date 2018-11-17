@@ -16,13 +16,25 @@ class ReadyToAddCell {
   constructor() {
     this.el = el(
       'div',
-      { class: 'wrapper-block' },
-
-      el('img', {
-        src: 'images/avatar.png',
-        alt: 'Avatar',
-        class: 'avatar',
-      }),
+      { class: 'personCell' },
+      el(
+        'div',
+        { class: 'wrapper-block' },
+        el(
+          'div',
+          { class: 'content-block' },
+          el('div', { class: 'points' }, '123'),
+          /*
+          el(
+            'i',
+            {
+              class: 'material-icons',
+              style: 'padding: 0',
+            },
+            'add',
+          ), */
+        ),
+      ),
     );
   }
 }
@@ -139,12 +151,16 @@ class CalendarCell extends Reactor {
     this.el.addEventListener('mouseenter', () => {
       if (this.personCell.mock) {
         this.el.parentNode.classList.add('readyToAdd');
-        setChildren(this, new ReadyToAddCell());
+        while (this.el.firstChild) {
+          this.el.removeChild(this.el.firstChild);
+        }
+        mount(this, new ReadyToAddCell());
       }
     });
 
     this.el.addEventListener('mouseleave', () => {
       this.el.parentNode.classList.remove('readyToAdd');
+      // setChildren(this, new PersonCell(0, 0, 0, null));
     });
 
     const config = dropConfig;
@@ -179,6 +195,9 @@ class CalendarCell extends Reactor {
     this.personCell.setId(this.personId);
     this.personCell.setDayId(this.dayId);
     this.personCell.el.dispatchEvent(new Event('animationend'));
+    // const mock = new ReadyToAddCell();
+    // if (Math.random() > 0.5) setChildren(this, mock);
+    // else setChildren(this, new PersonCell(0, 0, 0, null));
     setChildren(this, this.personCell);
 
     interact(this.personCell.el).draggable(generateConfig(this.parentTableDiv));
