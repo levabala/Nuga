@@ -5,12 +5,13 @@
 @import 'root.scss';
 @import 'colors.scss';
 @import 'fonts.scss';
+@import 'animations.scss';
 
 $move-back-duration: 1s;
 $points-circle-size: 0.7em;
 $time-cell-width: 4em;
 $calendar-cell-width: 15em;
-$calendar-cell-height: 5em;
+$calendar-cell-height: 3.25em;
 $calendar-cells-per-page: 3;
 
 .calendar-footer {
@@ -72,6 +73,7 @@ $calendar-cells-per-page: 3;
 .calendar-table-cell {
   @extend .calendar-border;
   display: table-cell;
+  white-space: nowrap;
   // height: $calendar-cell-height;
   padding: 0;
 }
@@ -109,18 +111,16 @@ $calendar-cells-per-page: 3;
   color: gray;
 }
 
-.personCell {
-  background: white;
+.calendarCell-container {
   padding-left: $padding-normal;
   padding-right: $padding-normal;
   display: flex;
   justify-content: space-between;
   height: $calendar-cell-height;
-  transition: background 0.5s;
 }
 
-.personCell:hover {
-  background: $color-hover;
+.personCell {
+  background: white;
   transition: background 0.5s;
 }
 
@@ -129,6 +129,7 @@ $calendar-cells-per-page: 3;
   transition: box-shadow 0.3s ease-in-out, background 0.5s;
   z-index: 999;
   position: absolute;
+  // position: fixed;
 }
 
 .personCell.readyToBeDropped {
@@ -147,11 +148,12 @@ $calendar-cells-per-page: 3;
 }
 
 .calendarCell {
+  // position: relative;
   text-align: center;
   transition: background 0.5s;
   width: $calendar-cell-width;
   // height: $calendar-cell-height;
-  height: 100%;
+  animation: appear-animation $animation-duration-opacity;
 }
 
 .calendarCell .wrapper-block {
@@ -226,11 +228,33 @@ $calendar-cells-per-page: 3;
   border: $thin-border-size solid $color-select-border;
   background: $color-select-background;
   border-style: double;
+
+  transition: all $animation-duration-opacity * 2// ease-in-out;
+}
+
+.calendar-table-cell.readyToAdd:active {
+  background: $color-select-tap-background;
+}
+
+.readyToAddCell .content-block {
+  display: flex;
+  justify-content: center;
+  /* align horizontal */
+  align-items: center;
+  /* align vertical */
 }
 
 .readyToAddCell {
+  /*
   display: flex;
   justify-content: space-between;
   height: $calendar-cell-height;
-  vertical-align: top;
+  vertical-align: top; */
+  height: $calendar-cell-height;
+  width: $calendar-cell-width;
+  position: absolute;
+  text-align: center;
+  left: 0px;
+  top: 0px;
+  animation: appear-animation $animation-duration-opacity * 2// ease-in-out;
 }

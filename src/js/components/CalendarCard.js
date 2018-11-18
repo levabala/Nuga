@@ -16,15 +16,16 @@ class ReadyToAddCell {
   constructor() {
     this.el = el(
       'div',
-      { class: 'personCell' },
+      { style: 'position: relative' },
       el(
         'div',
-        { class: 'wrapper-block' },
+        { class: 'readyToAddCell' },
         el(
           'div',
-          { class: 'content-block' },
-          el('div', { class: 'points' }, '123'),
-          /*
+          {
+            class: 'content-block',
+            style: 'text-align: center;',
+          },
           el(
             'i',
             {
@@ -32,7 +33,8 @@ class ReadyToAddCell {
               style: 'padding: 0',
             },
             'add',
-          ), */
+          ),
+          'Добавить запись',
         ),
       ),
     );
@@ -54,7 +56,7 @@ class PersonCell {
       'div',
       {
         id,
-        class: 'personCell',
+        class: 'calendarCell-container personCell',
         'data-coord-x': x,
         'data-coord-y': y,
         style: `${
@@ -138,29 +140,41 @@ class CalendarCell extends Reactor {
     this.personId = `${this.id}_person`;
     this.dayId = dayId;
 
-    this.el = el('div', {
-      class: `calendarCell`,
-      id: this.id,
-      'data-empty': person === null,
-      'data-coord-x': x,
-      'data-coord-y': y,
+    this.container = el('div', {
+      class: `.calendarCell-container`,
     });
+
+    this.el = el(
+      'div',
+      {
+        class: `calendarCell`,
+        id: this.id,
+        'data-empty': person === null,
+        'data-coord-x': x,
+        'data-coord-y': y,
+      },
+      this.container,
+    );
 
     this.setChildPerson(person);
 
+    let addTimeout = null;
+    const enterTime = 100;
     this.el.addEventListener('mouseenter', () => {
-      if (this.personCell.mock) {
-        this.el.parentNode.classList.add('readyToAdd');
-        while (this.el.firstChild) {
-          this.el.removeChild(this.el.firstChild);
+      addTimeout = setTimeout(() => {
+        if (this.personCell.mock) {
+          this.el.parentNode.classList.add('readyToAdd');
+          setChildren(this.container, new ReadyToAddCell());
         }
-        mount(this, new ReadyToAddCell());
-      }
+      }, enterTime);
     });
 
     this.el.addEventListener('mouseleave', () => {
+      clearTimeout(addTimeout);
+      if (!this.el.parentNode.classList.contains('readyToAdd')) return;
+
       this.el.parentNode.classList.remove('readyToAdd');
-      // setChildren(this, new PersonCell(0, 0, 0, null));
+      setChildren(this.container, new PersonCell(0, 0, 0, null));
     });
 
     const config = dropConfig;
@@ -198,7 +212,7 @@ class CalendarCell extends Reactor {
     // const mock = new ReadyToAddCell();
     // if (Math.random() > 0.5) setChildren(this, mock);
     // else setChildren(this, new PersonCell(0, 0, 0, null));
-    setChildren(this, this.personCell);
+    setChildren(this.container, this.personCell);
 
     interact(this.personCell.el).draggable(generateConfig(this.parentTableDiv));
   }

@@ -1,6 +1,7 @@
 let initialSrcl = 0;
 
 function createDragMoveListener(tableDiv) {
+  let buffer = 0;
   return event => {
     // TODO: make hover visible after turning page
     // (note: mouse pointer shifts by translate value - it's very strange)
@@ -8,14 +9,21 @@ function createDragMoveListener(tableDiv) {
     const { target } = event;
     const srcl = tableDiv.scrollLeft;
 
-    // console.log(initialSrcl, srcl);
+    if (event.scrolling) buffer += event.dScrollY;
+    else buffer -= event.dy;
+
+    // console.log(buffer);
 
     // keep the dragged position in the data-x/data-y attributes
     const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
     const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
     // translate the element
-    const tfr = `translate(${x - srcl + (srcl - initialSrcl)}px, ${y}px)`;
+    const realX = x - srcl + (srcl - initialSrcl);
+    const realY = y;
+    const tfr = `translate(${realX}px, ${realY}px)`;
+    // console.log(Math.floor(realX), Math.floor(realY));
+    // const tfr = `translate(${x + (srcl - initialSrcl)}px, ${y}px)`;
     // target.setAttribute('style', `webkitTransform: ${tfr}; transform: ${tfr}`);
 
     target.style.webkitTransform = tfr;
@@ -36,6 +44,20 @@ function createDragMoveListener(tableDiv) {
 function generateConfig(tableDiv) {
   let timeout1 = null;
   let timeout2 = null;
+  const dragMoveEventListener = createDragMoveListener(tableDiv);
+  /* let lastWindowScrollY = window.scrollY;
+  const updatePositionCallback = target => {
+    const d = window.scrollY - lastWindowScrollY;
+    console.log(d);
+    dragMoveEventListener({
+      dx: 0,
+      dy: 0,
+      dScrollY: d,
+      scrolling: true,
+      target,
+    });
+    lastWindowScrollY = window.scrollY;
+  }; */
   return {
     // enable inertial throwing
     inertia: false,
@@ -51,8 +73,10 @@ function generateConfig(tableDiv) {
     autoScroll: false,
 
     // call this function on every dragmove event
-    onmove: createDragMoveListener(tableDiv),
+    onmove: dragMoveEventListener,
     onstart: event => {
+      // lastWindowScrollY = window.scrollY;
+
       clearTimeout(timeout1);
       clearTimeout(timeout2);
 
@@ -63,6 +87,10 @@ function generateConfig(tableDiv) {
 
       // add box shadow
       target.classList.add('isDragging');
+
+      // TODO: update position on scrolling
+      // tableDiv.addEventListener('scroll', () => updatePositionCallback(target));
+      // window.addEventListener('scroll', () => updatePositionCallback(target));
 
       // add origin cell style
       // TODO: realize overflowing
@@ -75,6 +103,7 @@ function generateConfig(tableDiv) {
       // target.setAttribute('data-x', 0);
       // target.setAttribute('data-y', 0);
 
+      /*
       const x = parseFloat(target.getAttribute('data-x')) || 0;
       const y = parseFloat(target.getAttribute('data-y')) || 0;
 
@@ -82,17 +111,25 @@ function generateConfig(tableDiv) {
       const srcl = tableDiv.scrollLeft;
       const tfr = `translate(${x - srcl}px, ${y}px)`;
       target.style.webkitTransform = tfr;
-      target.style.transform = tfr;
+      target.style.transform = tfr; */
 
       target.classList.add('movingBack');
 
       // update the position attributes
       target.setAttribute('data-x', 0);
       target.setAttribute('data-y', 0);
+      /*
+      tableDiv.removeEventListener('scroll', () =>
+        updatePositionCallback(target),
+      );
+      window.removeEventListener('scroll', () =>
+        updatePositionCallback(target),
+      ); */
 
       timeout1 = setTimeout(() => {
-        const tfrZERO = `translate(${-initialSrcl -
-          (srcl - initialSrcl)}px, 0px)`;
+        // const tfrZERO = `translate(${-initialSrcl -
+        //   (srcl - initialSrcl)}px, 0px)`;
+        const tfrZERO = `translate(${0}px, ${0}px)`;
         target.style.webkitTransform = tfrZERO;
         target.style.transform = tfrZERO;
 
