@@ -9,14 +9,15 @@
 
 $move-back-duration: 1s;
 $points-circle-size: 0.7em;
-$time-cell-width: 4em;
 $calendar-cell-width: 15em;
-$calendar-cell-height: 3.25em;
+$calendar-cell-height: 3.7em;
 $calendar-cells-per-page: 3;
 
 .calendar-footer {
-  margin-left: $time-cell-width + $padding-normal * 2;
-  padding-top: $padding-normal;
+  margin-left: $padding-card + $padding-normal * 2;
+  padding-top: $padding-normal * 2;
+  // padding-bottom: $padding-normal * 2;
+  display: inline-block;
 }
 
 .calendar-footer .primary-info {
@@ -28,9 +29,17 @@ $calendar-cells-per-page: 3;
   vertical-align: text-top;
 }
 
+.calendar-day:focus {
+  outline: none;
+}
+
 .calendar-card {
-  padding-bottom: $padding-normal * 4;
+  // padding-bottom: $padding-normal * 4;
   position: relative;
+  overflow: hidden;
+  margin: -$padding-card;
+  margin-bottom: $padding-card;
+  // width: auto;
 }
 
 .calendar-day-divider {
@@ -46,8 +55,9 @@ $calendar-cells-per-page: 3;
   white-space: nowrap;
   border-spacing: 0px;
   border-collapse: collapse;
-  margin-right: 0px;
-  margin-left: $time-cell-width;
+  margin-right: $padding-card;
+  margin-left: $padding-card;
+  padding-top: 0;
   width: ($calendar-cell-width + $thin-border-size) * $calendar-cells-per-page +
     $thin-border-size;
 
@@ -86,7 +96,9 @@ $calendar-cells-per-page: 3;
 .calendar-table-cell.positionCell {
   border: none;
   padding-left: $padding-normal * 2;
-  padding-bottom: $padding-normal;
+  // padding-bottom: $padding-normal * 2;
+  height: $padding-card;
+  line-height: $padding-card;
   // here you can control if non-first headers will be displayed
   // display: none;
 
@@ -97,12 +109,15 @@ $calendar-cells-per-page: 3;
 
 .calendar-table-cell.timeCell {
   border: none;
-  padding-left: 0;
-  text-align: left;
+  // padding-left: 0;
+  // padding-left: 0; //$padding-normal;
+  // padding-right: $padding-normal * 2;
+  text-align: center;
   position: absolute;
-  width: $time-cell-width;
-  left: $time-cell-width / 4;
+  // width: $padding-card;
+  left: 0; //$padding-card / 4;
   height: $calendar-cell-height;
+  width: $padding-card;
 }
 
 .secondaryTime {

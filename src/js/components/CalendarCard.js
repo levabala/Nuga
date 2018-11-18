@@ -237,7 +237,6 @@ class CalendarTable {
 
     this.el = el('div', {
       class: `calendar-table ${isFirst ? 'first' : ''}`,
-      tabindex: 0,
     });
     this.scrolledCellIndex = 0;
     this.scrollEnded = true;
@@ -245,6 +244,7 @@ class CalendarTable {
     this.lastScrollDirection = 'start';
     this.turnCooldownTime = 1500;
     this.turnCooldownBorder = Date.now();
+    this.timeCells = [];
 
     /* eslint-disable-next-line */
     let [dx, dy] = [0, 0];
@@ -347,6 +347,7 @@ class CalendarTable {
           el('span', { class: 'secondaryTime' }, `:00`),
         ),
       );
+      this.timeCells.push(timeCell);
       arr2.push(timeCell);
 
       for (let i2 = 0; i2 < width; i2++) {
@@ -383,6 +384,10 @@ class CalendarTable {
         event.preventDefault();
       }
     };
+
+    // launch time column width fixer
+    this.updateLeftMargin();
+    setInterval(() => this.updateLeftMargin(), 300);
   }
 
   static isInViewport(t) {
@@ -404,6 +409,20 @@ class CalendarTable {
       top + height > window.pageYOffset &&
       left + width > window.pageXOffset;
     return isVisible;
+  }
+
+  updateLeftMargin() {
+    this.lastTimeCellWidth = this.lastTimeCellWidth || 0;
+    let maxWidth = 0;
+    this.timeCells.forEach(cell => {
+      maxWidth = Math.max(maxWidth, cell.clientWidth);
+    });
+
+    if (this.lastTimeCellWidth !== maxWidth) {
+      console.log(this.lastTimeCellWidth, maxWidth);
+      this.el.style['margin-left'] = `${maxWidth}px`;
+      this.lastTimeCellWidth = maxWidth;
+    }
   }
 
   lastDayIndexInViewport() {
@@ -683,7 +702,7 @@ class CalendarDay {
     this.table = new CalendarTable(data, isFirst, otherDays);
     this.el = el(
       'div',
-      { class: 'calendar-day' },
+      { class: 'calendar-day', tabindex: 0 },
       this.table,
       new CalendarDayFooter(data),
     );
@@ -698,12 +717,7 @@ class CalendarCard extends Card {
     this.days = [];
     for (let i = 0; i < data.length; i++) {
       const day = new CalendarDay(data[i], i === 0, this.days);
-      const child = el(
-        'div',
-        { class: 'calendar-card' },
-        day,
-        el('hr', { class: 'calendar-day-divider' }),
-      );
+      const child = el('div', { class: 'calendar-card' }, day);
       this.days.push(day);
       mount(this.el, child);
     }

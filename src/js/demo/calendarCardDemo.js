@@ -94,5 +94,7 @@ const days: Array<DayData> = [
 
 const card = new CalendarCard(days);
 
+card.el.setAttribute('style', `position: absolute; left: 20px; top: 20px`);
+
 export default card;
 export const calendarCardDemo = card;

@@ -1,7 +1,7 @@
 let initialSrcl = 0;
 
 function createDragMoveListener(tableDiv) {
-  let buffer = 0;
+  // let buffer = 0;
   return event => {
     // TODO: make hover visible after turning page
     // (note: mouse pointer shifts by translate value - it's very strange)
@@ -9,8 +9,8 @@ function createDragMoveListener(tableDiv) {
     const { target } = event;
     const srcl = tableDiv.scrollLeft;
 
-    if (event.scrolling) buffer += event.dScrollY;
-    else buffer -= event.dy;
+    // if (event.scrolling) buffer += event.dScrollY;
+    // else buffer -= event.dy;
 
     // console.log(buffer);
 
