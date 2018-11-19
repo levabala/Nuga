@@ -71,7 +71,7 @@ class PersonCell {
             'div',
             { class: 'content-block' },
             el('img', {
-              src: 'images/avatar.png',
+              src: '/src/images/avatar.png',
               alt: 'Avatar',
               class: 'avatar',
             }),
