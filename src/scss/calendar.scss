@@ -8,10 +8,12 @@
 @import 'animations.scss';
 
 $move-back-duration: 1s;
-$points-circle-size: 0.7em;
+$points-circle-size: $padding-normal * 3.3;
 $calendar-cell-width: 15em;
 $calendar-cell-height: 3.7em;
 $calendar-cells-per-page: 3;
+$calendar-cell-padding: $padding-normal;
+$calendar-avatar-diameter: $padding-normal * 5.6;
 
 .calendar-footer {
   margin-left: $padding-card + $padding-normal * 2;
@@ -128,8 +130,8 @@ $calendar-cells-per-page: 3;
 }
 
 .calendarCell-container {
-  padding-left: $padding-normal;
-  padding-right: $padding-normal;
+  padding-left: $calendar-cell-padding;
+  padding-right: $calendar-cell-padding;
   display: flex;
   justify-content: space-between;
   height: $calendar-cell-height;
@@ -209,22 +211,23 @@ $calendar-cells-per-page: 3;
   $padding-rate: 1.15;
   $max-points-digits: 2;
   $left-margin: $padding-normal;
-  $circle-size: $points-circle-size * ($padding-rate * 2);
+  $points-font-size: $points-circle-size / ($padding-rate * 2);
 
   // make it centered vertically
 
   border-radius: 50%;
 
-  width: $circle-size;
-  height: $circle-size;
-  padding: $circle-size * ($padding-rate - 1);
+  width: $points-circle-size;
+  height: $points-circle-size;
+  padding: $points-circle-size * ($padding-rate - 1);
 
   background: rgba(221, 221, 221, 0.514);
+
   display: flex;
   justify-content: center;
   align-items: center;
 
-  font-size: $points-circle-size;
+  font-size: 4vw; //1px; //$points-circle-size;
 
   margin-left: $left-margin;
 }
@@ -233,9 +236,10 @@ $calendar-cells-per-page: 3;
   @extend .avatar;
 
   .calendarCell & {
-    width: 40px;
-    height: 40px;
+    width: $calendar-avatar-diameter;
+    height: $calendar-avatar-diameter;
     margin-left: 0px;
+    margin-right: $calendar-cell-padding;
     display: inline-block;
   }
 }
