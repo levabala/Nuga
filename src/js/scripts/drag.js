@@ -103,12 +103,12 @@ function generateConfig(tableDiv) {
       // target.setAttribute('data-x', 0);
       // target.setAttribute('data-y', 0);
 
+      const srcl = tableDiv.scrollLeft;
       /*
       const x = parseFloat(target.getAttribute('data-x')) || 0;
       const y = parseFloat(target.getAttribute('data-y')) || 0;
 
       // translate the element
-      const srcl = tableDiv.scrollLeft;
       const tfr = `translate(${x - srcl}px, ${y}px)`;
       target.style.webkitTransform = tfr;
       target.style.transform = tfr; */
@@ -127,9 +127,9 @@ function generateConfig(tableDiv) {
       ); */
 
       timeout1 = setTimeout(() => {
-        // const tfrZERO = `translate(${-initialSrcl -
-        //   (srcl - initialSrcl)}px, 0px)`;
-        const tfrZERO = `translate(${0}px, ${0}px)`;
+        const tfrZERO = `translate(${-initialSrcl -
+          (srcl - initialSrcl)}px, 0px)`;
+        // const tfrZERO = `translate(${0}px, ${0}px)`;
         target.style.webkitTransform = tfrZERO;
         target.style.transform = tfrZERO;
 

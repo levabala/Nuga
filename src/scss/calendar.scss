@@ -35,7 +35,7 @@ $calendar-cells-per-page: 3;
 
 .calendar-card {
   // padding-bottom: $padding-normal * 4;
-  position: relative;
+  // position: relative;
   overflow: hidden;
   margin: -$padding-card;
   margin-bottom: $padding-card;
@@ -78,6 +78,7 @@ $calendar-cells-per-page: 3;
 
 .calendar-table-row {
   display: table-row;
+  overflow: hidden;
 }
 
 .calendar-table-cell {
@@ -89,7 +90,7 @@ $calendar-cells-per-page: 3;
 }
 
 .calendar-border {
-  border: solid $color-secondary-border;
+  border: dotted $color-secondary-border;
   border-width: $thin-border-size;
 }
 
@@ -242,9 +243,9 @@ $calendar-cells-per-page: 3;
 .calendar-table-cell.readyToAdd {
   border: $thin-border-size solid $color-select-border;
   background: $color-select-background;
-  border-style: double;
+  // border-style: double;
 
-  transition: all $animation-duration-opacity * 2// ease-in-out;
+  // transition: all $animation-duration-opacity * 2// ease-in-out;
 }
 
 .calendar-table-cell.readyToAdd:active {
@@ -271,5 +272,5 @@ $calendar-cells-per-page: 3;
   text-align: center;
   left: 0px;
   top: 0px;
-  animation: appear-animation $animation-duration-opacity * 2// ease-in-out;
+  // animation: appear-animation $animation-duration-opacity * 2// ease-in-out;
 }

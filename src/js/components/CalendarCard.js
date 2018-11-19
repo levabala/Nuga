@@ -518,6 +518,14 @@ class CalendarTable {
       inline: 'start',
       block: 'nearest',
     });
+
+    for (
+      let x = this.scrolledCellIndex;
+      x < this.scrolledCellIndex + this.cellsPerPage;
+      x++
+    ) {
+      for (let y = 0; y < this.cells.length; y++) console.log(x, y);
+    }
   }
 
   turnPageRight() {
