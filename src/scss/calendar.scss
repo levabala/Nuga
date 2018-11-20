@@ -6,6 +6,7 @@
 @import 'colors.scss';
 @import 'fonts.scss';
 @import 'animations.scss';
+@import 'node_modules/mathsass/dist/math';
 
 $move-back-duration: 1s;
 $points-circle-size: $padding-normal * 3.3;
@@ -204,6 +205,23 @@ $calendar-avatar-diameter: $padding-normal * 5.6;
 .calendar-table-cell.draggingOrigin {
   border-style: dashed;
   border-width: $thin-border-size;
+}
+
+.calendar-table-cell.locked {
+  $lines-count: 15;
+  $line-width: $thin-border-size;
+  $space-between: $calendar-cell-width / $lines-count - $thin-border-size * 2 /
+    3;
+  $angle: rad-to-deg(
+    atan($space-between * 4 / $calendar-cell-height + $thin-border-size)
+  );
+  background-image: repeating-linear-gradient(
+    90deg + $angle,
+    #ccc,
+    #ccc $thin-border-size,
+    transparent $thin-border-size,
+    transparent $space-between
+  );
 }
 
 /*

@@ -186,6 +186,9 @@ class CalendarCell extends Reactor {
 
       dropzoneElement.classList.remove('readyToGetDrop');
       draggableElement.classList.remove('readyToBeDropped');
+      draggableElement.parentNode.parentNode.parentNode.classList.remove(
+        'draggingOrigin',
+      );
 
       cell.dispatchEvent('insertElement', {
         target: cell,
@@ -353,6 +356,7 @@ class CalendarTable {
       arr2.push(timeCell);
 
       for (let i2 = 0; i2 < width; i2++) {
+        const locked = Math.random() > 0.8;
         const exist = Math.random() > 0.7;
 
         const cell = new CalendarCell(
@@ -367,7 +371,15 @@ class CalendarTable {
         );
         cell.addEventListener('insertElement', this.insertCell.bind(this));
 
-        arr2.push(el('div', { class: 'calendar-table-cell' }, cell));
+        arr2.push(
+          el(
+            'div',
+            {
+              class: `calendar-table-cell ${locked && !exist ? 'locked' : ''}`,
+            },
+            cell,
+          ),
+        );
         this.cells[i].push(cell);
       }
 

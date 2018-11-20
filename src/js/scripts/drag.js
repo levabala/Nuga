@@ -93,8 +93,7 @@ function generateConfig(tableDiv) {
       // window.addEventListener('scroll', () => updatePositionCallback(target));
 
       // add origin cell style
-      // TODO: realize overflowing
-      // target.parentNode.parentNode.classList.add('draggingOrigin');
+      target.parentNode.parentNode.parentNode.classList.add('draggingOrigin');
 
       initialSrcl = tableDiv.scrollLeft;
     },
@@ -137,6 +136,10 @@ function generateConfig(tableDiv) {
           parseFloat(getComputedStyle(target).transitionDuration) * 1000;
 
         timeout2 = setTimeout(() => {
+          // add origin cell style
+          target.parentNode.parentNode.parentNode.classList.remove(
+            'draggingOrigin',
+          );
           target.dispatchEvent(new Event('animationend'));
         }, duration);
 
