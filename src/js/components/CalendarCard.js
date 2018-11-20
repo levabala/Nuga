@@ -246,12 +246,13 @@ class CalendarTable {
     this.turnCooldownBorder = Date.now();
     this.timeCells = [];
 
-    /* eslint-disable-next-line */
+    /*
     let [dx, dy] = [0, 0];
     const turnBorder = 500;
     let clearDeltaTimeout = null;
     const clearDeltaTime = 1000;
     this.el.addEventListener('wheel', event => {
+      return; 
       dx += event.deltaX;
       dy += event.deltaY;
 
@@ -269,6 +270,7 @@ class CalendarTable {
 
       event.preventDefault();
     });
+    */
 
     const cooldownAfterScroolMax = 1000;
     let cooldownAfterScroolBorder = Date.now();

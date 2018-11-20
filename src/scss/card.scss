@@ -1,5 +1,4 @@
 @import '@material/card/mdc-card';
-@import '@material/elevation/mdc-elevation';
 @import 'root.scss';
 
 /* .card {
@@ -12,7 +11,8 @@
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 } */
 .card {
-  @extend .mdc-card, .mdc-elevation--z8;
+  @extend .mdc-card, .elevation-min;
   padding: $padding-card !important;
+  margin-bottom: $padding-card;
   display: table-caption;
 }
