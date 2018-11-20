@@ -159,7 +159,7 @@ class CalendarCell extends Reactor {
     this.setChildPerson(person);
 
     let addTimeout = null;
-    const enterTime = 100;
+    const enterTime = 0; //100;
     this.el.addEventListener('mouseenter', () => {
       addTimeout = setTimeout(() => {
         if (this.personCell.mock) {
