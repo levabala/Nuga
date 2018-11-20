@@ -37,13 +37,14 @@ function generateConfig(tableDiv) {
   let timeout1 = null;
   let timeout2 = null;
   const dragMoveEventListener = createDragMoveListener(tableDiv);
+  /*
   const updatePositionCallback = target => {
     dragMoveEventListener({
       dx: 0,
       dy: 0,
       target,
     });
-  };
+  }; */
   return {
     inertia: false,
     autoScroll: false,
@@ -68,7 +69,7 @@ function generateConfig(tableDiv) {
       target.classList.add('isDragging');
 
       // vertical scrolling listener
-      window.addEventListener('scroll', () => updatePositionCallback(target));
+      // window.addEventListener('scroll', () => updatePositionCallback(target));
 
       // add origin cell style
       target.parentNode.parentNode.parentNode.classList.add('draggingOrigin');

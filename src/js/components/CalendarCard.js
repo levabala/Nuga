@@ -71,7 +71,7 @@ class PersonCell {
             'div',
             { class: 'content-block' },
             el('img', {
-              src: '/src/images/avatar.png',
+              src: this.person.url,
               alt: 'Avatar',
               class: 'avatar',
             }),
@@ -283,7 +283,6 @@ class CalendarTable {
     */
 
     const cooldownAfterScroolMax = 1000;
-    let cooldownAfterScroolBorder = Date.now();
     this.el.addEventListener('draggableMoved', event => {
       const target = event.detail;
       const targetBoundRect = target.getBoundingClientRect();
@@ -291,18 +290,23 @@ class CalendarTable {
       const targetTopBorder = targetBoundRect.y;
       const windowHeight = window.innerHeight;
 
-      if (
-        targetBottomBorder > windowHeight &&
-        Date.now() > cooldownAfterScroolBorder
-      ) {
+      // console.log(Math.round(targetBottomBorder), Math.round(windowHeight));
+      // console.log(Math.round(targetTopBorder), 0);
+
+      if (Date.now() < this.turnCooldownBorder) return;
+
+      if (targetBottomBorder > windowHeight) {
         this.scrollToNextDay();
-        cooldownAfterScroolBorder = Date.now() + cooldownAfterScroolMax;
-      } else if (
-        targetTopBorder < 0 &&
-        Date.now() > cooldownAfterScroolBorder
-      ) {
+        this.turnCooldownBorder = Date.now() + cooldownAfterScroolMax;
+        console.log(this.id);
+        return;
+      }
+
+      if (targetTopBorder < 0) {
         this.scrollToPreviousDay();
-        cooldownAfterScroolBorder = Date.now() + cooldownAfterScroolMax;
+        this.turnCooldownBorder = Date.now() + cooldownAfterScroolMax;
+        console.log(this.id);
+        return;
       }
 
       const boundRect = this.el.getBoundingClientRect();
@@ -311,16 +315,18 @@ class CalendarTable {
       const r = boundRect.x + boundRect.width - 60;
       // console.log(Math.floor(n - l));
 
-      if (Date.now() < this.turnCooldownBorder) {
-        return;
-      }
+      // console.log(Math.round(l), Math.round(n), Math.round(r));
+      const index = this.getTableByY(target);
+      if (index === -1) return;
+
+      const targetTable = this.otherDays[index];
 
       // TODO: optimize
       if (n > r) {
-        this.turnPageRight();
+        this.constructor.turnPageRight(targetTable);
         this.turnCooldownBorder = Date.now() + this.turnCooldownTime;
       } else if (n < l) {
-        this.turnPageLeft();
+        this.constructor.turnPageLeft(targetTable);
         this.turnCooldownBorder = Date.now() + this.turnCooldownTime;
       }
     });
@@ -414,6 +420,25 @@ class CalendarTable {
     setInterval(() => this.updateLeftMargin(), 300);
   }
 
+  getTableByY(element) {
+    // const bodyRect = document.body.getBoundingClientRect();
+    const targetRect = element.getBoundingClientRect();
+    const targetTop = targetRect.top;
+
+    for (let i = 0; i < this.otherDays.length; i++) {
+      const rect = this.otherDays[i].table.el.getBoundingClientRect();
+      const dayTop = rect.top;
+      const dayBottom = rect.bottom;
+      // console.log(Math.round(targetTop), Math.round(dayTop));
+      if (targetTop > dayTop && targetTop < dayBottom) {
+        // console.log(`TURNING: ${i}`);
+        return i;
+      }
+    }
+
+    return -1;
+  }
+
   static isInViewport(t) {
     let target = t;
     let top = target.offsetTop;
@@ -450,21 +475,44 @@ class CalendarTable {
   }
 
   lastDayIndexInViewport() {
-    const arr = [];
+    // TODO: optimize
+
+    // #1 find first which top < w.height and bottom > w.height
     for (let i = 0; i < this.otherDays.length; i++) {
       const target = this.otherDays[i].el;
-      arr.push(this.constructor.isInViewport(target));
+      const rect = target.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > window.innerHeight)
+        return i;
     }
-    return arr.length - 1 - arr.reverse().indexOf(true);
+
+    // #2 find first which top > w.height
+    for (let i = 0; i < this.otherDays.length; i++) {
+      const target = this.otherDays[i].el;
+      const rect = target.getBoundingClientRect();
+      if (rect.top > window.innerHeight) return i;
+    }
+
+    return this.otherDays.length - 1;
   }
 
   firstDayIndexInViewport() {
-    const arr = [];
-    for (let i = 0; i < this.otherDays.length; i++) {
+    // TODO: optimize
+
+    // #1 find last which top < 0 and bottom > 0
+    for (let i = this.otherDays.length - 1; i > 0; i--) {
       const target = this.otherDays[i].el;
-      arr.push(this.constructor.isInViewport(target));
+      const rect = target.getBoundingClientRect();
+      if (rect.top < 0 && rect.bottom > 0) return i;
     }
-    return arr.indexOf(true);
+
+    // #2 find first which bottom < 0
+    for (let i = this.otherDays.length - 1; i > 0; i--) {
+      const target = this.otherDays[i].el;
+      const rect = target.getBoundingClientRect();
+      if (rect.bottom <= 0) return i;
+    }
+
+    return 0;
   }
 
   scrollToNextDay() {
@@ -475,10 +523,10 @@ class CalendarTable {
     if (currentDayIndex === this.otherDays.length - 1) currentDayIndex -= 1;
 
     const lastDayIndex = this.lastDayIndexInViewport();
-    const dayToScrollIndex = lastDayIndex;
+    const dayToScrollIndex = Math.min(lastDayIndex, this.otherDays.length);
     const nextDay = this.otherDays[dayToScrollIndex];
 
-    console.log(`scroll down to ${dayToScrollIndex}`);
+    console.log(`scroll up to ${dayToScrollIndex}`);
     nextDay.el.scrollIntoView({
       behavior: 'smooth',
       inline: 'start',
@@ -493,11 +541,11 @@ class CalendarTable {
       scrollTimeout = setTimeout(() => {
         console.log('Scroll ended');
         this.scrollEnded = true;
-        this.el.removeEventListener('scroll', callback);
+        window.removeEventListener('scroll', callback);
       }, 100);
     };
 
-    this.el.addEventListener('scroll', callback);
+    window.addEventListener('scroll', callback);
   }
 
   scrollToPreviousDay() {
@@ -507,7 +555,7 @@ class CalendarTable {
     if (currentDayIndex === 0) return;
 
     const firstDayIndex = this.firstDayIndexInViewport();
-    const dayToScrollIndex = Math.max(firstDayIndex - 1, 0);
+    const dayToScrollIndex = Math.max(firstDayIndex, 0);
     const nextDay = this.otherDays[dayToScrollIndex];
 
     console.log(`scroll down to ${dayToScrollIndex}`);
@@ -525,11 +573,11 @@ class CalendarTable {
       scrollTimeout = setTimeout(() => {
         console.log('Scroll ended');
         this.scrollEnded = true;
-        this.el.removeEventListener('scroll', callback);
+        window.removeEventListener('scroll', callback);
       }, 100);
     };
 
-    this.el.addEventListener('scroll', callback);
+    window.addEventListener('scroll', callback);
   }
 
   updateTableScrool() {
@@ -544,31 +592,36 @@ class CalendarTable {
       block: 'nearest',
     });
 
+    // TODO: enable dropzone only on elements into view
+    /*
     for (
       let x = this.scrolledCellIndex;
       x < this.scrolledCellIndex + this.cellsPerPage;
       x++
     ) {
       for (let y = 0; y < this.cells.length; y++) console.log(x, y);
-    }
+    } */
   }
 
-  turnPageRight() {
-    this.scrolledCellIndex = Math.min(
-      this.scrolledCellIndex + this.cellsPerPage,
-      this.cells[0].length - 1,
+  static turnPageRight(t) {
+    const target = t.table;
+
+    target.scrolledCellIndex = Math.min(
+      target.scrolledCellIndex + target.cellsPerPage,
+      target.cells[0].length - 1,
     );
-    this.lastScrollDirection = 'start';
-    this.updateTableScrool('start');
+    target.lastScrollDirection = 'start';
+    target.updateTableScrool('start');
   }
 
-  turnPageLeft() {
-    this.scrolledCellIndex = Math.max(
-      this.scrolledCellIndex - this.cellsPerPage,
+  static turnPageLeft(t) {
+    const target = t.table;
+    target.scrolledCellIndex = Math.max(
+      target.scrolledCellIndex - target.cellsPerPage,
       0,
     );
-    this.lastScrollDirection = 'end';
-    this.updateTableScrool('end');
+    target.lastScrollDirection = 'end';
+    target.updateTableScrool('end');
   }
 
   insertCell(args) {

@@ -275,6 +275,7 @@ $calendar-avatar-diameter: $padding-normal * 5.6;
   .calendarCell & {
     width: $calendar-avatar-diameter;
     height: $calendar-avatar-diameter;
+    object-fit: cover;
     margin-left: 0px;
     margin-right: $calendar-cell-padding;
     display: inline-block;

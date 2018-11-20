@@ -6,7 +6,7 @@ import PersonTooltip from '../PersonTooltip';
 
 const person_tooltips_shown = {};
 class PersonData implements DataInterface {
-  constructor({ name, surname, url = '' }) {
+  constructor({ name, surname, url = '/src/images/avatar.png' }) {
     this.name = name;
     this.surname = surname;
     this.url = url;
