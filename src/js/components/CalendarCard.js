@@ -355,6 +355,8 @@ class CalendarTable {
       this.timeCells.push(timeCell);
       arr2.push(timeCell);
 
+      // test
+
       for (let i2 = 0; i2 < width; i2++) {
         const locked = Math.random() > 0.8;
         const exist = Math.random() > 0.7;
