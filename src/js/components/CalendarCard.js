@@ -481,7 +481,10 @@ class CalendarTable {
     for (let i = 0; i < this.otherDays.length; i++) {
       const target = this.otherDays[i].el;
       const rect = target.getBoundingClientRect();
-      if (rect.top < window.innerHeight && rect.bottom > window.innerHeight)
+      if (
+        rect.top < window.innerHeight &&
+        rect.bottom > window.innerHeight + rect.height / 3
+      )
         return i;
     }
 
@@ -502,7 +505,7 @@ class CalendarTable {
     for (let i = this.otherDays.length - 1; i > 0; i--) {
       const target = this.otherDays[i].el;
       const rect = target.getBoundingClientRect();
-      if (rect.top < 0 && rect.bottom > 0) return i;
+      if (rect.top < -rect.height / 3 && rect.bottom > 0) return i;
     }
 
     // #2 find first which bottom < 0
