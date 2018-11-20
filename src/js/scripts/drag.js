@@ -1,18 +1,9 @@
 let initialSrcl = 0;
 
 function createDragMoveListener(tableDiv) {
-  // let buffer = 0;
   return event => {
-    // TODO: make hover visible after turning page
-    // (note: mouse pointer shifts by translate value - it's very strange)
-
     const { target } = event;
     const srcl = tableDiv.scrollLeft;
-
-    // if (event.scrolling) buffer += event.dScrollY;
-    // else buffer -= event.dy;
-
-    // console.log(buffer);
 
     // keep the dragged position in the data-x/data-y attributes
     const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
@@ -21,6 +12,7 @@ function createDragMoveListener(tableDiv) {
     // translate the element
     const realX = x - srcl + (srcl - initialSrcl);
     const realY = y;
+
     const tfr = `translate(${realX}px, ${realY}px)`;
     // console.log(Math.floor(realX), Math.floor(realY));
     // const tfr = `translate(${x + (srcl - initialSrcl)}px, ${y}px)`;
@@ -45,42 +37,29 @@ function generateConfig(tableDiv) {
   let timeout1 = null;
   let timeout2 = null;
   const dragMoveEventListener = createDragMoveListener(tableDiv);
-  /* let lastWindowScrollY = window.scrollY;
   const updatePositionCallback = target => {
-    const d = window.scrollY - lastWindowScrollY;
-    console.log(d);
     dragMoveEventListener({
       dx: 0,
       dy: 0,
-      dScrollY: d,
-      scrolling: true,
       target,
     });
-    lastWindowScrollY = window.scrollY;
-  }; */
+  };
   return {
-    // enable inertial throwing
     inertia: false,
-
-    // keep the element within the area of it's parent
-    /* restrict: {
-      restriction: tableDiv,
-      endOnly: true,
-      elementRect: { top: 0, left: 0, bottom: 1, right: 1 },
-    },
-*/
-
     autoScroll: false,
-
-    // call this function on every dragmove event
     onmove: dragMoveEventListener,
     onstart: event => {
-      // lastWindowScrollY = window.scrollY;
-
       clearTimeout(timeout1);
       clearTimeout(timeout2);
 
       const { target } = event;
+
+      dragMoveEventListener({
+        dx: 0,
+        dy: 0,
+        target,
+        init: true,
+      });
 
       // fixing width
       target.setAttribute('style', `width: ${getComputedStyle(target).width}`);
@@ -88,9 +67,8 @@ function generateConfig(tableDiv) {
       // add box shadow
       target.classList.add('isDragging');
 
-      // TODO: update position on scrolling
-      // tableDiv.addEventListener('scroll', () => updatePositionCallback(target));
-      // window.addEventListener('scroll', () => updatePositionCallback(target));
+      // vertical scrolling listener
+      window.addEventListener('scroll', () => updatePositionCallback(target));
 
       // add origin cell style
       target.parentNode.parentNode.parentNode.classList.add('draggingOrigin');

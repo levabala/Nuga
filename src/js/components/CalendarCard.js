@@ -128,6 +128,7 @@ class CalendarCell extends Reactor {
     person: ?PersonData,
     tableDiv: Node,
     dayId: string,
+    locked: boolean = false,
   ) {
     super();
 
@@ -135,6 +136,7 @@ class CalendarCell extends Reactor {
     this.parentTableDiv = tableDiv;
     this.x = x;
     this.y = y;
+    this.locked = locked;
     this.personCell = null;
     this.id = `tableCell_${this.x}_${this.y}`;
     this.personId = `${this.id}_person`;
@@ -159,8 +161,11 @@ class CalendarCell extends Reactor {
     this.setChildPerson(person);
 
     let addTimeout = null;
-    const enterTime = 0; //100;
+    const enterTime = 0; // 100;
+
     this.el.addEventListener('mouseenter', () => {
+      if (this.locked) return;
+
       addTimeout = setTimeout(() => {
         if (this.personCell.mock) {
           this.el.parentNode.classList.add('readyToAdd');
@@ -170,6 +175,8 @@ class CalendarCell extends Reactor {
     });
 
     this.el.addEventListener('mouseleave', () => {
+      if (this.locked) return;
+
       clearTimeout(addTimeout);
       if (!this.el.parentNode.classList.contains('readyToAdd')) return;
 
@@ -370,6 +377,7 @@ class CalendarTable {
             : null,
           this.el,
           this.id,
+          locked,
         );
         cell.addEventListener('insertElement', this.insertCell.bind(this));
 
@@ -460,10 +468,11 @@ class CalendarTable {
   }
 
   scrollToNextDay() {
-    const currentDayIndex = this.otherDays.findIndex(
+    console.log('scroll to next day');
+    let currentDayIndex = this.otherDays.findIndex(
       day => day.table.id === this.id,
     );
-    if (currentDayIndex === this.otherDays.length - 1) return;
+    if (currentDayIndex === this.otherDays.length - 1) currentDayIndex -= 1;
 
     const lastDayIndex = this.lastDayIndexInViewport();
     const dayToScrollIndex = lastDayIndex;
