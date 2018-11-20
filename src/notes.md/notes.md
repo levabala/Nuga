@@ -1,6 +1,6 @@
 - кодировка
 - скролл по ctrl
-- позиционировка
+- // позиционировка
 - border-style: dots,
 - left-marker (expert)
 - count of visits

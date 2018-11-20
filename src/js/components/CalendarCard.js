@@ -344,7 +344,7 @@ class CalendarTable {
           'div',
           { class: 'content-block' },
           el('span', `${10 + i}`),
-          el('span', { class: 'secondaryTime' }, `:00`),
+          el('span', { class: 'secondaryTime' }, ` 00`),
         ),
       );
       this.timeCells.push(timeCell);

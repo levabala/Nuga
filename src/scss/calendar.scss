@@ -9,7 +9,7 @@
 
 $move-back-duration: 1s;
 $points-circle-size: $padding-normal * 3.3;
-$calendar-cell-width: 15em;
+$calendar-cell-width: $padding-normal * 33;
 $calendar-cell-height: 3.7em;
 $calendar-cells-per-page: 3;
 $calendar-cell-padding: $padding-normal;
@@ -124,9 +124,8 @@ $calendar-avatar-diameter: $padding-normal * 5.6;
 }
 
 .secondaryTime {
-  @extend .font-secondary;
-
-  color: gray;
+  @extend .font-secondary-little;
+  vertical-align: top;
 }
 
 .calendarCell-container {
@@ -138,7 +137,7 @@ $calendar-avatar-diameter: $padding-normal * 5.6;
 }
 
 .personCell {
-  background: white;
+  background: $color-calendar-cell-background;
   transition: background 0.5s;
 }
 
@@ -151,7 +150,7 @@ $calendar-avatar-diameter: $padding-normal * 5.6;
 }
 
 .personCell.readyToBeDropped {
-  background: rgb(241, 247, 255);
+  background: $color-calendar-cell-ready-to-be-dropped;
   transition: background 0.5s;
 }
 
@@ -161,7 +160,7 @@ $calendar-avatar-diameter: $padding-normal * 5.6;
 }
 
 .calendarCell.readyToGetDrop {
-  background: rgba(191, 210, 255, 0.3);
+  background: $color-calendar-cell-ready-to-get-drop;
   transition: background 0.5s;
 }
 
@@ -207,6 +206,7 @@ $calendar-avatar-diameter: $padding-normal * 5.6;
   border-width: $thin-border-size;
 }
 
+/*
 .calendarCell .points {
   $padding-rate: 1.15;
   $max-points-digits: 2;
@@ -221,15 +221,34 @@ $calendar-avatar-diameter: $padding-normal * 5.6;
   height: $points-circle-size;
   padding: $points-circle-size * ($padding-rate - 1);
 
-  background: rgba(221, 221, 221, 0.514);
+  background: $color-calendar-points-background;
 
   display: flex;
   justify-content: center;
   align-items: center;
 
-  font-size: 13px; // $points-circle-size;
+  //13px; // $points-circle-size;
+  line-height: $padding-normal;
 
   margin-left: $left-margin;
+} */
+
+.calendarCell .points {
+  @extend .font-primary;
+
+  display: block;
+  width: $points-circle-size;
+  height: $points-circle-size;
+  padding: $padding-normal;
+  border-radius: 50%;
+
+  font-size: $points-circle-size / 2.5;
+  line-height: $points-circle-size;
+  font-weight: bold;
+
+  text-align: center;
+
+  background: $color-calendar-points-background;
 }
 
 .avatar {

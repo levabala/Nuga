@@ -1,4 +1,4 @@
-// @flow 
+// @flow
 
 import BioCard from '../components/BioCard';
 import type { BioData } from '../components/BioCard';
@@ -23,15 +23,18 @@ const bioData: BioData = {
     ['Телефон', new PhoneData({ phone_number: '+371 28481181' })],
     ['Возраст', new AgeData({ birthDate: new Date(1971, 10, 21) })],
     ['Рейтинг', new TextData({ text: '20' })],
-    ['Друзья', new DataCollection([
-      persons.get('Евгения', 'Коршова'),
-      persons.get('Дмитрий', 'Дюжов'),
-      persons.get('Мария', 'Першина'),
-    ])],
+    [
+      'Друзья',
+      new DataCollection([
+        persons.get('Евгения', 'Коршова'),
+        persons.get('Дмитрий', 'Дюжов'),
+        persons.get('Мария', 'Першина'),
+      ]),
+    ],
     ['Средний чек', new MoneyData({ amount: 500, currency: 'eur' })],
     ['Пригласил/а', persons.get('Мария', 'Першина')],
   ]),
-  avatarURL: 'images/avatar.png',
+  avatarURL: '/src/images/avatar.png',
 };
 
 const card = new BioCard(bioData);
