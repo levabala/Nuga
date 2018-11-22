@@ -315,12 +315,12 @@ class CalendarTable {
       const r = boundRect.x + boundRect.width - 60;
       // console.log(Math.floor(n - l));
 
-      // console.log(Math.round(l), Math.round(n), Math.round(r));
       const index = this.getTableByY(target);
       if (index === -1) return;
 
       const targetTable = this.otherDays[index];
 
+      console.log(Math.round(l), Math.round(n), Math.round(r));
       // TODO: optimize
       if (n > r) {
         this.constructor.turnPageRight(targetTable);
@@ -608,6 +608,7 @@ class CalendarTable {
 
   static turnPageRight(t) {
     const target = t.table;
+    console.log(target.scrolledCellIndex);
 
     target.scrolledCellIndex = Math.min(
       target.scrolledCellIndex + target.cellsPerPage,
@@ -619,6 +620,7 @@ class CalendarTable {
 
   static turnPageLeft(t) {
     const target = t.table;
+    console.log(target.scrolledCellIndex);
     target.scrolledCellIndex = Math.max(
       target.scrolledCellIndex - target.cellsPerPage,
       0,

@@ -15,6 +15,7 @@ function createDragMoveListener(tableDiv) {
 
     const tfr = `translate(${realX}px, ${realY}px)`;
     // console.log(Math.floor(realX), Math.floor(realY));
+    // console.log(Math.floor(x), Math.floor(y));
     // const tfr = `translate(${x + (srcl - initialSrcl)}px, ${y}px)`;
     // target.setAttribute('style', `webkitTransform: ${tfr}; transform: ${tfr}`);
 
@@ -25,10 +26,14 @@ function createDragMoveListener(tableDiv) {
     target.setAttribute('data-x', x);
     target.setAttribute('data-y', y);
 
-    tableDiv.dispatchEvent(
-      new CustomEvent('draggableMoved', {
-        detail: target,
-      }),
+    setTimeout(
+      () =>
+        tableDiv.dispatchEvent(
+          new CustomEvent('draggableMoved', {
+            detail: target,
+          }),
+        ),
+      0,
     );
   };
 }
