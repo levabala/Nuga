@@ -9,3 +9,7 @@
 - strict
 - small borders
 - sticky positions (on tops)
+
+#done
+
+- changed cursor

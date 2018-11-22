@@ -29,12 +29,17 @@ class ReadyToAddCell {
           el(
             'i',
             {
-              class: 'material-icons',
-              style: 'padding: 0',
+              class: 'material-icons addButton',
             },
             'add',
           ),
-          'Добавить запись',
+          el(
+            'span',
+            {
+              class: 'text',
+            },
+            'Добавить запись',
+          ),
         ),
       ),
     );
@@ -225,6 +230,7 @@ class CalendarCell extends Reactor {
     setChildren(this.container, this.personCell);
 
     interact(this.personCell.el).draggable(generateConfig(this.parentTableDiv));
+    interact(this.personCell.el).styleCursor(false);
   }
 
   // modifyPersonByCell(cell) {}
@@ -320,7 +326,7 @@ class CalendarTable {
 
       const targetTable = this.otherDays[index];
 
-      console.log(Math.round(l), Math.round(n), Math.round(r));
+      // console.log(Math.round(l), Math.round(n), Math.round(r));
       // TODO: optimize
       if (n > r) {
         this.constructor.turnPageRight(targetTable);
@@ -371,7 +377,7 @@ class CalendarTable {
       // test
 
       for (let i2 = 0; i2 < width; i2++) {
-        const locked = Math.random() > 0.8;
+        const locked = Math.random() > 0; // 0.8;
         const exist = Math.random() > 0.7;
 
         const cell = new CalendarCell(
