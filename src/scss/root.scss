@@ -1,7 +1,6 @@
-$padding-normal: 0.5em;
-$padding-card: $padding-normal * 8;
-$thin-border-size: 0.0625em; // 1px
-
+$padding-normal: 10px;
+$padding-card: $padding-normal * 6;
+$thin-border-size: 1px;
 .elevation-max {
   @extend .mdc-elevation--z16;
 }

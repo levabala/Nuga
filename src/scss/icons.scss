@@ -1,0 +1,4 @@
+@function get-negative-margin-plus-icon($font-size) {
+  $internal-padding-coeff: 30 / 105;
+  @return ($font-size * $internal-padding-coeff);
+}

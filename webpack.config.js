@@ -53,12 +53,21 @@ module.exports = {
             },
           },
           {
+            loader: 'resolve-url-loader',
+            // options: {...}
+          },
+
+          {
             loader: 'sass-loader',
             options: {
               includePaths: ['./node_modules'],
             },
           },
         ],
+      },
+      {
+        test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: 'file-loader',
       },
     ],
   },

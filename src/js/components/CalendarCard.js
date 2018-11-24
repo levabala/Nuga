@@ -96,7 +96,7 @@ class PersonCell {
           el(
             'div',
             { class: 'content-block' },
-            el('div', { class: 'points' }, this.person.points),
+            el('span', { class: 'points' }, this.person.points),
           ),
         ),
       ],
@@ -168,8 +168,10 @@ class CalendarCell extends Reactor {
     let addTimeout = null;
     const enterTime = 0; // 100;
 
+    // FIXIT: blinking when point on bottom border
     this.el.addEventListener('mouseenter', () => {
-      if (this.locked) return;
+      if (this.locked || this.el.parentNode.classList.contains('readyToAdd'))
+        return;
 
       addTimeout = setTimeout(() => {
         if (this.personCell.mock) {
@@ -181,6 +183,7 @@ class CalendarCell extends Reactor {
 
     this.el.addEventListener('mouseleave', () => {
       if (this.locked) return;
+      // return;
 
       clearTimeout(addTimeout);
       if (!this.el.parentNode.classList.contains('readyToAdd')) return;
@@ -377,7 +380,7 @@ class CalendarTable {
       // test
 
       for (let i2 = 0; i2 < width; i2++) {
-        const locked = Math.random() > 0; // 0.8;
+        const locked = Math.random() > 1; // 0.8;
         const exist = Math.random() > 0.7;
 
         const cell = new CalendarCell(

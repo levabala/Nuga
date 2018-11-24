@@ -1,23 +1,65 @@
 @import 'colors.scss';
+// @import url('https://fonts.googleapis.com/css?family=Open+Sans:semibold,bold,light');
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/src/fonts/OpenSans-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Open Sans Bold';
+  src: url('/src/fonts/OpenSans-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Open Sans SemiBold';
+  src: url('/src/fonts/OpenSans-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Open Sans Light';
+  src: url('/src/fonts/OpenSans-Light.ttf') format('truetype');
+}
 
 .font-header {
-  font-size: 1.5em;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 25px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.font-header-bold {
+  font-family: 'Open Sans SemiBold', sans-serif;
+  font-size: 25px;
 }
 
 .font-primary {
-  font-size: 1em;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.font-primary-bold {
+  font-size: 14px;
+  font-family: 'Open Sans SemiBold', sans-serif;
 }
 
 .font-secondary {
-  font-size: 0.85em;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 16px;
+  font-family: 'Open Sans Light', sans-serif;
+  color: $color-secondary-text;
+}
+
+.font-points-circle {
+  font-size: 10px;
+  font-family: 'Open Sans Bold', sans-serif;
+}
+
+.font-secondary-middle {
+  font-size: 12px;
+  font-family: 'Open Sans Light', sans-serif;
   color: $color-secondary-text;
 }
 
 .font-secondary-little {
-  font-size: 0.5em;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 8px;
+  font-family: 'Open Sans Light', sans-serif;
   color: $color-secondary-text;
 }
