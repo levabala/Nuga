@@ -84,7 +84,26 @@ class PersonCell {
               el(
                 'div',
                 { class: 'primary-info' },
-                `${this.person.surname} ${this.person.name}`,
+                el(
+                  'span',
+                  { class: '' },
+                  `${this.person.surname} ${this.person.name}`,
+                ),
+                el(
+                  'span',
+                  { class: 'visitsCount' },
+                  ` ${this.person.visitsCount}`,
+                ),
+                el(
+                  'span',
+                  {
+                    class: 'grade',
+                    style: `color: ${
+                      { A: 'blue', B: 'green', C: 'red' }[this.person.grade]
+                    }`,
+                  },
+                  ` ${this.person.grade}`,
+                ),
               ),
               el('div', { class: 'secondary-info' }, this.person.code),
             ]),

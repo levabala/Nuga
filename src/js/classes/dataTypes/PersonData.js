@@ -5,6 +5,7 @@ import DataInterface from './DataInterface';
 import PersonTooltip from '../PersonTooltip';
 
 const person_tooltips_shown = {};
+const grades = ['A', 'B', 'C']; // , 'D', 'E', 'F'];
 class PersonData implements DataInterface {
   constructor({ name, surname, url = '/src/images/avatar.png' }) {
     this.name = name;
@@ -12,7 +13,8 @@ class PersonData implements DataInterface {
     this.url = url;
     this.points = Math.round(Math.random() * 20).toString();
     this.code = Math.round(Math.random() * 10000000 + 1000000).toString();
-    this.visitsCount = Math.round(Math.random() * 13);
+    this.visitsCount = Math.round(Math.random() * 130);
+    this.grade = grades[Math.round(Math.random() * (grades.length - 1))];
     this.visits = [];
   }
 

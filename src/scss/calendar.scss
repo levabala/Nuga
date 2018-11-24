@@ -33,7 +33,7 @@ $add-cell-button-width: 26px;
 
 .calendar-footer .secondary-info {
   @extend .font-secondary;
-  vertical-align: text-top;
+  vertical-align: top;
 }
 
 .calendar-day:focus {
@@ -205,12 +205,19 @@ $add-cell-button-width: 26px;
 
 .calendarCell .text-info .primary-info {
   @extend .font-primary-bold;
+}
+
+.calendarCell .text-info .primary-info .visitsCount {
+  @extend .font-secondary-little;
   vertical-align: top;
+}
+
+.calendarCell .text-info .primary-info .grade {
+  @extend .font-primary;
 }
 
 .calendarCell .text-info .secondary-info {
   @extend .font-secondary-middle;
-  vertical-align: bottom;
 }
 
 .calendar-table-cell.draggingOrigin {
