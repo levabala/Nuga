@@ -340,9 +340,9 @@ class CalendarTable {
       }
 
       const boundRect = this.el.getBoundingClientRect();
-      const l = targetBoundRect.width;
+      const l = targetBoundRect.width / 2;
       const n = targetBoundRect.x + targetBoundRect.width / 2;
-      const r = boundRect.x; // + boundRect.width;
+      const r = boundRect.x + boundRect.width - targetBoundRect.width / 2;
       // console.log(Math.floor(n - l));
 
       const index = this.getTableByY(target);
@@ -490,13 +490,16 @@ class CalendarTable {
     return isVisible;
   }
 
+  /* eslint-disable */
   updateLayout() {
     // this.updateLeftMargin();
   }
 
+  /*
   updateTableWidth() {
     function calcWidth(pagesCount) {}
-  }
+  } 
+  */
 
   updateLeftMargin() {
     this.lastTimeCellWidth = this.lastTimeCellWidth || 0;

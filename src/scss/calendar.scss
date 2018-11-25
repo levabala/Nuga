@@ -158,11 +158,10 @@ $add-cell-button-width: 26px;
 }
 
 .personCell.isDragging {
-  @extend .elevation-normal;
+  box-shadow: 10px 10px 30px 4px #eee;
   transition: box-shadow 0.3s ease-in-out, background 0.5s;
   z-index: 999;
   position: absolute;
-  // position: fixed;
 }
 
 .personCell.readyToBeDropped {
