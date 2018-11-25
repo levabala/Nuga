@@ -68,6 +68,7 @@ $add-cell-button-width: 26px;
   padding-top: 0;
   width: ($calendar-cell-width + $thin-border-size) * $calendar-cells-per-page +
     $thin-border-size;
+  // width: 100%;
 
   // FIXIT: fix bug with little zoom (~70%) when right border disappears
 }

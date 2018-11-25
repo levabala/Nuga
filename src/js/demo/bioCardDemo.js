@@ -41,7 +41,7 @@ const card = new BioCard(bioData);
 const previousStyle = card.el.getAttribute('style');
 card.el.setAttribute(
   'style',
-  `${previousStyle || ''} position: absolute; left: 20px; top: 20px`,
+  `${previousStyle || ''} position: absolute; left: 20px; top: 20px;`,
 );
 export default card;
 export const bioCardDemo = card;

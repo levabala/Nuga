@@ -7,10 +7,12 @@ import PersonData from '../classes/dataTypes/PersonData';
 import generateConfig from '../scripts/drag';
 import dropConfig from '../scripts/drop';
 import DayData from '../classes/dataTypes/DayData';
+// import CSS_VARIABLES from '../../scss/root.scss';
 
 const emptyPerson = new PersonData({ name: '', surname: '' });
 
 interact.dynamicDrop(true);
+// console.log(CSS_VARIABLES);
 
 class ReadyToAddCell {
   constructor() {
@@ -338,9 +340,9 @@ class CalendarTable {
       }
 
       const boundRect = this.el.getBoundingClientRect();
-      const l = targetBoundRect.width / 2 + 60;
+      const l = targetBoundRect.width;
       const n = targetBoundRect.x + targetBoundRect.width / 2;
-      const r = boundRect.x + boundRect.width - 60;
+      const r = boundRect.x; // + boundRect.width;
       // console.log(Math.floor(n - l));
 
       const index = this.getTableByY(target);
@@ -443,9 +445,9 @@ class CalendarTable {
       }
     };
 
-    // launch time column width fixer
-    this.updateLeftMargin();
-    setInterval(() => this.updateLeftMargin(), 300);
+    // launch js-performable layout fixers
+    this.updateLayout();
+    setInterval(() => this.updateLayout(), 300);
   }
 
   getTableByY(element) {
@@ -486,6 +488,14 @@ class CalendarTable {
       top + height > window.pageYOffset &&
       left + width > window.pageXOffset;
     return isVisible;
+  }
+
+  updateLayout() {
+    // this.updateLeftMargin();
+  }
+
+  updateTableWidth() {
+    function calcWidth(pagesCount) {}
   }
 
   updateLeftMargin() {
@@ -621,6 +631,16 @@ class CalendarTable {
       behavior: 'smooth',
       inline: 'start',
       block: 'nearest',
+    });
+
+    // force updating left margin
+    setTimeout(() => {
+      console.log('update!');
+      const table = element.parentNode.parentNode.parentNode;
+      const styles = getComputedStyle(table);
+      const marginLeft = styles.getPropertyValue('margin-left');
+      console.log(marginLeft);
+      table.style['margin-left'] = marginLeft;
     });
 
     // TODO: enable dropzone only on elements into view
