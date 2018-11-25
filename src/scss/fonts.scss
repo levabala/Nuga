@@ -36,9 +36,14 @@
   font-family: 'Open Sans', sans-serif;
 }
 
-.font-primary-bold {
+.font-primary-semibold {
   font-size: 14px;
   font-family: 'Open Sans SemiBold', sans-serif;
+}
+
+.font-primary-bold {
+  font-size: 14px;
+  font-family: 'Open Sans Bold', sans-serif;
 }
 
 .font-secondary {
@@ -61,5 +66,11 @@
 .font-secondary-little {
   font-size: 9px;
   font-family: 'Open Sans Light', sans-serif;
+  color: $color-secondary-text;
+}
+
+.font-secondary-little-semibold {
+  font-size: 9px;
+  font-family: 'Open Sans SemiBold', sans-serif;
   color: $color-secondary-text;
 }
