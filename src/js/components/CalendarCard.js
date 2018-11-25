@@ -7,12 +7,12 @@ import PersonData from '../classes/dataTypes/PersonData';
 import generateConfig from '../scripts/drag';
 import dropConfig from '../scripts/drop';
 import DayData from '../classes/dataTypes/DayData';
-// import CSS_VARIABLES from '../../scss/root.scss';
+import RootVariables from '../../scss/root.scss';
+import CalendarVariables from '../../scss/calendar.scss';
 
 const emptyPerson = new PersonData({ name: '', surname: '' });
 
 interact.dynamicDrop(true);
-// console.log(CSS_VARIABLES);
 
 class ReadyToAddCell {
   constructor() {
@@ -270,6 +270,7 @@ class CalendarTable {
     this.cells = [];
     this.otherDays = otherDays;
     this.id = data.date.format('DD MMM YY');
+    this.lastTableWidth = 0;
 
     const arr = [];
     const height = 5;
@@ -340,9 +341,9 @@ class CalendarTable {
       }
 
       const boundRect = this.el.getBoundingClientRect();
-      const l = targetBoundRect.width / 2;
+      const l = targetBoundRect.width / 5;
       const n = targetBoundRect.x + targetBoundRect.width / 2;
-      const r = boundRect.x + boundRect.width - targetBoundRect.width / 2;
+      const r = boundRect.x + boundRect.width;
       // console.log(Math.floor(n - l));
 
       const index = this.getTableByY(target);
@@ -446,7 +447,7 @@ class CalendarTable {
     };
 
     // launch js-performable layout fixers
-    this.updateLayout();
+    setTimeout(() => this.updateLayout(), 0);
     setInterval(() => this.updateLayout(), 300);
   }
 
@@ -490,17 +491,47 @@ class CalendarTable {
     return isVisible;
   }
 
-  /* eslint-disable */
   updateLayout() {
     // this.updateLeftMargin();
+    this.updateCellsPerPage();
+    this.updateTableWidth();
   }
 
-  /*
-  updateTableWidth() {
-    function calcWidth(pagesCount) {}
-  } 
-  */
+  /* eslint-disable-next-line */
 
+  updateCellsPerPage() {
+    const cardRect = this.el.parentNode.parentNode.getBoundingClientRect();
+    const tableRect = this.el.getBoundingClientRect();
+    const bodyRect = document.body.getBoundingClientRect();
+    const leftBorder = tableRect.x;
+    const rightBorder = bodyRect.width - cardRect.x;
+    const potentialWidth = rightBorder - leftBorder;
+    const cellWidth = parseInt(CalendarVariables.calendarCellWidthReal, 10);
+
+    const pagesCount = potentialWidth / cellWidth;
+
+    this.cellsPerPage = Math.floor(pagesCount);
+  }
+
+  updateTableWidth() {
+    function calcWidth(cellsPerPage) {
+      const cellWidth = parseInt(CalendarVariables.calendarCellWidth, 10);
+      const borderSize = parseInt(RootVariables.thinBorderSize, 10);
+
+      return (cellWidth + borderSize) * cellsPerPage + borderSize;
+    }
+
+    const width = Math.ceil(calcWidth(this.cellsPerPage));
+
+    if (width === this.lastTableWidth) return;
+    this.lastTableWidth = width;
+
+    this.el.style.width = `${width}px`;
+
+    console.log(width);
+  }
+
+  // UNUSABLE
   updateLeftMargin() {
     this.lastTimeCellWidth = this.lastTimeCellWidth || 0;
     let maxWidth = 0;
@@ -633,7 +664,7 @@ class CalendarTable {
     element.parentNode.scrollIntoView({
       behavior: 'smooth',
       inline: 'start',
-      block: 'nearest',
+      block: 'end',
     });
 
     // force updating left margin

@@ -12,13 +12,22 @@
 $move-back-duration: 1s;
 $points-circle-size: 30px;
 $calendar-cell-width: 300px;
+$calendar-cell-width-real: $calendar-cell-width + $thin-border-size * 2;
 $calendar-cell-height: 70px + 5px;
+$calendar-cell-height-real: $calendar-cell-height + $thin-border-size * 2;
 $calendar-cells-per-page: 3;
 $calendar-cell-padding: 10px;
 $calendar-avatar-diameter: 50px + 5px;
 $add-cell-button-left-margin: 27px;
 $add-cell-button-right-margin: 35px;
 $add-cell-button-width: 26px;
+
+:export {
+  calendarCellWidth: $calendar-cell-width;
+  calendarCellWidthReal: $calendar-cell-width-real;
+  calendarCellHeight: $calendar-cell-height;
+  calendarCellHeightReal: $calendar-cell-height-real;
+}
 
 .calendar-footer {
   margin-left: $padding-card + $padding-normal * 2;
@@ -64,7 +73,8 @@ $add-cell-button-width: 26px;
   border-collapse: collapse;
   margin-right: $padding-card;
   margin-left: $padding-card;
-  padding-bottom: 1px;
+  padding-bottom: $thin-border-size;
+  padding-left: $thin-border-size;
   padding-top: 0;
   width: ($calendar-cell-width + $thin-border-size) * $calendar-cells-per-page +
     $thin-border-size;
@@ -228,8 +238,8 @@ $add-cell-button-width: 26px;
 }
 
 .calendar-table-cell.draggingOrigin {
-  border-style: dashed;
-  border-width: $thin-border-size;
+  // border-style: dashed;
+  // border-width: $thin-border-size;
   // outline-style: dashed;
 }
 
@@ -247,6 +257,11 @@ $add-cell-button-width: 26px;
     transparent $thin-border-size,
     transparent $step
   );
+}
+
+.calendarCell.draggingOrigin {
+  margin: -$thin-border-size;
+  box-shadow: inset 0 0 0 $thin-border-size $color-select-border;
 }
 
 .calendarCell .points {
@@ -313,8 +328,8 @@ $add-cell-button-width: 26px;
   margin: -$thin-border-size;
   box-shadow: inset 0 0 0 $thin-border-size $color-select-border;
 
-  height: $calendar-cell-height + $thin-border-size * 2;
-  width: $calendar-cell-width + $thin-border-size * 2;
+  height: $calendar-cell-height-real;
+  width: $calendar-cell-width-real;
   position: absolute;
   text-align: center;
   left: 0px;

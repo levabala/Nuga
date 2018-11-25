@@ -37,6 +37,7 @@ module.exports = {
       },
       {
         test: /\.scss$/,
+        /*
         use: [
           {
             loader: 'file-loader',
@@ -57,6 +58,16 @@ module.exports = {
             // options: {...}
           },
 
+          {
+            loader: 'sass-loader',
+            options: {
+              includePaths: ['./node_modules'],
+            },
+          },
+        ], */
+        use: [
+          'style-loader', // creates style nodes from JS strings
+          'css-loader', // translates CSS into CommonJS
           {
             loader: 'sass-loader',
             options: {

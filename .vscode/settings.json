@@ -20,6 +20,20 @@
       "borderRadius": "2px", //NOTE: using borderRadius along with `border` or you will see nothing change
       "backgroundColor": "rgba(0,0,0,.2)"
       //other styling properties goes here ...
+    },
+    {
+      "text": "DEPRECATED",
+      // "border": "1px solid red",
+      "borderRadius": "2px", //NOTE: using borderRadius along with `border` or you will see nothing change
+      "backgroundColor": "rgba(0,0,0,.2)",
+      "color": "darkorange"
+      //other styling properties goes here ...
+    },
+    {
+      "text": "UNUSABLE",
+      "color": "#9999ff",
+      "borderRadius": "2px",
+      "backgroundColor": "rgba(0,0,0,.2)"
     }
   ]
 }

@@ -3,6 +3,11 @@
 $padding-normal: 10px;
 $padding-card: $padding-normal * 6;
 $thin-border-size: 1px;
+
+:export {
+  thinBorderSize: $thin-border-size;
+}
+
 .elevation-max {
   @extend .mdc-elevation--z16;
 }
@@ -13,8 +18,4 @@ $thin-border-size: 1px;
 
 .elevation-min {
   @extend .mdc-elevation--z4;
-}
-
-:export {
-  thinBorderSize: $thin-border-size;
 }
