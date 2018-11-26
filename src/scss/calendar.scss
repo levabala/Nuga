@@ -9,18 +9,23 @@
 @import 'animations.scss';
 @import 'node_modules/mathsass/dist/math';
 
-$move-back-duration: 1s;
+$height-change: -8px;
+$width-change: -20px;
+
+$move-back-duration: 0.5s;
 $points-circle-size: 30px;
-$calendar-cell-width: 300px;
+$calendar-cell-width: 300px + $width-change;
 $calendar-cell-width-real: $calendar-cell-width + $thin-border-size * 2;
-$calendar-cell-height: 70px + 5px;
+$calendar-cell-height: 70px + $height-change;
 $calendar-cell-height-real: $calendar-cell-height + $thin-border-size * 2;
 $calendar-cells-per-page: 3;
 $calendar-cell-padding: 10px;
-$calendar-avatar-diameter: 50px + 5px;
+$calendar-avatar-diameter: 50px + $height-change;
 $add-cell-button-left-margin: 27px;
 $add-cell-button-right-margin: 35px;
 $add-cell-button-width: 26px;
+$initial-table-width: ($calendar-cell-width + $thin-border-size) *
+  $calendar-cells-per-page + $thin-border-size;
 
 :export {
   calendarCellWidth: $calendar-cell-width;
@@ -49,9 +54,15 @@ $add-cell-button-width: 26px;
   outline: none;
 }
 
+.calendar-day {
+  // position: relative;
+  overflow: hidden;
+}
+
 .calendar-card {
   // padding-bottom: $padding-normal * 4;
-  // position: relative;
+  position: relative;
+
   overflow: hidden;
   margin: -$padding-card;
   margin-bottom: $padding-card;
@@ -76,8 +87,7 @@ $add-cell-button-width: 26px;
   padding-bottom: $thin-border-size;
   padding-left: $thin-border-size;
   padding-top: 0;
-  width: ($calendar-cell-width + $thin-border-size) * $calendar-cells-per-page +
-    $thin-border-size;
+  width: $initial-table-width;
   // width: 100%;
 
   // FIXIT: fix bug with little zoom (~70%) when right border disappears
@@ -163,15 +173,16 @@ $add-cell-button-width: 26px;
 }
 
 .personCell {
-  background: $color-calendar-cell-background;
+  background: transparent;
   transition: background 0.5s;
 }
 
 .personCell.isDragging {
-  box-shadow: 10px 10px 30px 4px #eee;
-  transition: box-shadow 0.3s ease-in-out, background 0.5s;
+  position: fixed;
+  box-shadow: 10px 10px 30px 4px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.3s ease-in-out; //, background 0.5s;
+  background: $color-calendar-cell-background;
   z-index: 999;
-  position: absolute;
 }
 
 .personCell.readyToBeDropped {

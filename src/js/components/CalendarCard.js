@@ -81,6 +81,7 @@ class PersonCell {
               src: this.person.url,
               alt: 'Avatar',
               class: 'avatar',
+              draggable: false,
             }),
             el('div', { class: 'text-info' }, [
               el(
@@ -497,8 +498,6 @@ class CalendarTable {
     this.updateTableWidth();
   }
 
-  /* eslint-disable-next-line */
-
   updateCellsPerPage() {
     const cardRect = this.el.parentNode.parentNode.getBoundingClientRect();
     const tableRect = this.el.getBoundingClientRect();
@@ -664,7 +663,7 @@ class CalendarTable {
     element.parentNode.scrollIntoView({
       behavior: 'smooth',
       inline: 'start',
-      block: 'end',
+      block: 'nearest',
     });
 
     // force updating left margin

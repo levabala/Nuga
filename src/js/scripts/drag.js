@@ -10,8 +10,9 @@ function createDragMoveListener(tableDiv) {
     const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
     // translate the element
-    const realX = x - srcl + (srcl - initialSrcl);
-    const realY = y;
+    const realX = x - srcl + (srcl - initialSrcl); // + horizontalFix;
+    const realY = y - window.scrollY;
+    // console.log(Math.floor(horizontalFix));
 
     const tfr = `translate(${realX}px, ${realY}px)`;
     // console.log(Math.floor(realX), Math.floor(realY));
@@ -111,7 +112,7 @@ function generateConfig(tableDiv) {
 
       timeout1 = setTimeout(() => {
         const tfrZERO = `translate(${-initialSrcl -
-          (srcl - initialSrcl)}px, 0px)`;
+          (srcl - initialSrcl)}px, ${-window.scrollY}px)`;
         // const tfrZERO = `translate(${0}px, ${0}px)`;
         target.style.webkitTransform = tfrZERO;
         target.style.transform = tfrZERO;
