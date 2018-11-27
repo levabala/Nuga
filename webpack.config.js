@@ -67,7 +67,7 @@ module.exports = {
         ], */
         use: [
           'style-loader', // creates style nodes from JS strings
-          'css-loader', // translates CSS into CommonJS
+          { loader: 'css-loader' },
           {
             loader: 'sass-loader',
             options: {

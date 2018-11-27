@@ -12,8 +12,10 @@
 $height-change: -8px;
 $width-change: -20px;
 
+$left-marker-width: 3px;
 $move-back-duration: 0.5s;
 $points-circle-size: 30px;
+$visits-count-margin: 2px;
 $calendar-cell-width: 300px + $width-change;
 $calendar-cell-width-real: $calendar-cell-width + $thin-border-size * 2;
 $calendar-cell-height: 70px + $height-change;
@@ -57,6 +59,7 @@ $initial-table-width: ($calendar-cell-width + $thin-border-size) *
 .calendar-day {
   // position: relative;
   overflow: hidden;
+  padding-bottom: $padding-card / 2;
 }
 
 .calendar-card {
@@ -114,6 +117,7 @@ $initial-table-width: ($calendar-cell-width + $thin-border-size) *
   @extend .calendar-border;
   display: table-cell;
   white-space: nowrap;
+  position: relative;
   // height: $calendar-cell-height;
   padding: 0;
 }
@@ -121,9 +125,19 @@ $initial-table-width: ($calendar-cell-width + $thin-border-size) *
 .calendar-border {
   border: dotted $color-secondary-border;
   border-width: $thin-border-size;
-  // box-sizing: border-box;
-  // outline: $thin-border-size dotted $color-secondary-border;
-  // outline-offset: -$thin-border-size;
+}
+
+// FIXIT: not working dot-dash style
+.calendar-additional-border {
+  position: absolute;
+  // background: none;
+  pointer-events: none;
+  left: -$thin-border-size;
+  top: -$thin-border-size;
+  right: -$thin-border-size;
+  bottom: 0px;
+  border: dashed $color-secondary-border;
+  border-width: $thin-border-size;
 }
 
 .calendar-table-cell.positionCell {
@@ -136,7 +150,7 @@ $initial-table-width: ($calendar-cell-width + $thin-border-size) *
   height: $padding-card;
   line-height: $padding-card;
   // here you can control if non-first headers will be displayed
-  // display: none;
+  display: none;
 
   .calendar-table.first & {
     display: table-cell;
@@ -175,6 +189,16 @@ $initial-table-width: ($calendar-cell-width + $thin-border-size) *
 .personCell {
   background: transparent;
   transition: background 0.5s;
+  position: relative;
+}
+
+.personCell .leftMarker {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  bottom: 0px;
+  width: $left-marker-width;
+  background: $color-mark-default;
 }
 
 .personCell.isDragging {
@@ -236,6 +260,9 @@ $initial-table-width: ($calendar-cell-width + $thin-border-size) *
 
 .calendarCell .text-info .primary-info .visitsCount {
   @extend .font-secondary-little-semibold;
+  margin-left: $visits-count-margin;
+  margin-right: $visits-count-margin;
+  padding: 0;
   color: black;
   vertical-align: top;
 }
@@ -249,8 +276,9 @@ $initial-table-width: ($calendar-cell-width + $thin-border-size) *
 }
 
 .calendar-table-cell.draggingOrigin {
-  // border-style: dashed;
-  // border-width: $thin-border-size;
+  border-style: dashed;
+  border-width: $thin-border-size;
+  border-color: $color-dragging-origin-cell-border;
   // outline-style: dashed;
 }
 

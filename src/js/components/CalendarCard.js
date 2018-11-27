@@ -7,8 +7,10 @@ import PersonData from '../classes/dataTypes/PersonData';
 import generateConfig from '../scripts/drag';
 import dropConfig from '../scripts/drop';
 import DayData from '../classes/dataTypes/DayData';
+
 import RootVariables from '../../scss/root.scss';
 import CalendarVariables from '../../scss/calendar.scss';
+import ColorVariables from '../../scss/colors.scss';
 
 const emptyPerson = new PersonData({ name: '', surname: '' });
 
@@ -71,6 +73,19 @@ class PersonCell {
         }`,
       },
       [
+        el('div', {
+          class: 'leftMarker',
+          style: `background: ${
+            Math.random() > 0.8
+              ? ColorVariables[
+                  `colorMark${Math.round(
+                    Math.random() * ColorVariables.colorsCount +
+                      ColorVariables.colorsStartIndex,
+                  )}`
+                ]
+              : 'none'
+          }`,
+        }),
         el(
           'div',
           { class: 'wrapper-block' },
@@ -426,6 +441,7 @@ class CalendarTable {
               class: `calendar-table-cell ${locked && !exist ? 'locked' : ''}`,
             },
             cell,
+            // el('div', { class: 'calendar-additional-border' }),
           ),
         );
         this.cells[i].push(cell);
@@ -526,8 +542,6 @@ class CalendarTable {
     this.lastTableWidth = width;
 
     this.el.style.width = `${width}px`;
-
-    console.log(width);
   }
 
   // UNUSABLE

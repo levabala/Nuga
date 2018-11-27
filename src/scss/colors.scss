@@ -10,6 +10,8 @@ $color-secondary-dark: #62757f;
 $color-secondary-text: #6b6b6b;
 $color-secondary-border: #9e9e9e;
 
+$color-dragging-origin-cell-border: #838383;
+
 $color-hover: #fcffdf;
 $color-select-background: #fafafa;
 $color-select-tap-background: #e4e3e3;
@@ -22,4 +24,20 @@ $color-calendar-points-background: #eeeeee;
 $color-calendar-cell-ready-to-get-drop: #fafafa;
 $color-calendar-cell-ready-to-be-dropped: #fafafa;
 
-// $color-mark-one:
+$color-mark-1: #78909c;
+$color-mark-2: #ab47bc;
+$color-mark-3: #ffa726;
+$color-mark-4: #26c6da;
+$color-mark-5: #c5e1a5;
+
+$color-mark-default: $color-mark-5;
+
+:export {
+  colorMark1: $color-mark-1;
+  colorMark2: $color-mark-2;
+  colorMark3: $color-mark-3;
+  colorMark4: $color-mark-4;
+  colorMark5: $color-mark-5;
+  colorsStartIndex: 1;
+  colorsCount: 5;
+}
