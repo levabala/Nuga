@@ -1,5 +1,5 @@
 const path = require('path');
-const autoprefixer = require('autoprefixer');
+// const autoprefixer = require('autoprefixer');
 
 module.exports = {
   entry: ['./src/js/main.js', './src/app.scss'],

@@ -15,6 +15,7 @@ class PersonData implements DataInterface {
     this.code = Math.round(Math.random() * 10000000 + 1000000).toString();
     this.visitsCount = Math.round(Math.random() * 130);
     this.grade = grades[Math.round(Math.random() * (grades.length - 1))];
+    this.leftMarker = Math.round(Math.random() * 5 + 1);
     this.visits = [];
   }
 

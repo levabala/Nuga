@@ -7,27 +7,27 @@ import DayData from '../classes/dataTypes/DayData';
 const persons = new PersonsList([
   new PersonData({
     name: 'Michael',
-    surname: 'Allen',
+    surname: 'Allen Dmirtievich',
     url: '/src/images/avatar1.jpeg',
   }),
   new PersonData({
     name: 'Patricia',
-    surname: 'Ball',
+    surname: 'Ball WithIn',
     url: '/src/images/avatar2.png',
   }),
   new PersonData({
     name: 'Andrew',
-    surname: 'Brewster',
+    surname: 'Brewster Afanasev',
     url: '/src/images/avatar3.jpeg',
   }),
   new PersonData({
     name: 'Philip',
-    surname: 'Capp',
+    surname: 'Capp', // -Big-Car',
     url: '/src/images/avatar4.jpeg',
   }),
   new PersonData({
     name: 'Derek',
-    surname: 'Carroll',
+    surname: 'Carroll', // Scroll To Bottom',
     url: '/src/images/avatar5.jpeg',
   }),
   new PersonData({
@@ -137,7 +137,7 @@ const card = new CalendarCard(days);
 
 card.el.setAttribute(
   'style',
-  `position: absolute; left: 20px; top: 20px;`, // right: 20px;`,
+  `position: absolute; left: 40px; top: 40px;`, // right: 20px;`,
 );
 
 export default card;

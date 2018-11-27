@@ -14,20 +14,23 @@ $width-change: -20px;
 
 $left-marker-width: 3px;
 $move-back-duration: 0.5s;
-$points-circle-size: 30px;
+$points-circle-size: 28px; // 30px;
 $visits-count-margin: 2px;
+$calendar-avatar-diameter: 50px; // + $height-change;
 $calendar-cell-width: 300px + $width-change;
 $calendar-cell-width-real: $calendar-cell-width + $thin-border-size * 2;
 $calendar-cell-height: 70px + $height-change;
 $calendar-cell-height-real: $calendar-cell-height + $thin-border-size * 2;
+$person-cell-primary-info-width: (
+  $calendar-cell-width - $padding-normal * 4 - $calendar-avatar-diameter -
+    $points-circle-size
+);
 $calendar-cells-per-page: 3;
 $calendar-cell-padding: 10px;
-$calendar-avatar-diameter: 50px + $height-change;
 $add-cell-button-left-margin: 27px;
 $add-cell-button-right-margin: 35px;
 $add-cell-button-width: 26px;
-$initial-table-width: ($calendar-cell-width + $thin-border-size) *
-  $calendar-cells-per-page + $thin-border-size;
+$initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 
 :export {
   calendarCellWidth: $calendar-cell-width;
@@ -91,6 +94,7 @@ $initial-table-width: ($calendar-cell-width + $thin-border-size) *
   padding-left: $thin-border-size;
   padding-top: 0;
   width: $initial-table-width;
+  position: static;
   // width: 100%;
 
   // FIXIT: fix bug with little zoom (~70%) when right border disappears
@@ -182,7 +186,7 @@ $initial-table-width: ($calendar-cell-width + $thin-border-size) *
   padding-left: $calendar-cell-padding;
   padding-right: $calendar-cell-padding;
   display: flex;
-  justify-content: space-between;
+  justify-content: left;
   height: $calendar-cell-height;
 }
 
@@ -194,7 +198,7 @@ $initial-table-width: ($calendar-cell-width + $thin-border-size) *
 
 .personCell .leftMarker {
   position: absolute;
-  left: 0px;
+  left: -$thin-border-size;
   top: 0px;
   bottom: 0px;
   width: $left-marker-width;
@@ -240,8 +244,20 @@ $initial-table-width: ($calendar-cell-width + $thin-border-size) *
   text-align: center;
 }
 
+.calendarCell .wrapper-block.text-block {
+  position: relative;
+  left: 0;
+}
+
+.calendarCell .wrapper-block.points-block {
+  position: absolute;
+  height: 100%;
+  right: $padding-normal;
+}
+
 .content-block {
   // make it centered vertically
+  display: inline-block;
   position: relative;
   top: 50%;
   transform: translateY(-50%);
@@ -249,13 +265,35 @@ $initial-table-width: ($calendar-cell-width + $thin-border-size) *
 
 .calendarCell .text-info {
   display: inline-block;
-  position: relative;
   text-align: left;
-  transform: translateY(25%);
+
+  // position: relative;
+  // text-align: left;
+  // transform: translateY(25%);
+
+  /*
+  height: 50%;
+  overflow: auto;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  border: solid black;
+  */
 }
 
 .calendarCell .text-info .primary-info {
   @extend .font-primary-semibold;
+  width: $person-cell-primary-info-width;
+}
+
+.calendarCell .text-info .primary-info .primary-info-block {
+  // white-space: nowrap;
+  //   display: inline-block;
+  float: left;
+  // width: auto;
 }
 
 .calendarCell .text-info .primary-info .visitsCount {
@@ -273,6 +311,7 @@ $initial-table-width: ($calendar-cell-width + $thin-border-size) *
 
 .calendarCell .text-info .secondary-info {
   @extend .font-secondary-middle;
+  clear: both;
 }
 
 .calendar-table-cell.draggingOrigin {
@@ -307,6 +346,7 @@ $initial-table-width: ($calendar-cell-width + $thin-border-size) *
   @extend .font-points-circle;
 
   display: inline-block;
+
   width: $points-circle-size;
   max-width: $points-circle-size;
   height: $points-circle-size;
@@ -327,12 +367,13 @@ $initial-table-width: ($calendar-cell-width + $thin-border-size) *
   @extend .avatar;
 
   .calendarCell & {
+    $m: ($calendar-cell-height - $calendar-avatar-diameter) / 2;
     width: $calendar-avatar-diameter;
     height: $calendar-avatar-diameter;
     object-fit: cover;
     margin-left: 0;
-    margin-top: $padding-normal;
-    margin-bottom: $padding-normal;
+    margin-top: $m;
+    margin-bottom: $m;
     margin-right: $calendar-cell-padding;
     display: inline-block;
   }

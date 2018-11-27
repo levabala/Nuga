@@ -76,16 +76,12 @@ class PersonCell {
         el('div', {
           class: 'leftMarker',
           style: `background: ${
-            Math.random() > 0.8
-              ? ColorVariables[
-                  `colorMark${Math.round(
-                    Math.random() * ColorVariables.colorsCount +
-                      ColorVariables.colorsStartIndex,
-                  )}`
-                ]
+            Math.random() > 0.4
+              ? ColorVariables[`colorMark${this.person.leftMarker}`]
               : 'none'
           }`,
         }),
+
         el(
           'div',
           { class: 'wrapper-block' },
@@ -98,29 +94,43 @@ class PersonCell {
               class: 'avatar',
               draggable: false,
             }),
+          ),
+        ),
+        el(
+          'div',
+          { class: 'wrapper-block text-block' },
+          el(
+            'div',
+            { class: 'content-block' },
+
             el('div', { class: 'text-info' }, [
               el(
                 'div',
                 { class: 'primary-info' },
                 el(
                   'span',
-                  { class: '' },
-                  `${this.person.surname} ${this.person.name}`,
+                  { class: 'primary-info-block' },
+                  `${this.person.surname} `,
                 ),
                 el(
                   'span',
-                  { class: 'visitsCount' },
-                  ` ${this.person.visitsCount}`,
-                ),
-                el(
-                  'span',
-                  {
-                    class: 'grade',
-                    style: `color: ${
-                      { A: 'blue', B: 'green', C: 'red' }[this.person.grade]
-                    }`,
-                  },
-                  ` ${this.person.grade}`,
+                  { class: 'primary-info-block' },
+                  el('span', { class: '' }, `${this.person.name}`),
+                  el(
+                    'span',
+                    { class: 'visitsCount' },
+                    ` ${this.person.visitsCount}`,
+                  ),
+                  el(
+                    'span',
+                    {
+                      class: '',
+                      style: `color: ${
+                        { A: 'blue', B: 'green', C: 'red' }[this.person.grade]
+                      }`,
+                    },
+                    ` ${this.person.grade}`,
+                  ),
                 ),
               ),
               el('div', { class: 'secondary-info' }, this.person.code),
@@ -129,7 +139,7 @@ class PersonCell {
         ),
         el(
           'div',
-          { class: 'wrapper-block' },
+          { class: 'wrapper-block points-block' },
           el(
             'div',
             { class: 'content-block' },
@@ -185,7 +195,7 @@ class CalendarCell extends Reactor {
     this.dayId = dayId;
 
     this.container = el('div', {
-      class: `.calendarCell-container`,
+      // class: `calendarCell-container`,
     });
 
     this.el = el(
@@ -392,7 +402,12 @@ class CalendarTable {
 
       positionCells.push(element);
     }
-    arr.push(el('div', { class: 'calendar-table-row' }, positionCells));
+    const positionsRow = el(
+      'div',
+      { class: 'calendar-table-row' },
+      positionCells,
+    );
+    // arr.push(el('div', { class: 'calendar-table-row' }, positionCells));
 
     // create main grid
     for (let i = 0; i < height; i++) {
@@ -450,7 +465,7 @@ class CalendarTable {
       arr.push(el('div', { class: 'calendar-table-row' }, arr2));
     }
 
-    setChildren(this.el, arr);
+    setChildren(this.el, [positionsRow, arr]);
 
     this.el.onkeyup = event => {
       if (event.keyCode === 39) {
@@ -533,7 +548,7 @@ class CalendarTable {
       const cellWidth = parseInt(CalendarVariables.calendarCellWidth, 10);
       const borderSize = parseInt(RootVariables.thinBorderSize, 10);
 
-      return (cellWidth + borderSize) * cellsPerPage + borderSize;
+      return cellWidth * cellsPerPage + borderSize * 3;
     }
 
     const width = Math.ceil(calcWidth(this.cellsPerPage));
@@ -691,14 +706,14 @@ class CalendarTable {
     });
 
     // TODO: enable dropzone only on elements into view
-    /*
+
     for (
       let x = this.scrolledCellIndex;
       x < this.scrolledCellIndex + this.cellsPerPage;
       x++
     ) {
       for (let y = 0; y < this.cells.length; y++) console.log(x, y);
-    } */
+    }
   }
 
   static turnPageRight(t) {
