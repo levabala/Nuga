@@ -367,9 +367,9 @@ class CalendarTable {
       }
 
       const boundRect = this.el.getBoundingClientRect();
-      const l = targetBoundRect.width / 5;
+      const l = (targetBoundRect.width / 3) * 2;
       const n = targetBoundRect.x + targetBoundRect.width / 2;
-      const r = boundRect.x + boundRect.width;
+      const r = boundRect.x + boundRect.width - targetBoundRect.width / 3;
       // console.log(Math.floor(n - l));
 
       const index = this.getTableByY(target);
@@ -545,10 +545,13 @@ class CalendarTable {
 
   updateTableWidth() {
     function calcWidth(cellsPerPage) {
-      const cellWidth = parseInt(CalendarVariables.calendarCellWidth, 10);
-      const borderSize = parseInt(RootVariables.thinBorderSize, 10);
-
-      return cellWidth * cellsPerPage + borderSize * 3;
+      const cellWidthReal = parseInt(
+        CalendarVariables.calendarCellWidthReal,
+        10,
+      );
+      // const borderSize = parseInt(RootVariables.thinBorderSize, 10);
+      // return cellWidth * cellsPerPage + borderSize * 3;
+      return cellWidthReal * cellsPerPage;
     }
 
     const width = Math.ceil(calcWidth(this.cellsPerPage));
@@ -557,6 +560,7 @@ class CalendarTable {
     this.lastTableWidth = width;
 
     this.el.style.width = `${width}px`;
+    setTimeout(() => this.updateVisibleCells());
   }
 
   // UNUSABLE
@@ -691,11 +695,27 @@ class CalendarTable {
     const element = this.cells[0][this.scrolledCellIndex].el;
     element.parentNode.scrollIntoView({
       behavior: 'smooth',
-      inline: 'start',
+      inline: 'start', // forward ? 'start' : 'end',
       block: 'nearest',
     });
 
+    /*
+    let timeout = null;
+    const interval = 500;
+    const processor = () => {
+      clearTimeout(timeout);
+
+      const fixer = () => {
+        // this.el.scrollLeft -= 100;
+        this.el.removeEventListener('scroll', processor);
+      };
+      timeout = setTimeout(fixer, interval);
+    };
+    this.el.addEventListener('scroll', processor);
+    */
+
     // force updating left margin
+    /*
     setTimeout(() => {
       console.log('update!');
       const table = element.parentNode.parentNode.parentNode;
@@ -703,17 +723,28 @@ class CalendarTable {
       const marginLeft = styles.getPropertyValue('margin-left');
       console.log(marginLeft);
       table.style['margin-left'] = marginLeft;
-    });
+    }); */
 
-    // TODO: enable dropzone only on elements into view
+    this.updateVisibleCells();
+  }
 
-    for (
-      let x = this.scrolledCellIndex;
-      x < this.scrolledCellIndex + this.cellsPerPage;
-      x++
-    ) {
-      for (let y = 0; y < this.cells.length; y++) console.log(x, y);
-    }
+  updateVisibleCells() {
+    const leftVisibleBorder = Math.min(
+      this.scrolledCellIndex,
+      this.cells[0].length - this.cellsPerPage,
+    );
+    console.log(leftVisibleBorder, this.scrolledCellIndex + this.cellsPerPage);
+    for (let y = 0; y < this.cells.length; y++)
+      for (let x = 0; x < this.cells[0].length; x++) {
+        const cell = this.cells[y][x];
+        if (
+          x >= leftVisibleBorder &&
+          x < this.scrolledCellIndex + this.cellsPerPage
+        )
+          cell.el.parentNode.classList.remove('hidden');
+        // if (!cell.personCell.el.classList.contains('isDragging'))
+        else cell.el.parentNode.classList.add('hidden');
+      }
   }
 
   static turnPageRight(t) {
@@ -725,7 +756,7 @@ class CalendarTable {
       target.cells[0].length - 1,
     );
     target.lastScrollDirection = 'start';
-    target.updateTableScrool('start');
+    target.updateTableScrool(true);
   }
 
   static turnPageLeft(t) {
@@ -736,7 +767,7 @@ class CalendarTable {
       0,
     );
     target.lastScrollDirection = 'end';
-    target.updateTableScrool('end');
+    target.updateTableScrool(false);
   }
 
   insertCell(args) {

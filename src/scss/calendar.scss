@@ -9,9 +9,10 @@
 @import 'animations.scss';
 @import 'node_modules/mathsass/dist/math';
 
-$height-change: -8px;
+$height-change: -4px;
 $width-change: -20px;
 
+$calendar-cell-phone-number-top-offset: 2px;
 $left-marker-width: 3px;
 $move-back-duration: 0.5s;
 $points-circle-size: 28px; // 30px;
@@ -62,7 +63,7 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 .calendar-day {
   // position: relative;
   overflow: hidden;
-  padding-bottom: $padding-card / 2;
+  // padding-bottom: $padding-card / 2;
 }
 
 .calendar-card {
@@ -91,7 +92,7 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   margin-right: $padding-card;
   margin-left: $padding-card;
   padding-bottom: $thin-border-size;
-  padding-left: $thin-border-size;
+  // padding-left: $thin-border-size;
   padding-top: 0;
   width: $initial-table-width;
   position: static;
@@ -124,6 +125,25 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   position: relative;
   // height: $calendar-cell-height;
   padding: 0;
+
+  transition: opacity 0.5s;
+  opacity: 1;
+}
+
+.calendar-table-cell.hidden + .calendar-table-cell {
+  border-right: none;
+}
+
+.calendar-table-cell.draggingOrigin.hidden {
+  transition: background 0.5s, opacity 0.5s, border-color 0.5s;
+  opacity: 1;
+  border-color: transparent;
+}
+
+.calendar-table-cell.hidden {
+  transition: background 0.5s, opacity 0.5s, border-color 0.5s;
+  opacity: 0;
+  border-color: transparent;
 }
 
 .calendar-border {
@@ -154,7 +174,7 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   height: $padding-card;
   line-height: $padding-card;
   // here you can control if non-first headers will be displayed
-  display: none;
+  // display: none;
 
   .calendar-table.first & {
     display: table-cell;
@@ -287,6 +307,7 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 .calendarCell .text-info .primary-info {
   @extend .font-primary-semibold;
   width: $person-cell-primary-info-width;
+  display: inline-block;
 }
 
 .calendarCell .text-info .primary-info .primary-info-block {
@@ -312,6 +333,7 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 .calendarCell .text-info .secondary-info {
   @extend .font-secondary-middle;
   clear: both;
+  margin-top: $calendar-cell-phone-number-top-offset;
 }
 
 .calendar-table-cell.draggingOrigin {
