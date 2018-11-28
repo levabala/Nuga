@@ -9,7 +9,7 @@ import generateConfig from '../scripts/drag';
 import dropConfig from '../scripts/drop';
 import DayData from '../classes/dataTypes/DayData';
 
-// import RootVariables from '../../scss/root.scss';
+import RootVariables from '../../scss/root.scss';
 import CalendarVariables from '../../scss/calendar.scss';
 import ColorVariables from '../../scss/colors.scss';
 
@@ -450,6 +450,7 @@ class CalendarTable {
           this.id,
           locked,
         );
+
         cell.addEventListener('insertElement', this.insertCell.bind(this));
 
         arr2.push(
@@ -464,6 +465,17 @@ class CalendarTable {
         );
         this.cells[i].push(cell);
       }
+
+      const finalizeMockCell = new CalendarCell(
+        width,
+        i,
+        null,
+        this.el,
+        this.id,
+        false,
+      );
+
+      arr2.push(finalizeMockCell);
 
       arr.push(el('div', { class: 'calendar-table-row' }, arr2));
     }
@@ -552,9 +564,9 @@ class CalendarTable {
         CalendarVariables.calendarCellWidthReal,
         10,
       );
-      // const borderSize = parseInt(RootVariables.thinBorderSize, 10);
+      const borderSize = parseInt(RootVariables.thinBorderSize, 10);
       // return cellWidth * cellsPerPage + borderSize * 3;
-      return cellWidthReal * cellsPerPage;
+      return (cellWidthReal + borderSize) * cellsPerPage; // + borderSize * 3;
     }
 
     const width = Math.ceil(calcWidth(this.cellsPerPage));
@@ -691,31 +703,41 @@ class CalendarTable {
   }
 
   updateTableScrool() {
+    this.scrolledCellIndex = Math.min(
+      this.scrolledCellIndex,
+      this.cells[0].length - this.cellsPerPage,
+    );
+
     console.log(
       `scroll to index ${this.scrolledCellIndex}(${this.scrolledCellIndex +
         1})`,
     );
     const element = this.cells[0][this.scrolledCellIndex].el;
+    // element.style.background = 'red';
     element.parentNode.scrollIntoView({
       behavior: 'smooth',
       inline: 'start', // forward ? 'start' : 'end',
       block: 'nearest',
     });
 
-    /*
     let timeout = null;
-    const interval = 500;
+    const interval = 100;
     const processor = () => {
       clearTimeout(timeout);
 
       const fixer = () => {
-        // this.el.scrollLeft -= 100;
+        const tableRect = this.el.getBoundingClientRect();
+        const cellRect = element.getBoundingClientRect();
+        const diff = cellRect.x - tableRect.x;
+        console.log(diff);
+        setTimeout(() => {
+          this.el.scrollLeft -= diff;
+        });
         this.el.removeEventListener('scroll', processor);
       };
       timeout = setTimeout(fixer, interval);
     };
     this.el.addEventListener('scroll', processor);
-    */
 
     // force updating left margin
     /*
