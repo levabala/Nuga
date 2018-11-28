@@ -124,7 +124,6 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   display: table-row;
   background: white;
   z-index: 100;
-  outline: solid black 1px;
 }
 
 .calendar-table-cell {
@@ -182,7 +181,8 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   // padding-bottom: $padding-normal * 2;
   height: $padding-card;
   line-height: $padding-card;
-  width: $add-cell-button-width;
+  // width: $calendar-cell-width;
+
   // here you can control if non-first headers will be displayed
   // display: none;
 

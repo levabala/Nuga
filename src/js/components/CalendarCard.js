@@ -950,6 +950,8 @@ class CalendarCard extends Card {
 
     this.data = data;
     this.days = [];
+    this.stickyPositionsRow = null;
+
     for (let i = 0; i < data.length; i++) {
       const day = new CalendarDay(data[i], i === 0, this.days);
       const child = el('div', { class: 'calendar-card' }, day);
@@ -963,22 +965,11 @@ class CalendarCard extends Card {
   makePositionsStickyAgain() {
     function stickPositionsRow(tableEl) {
       const row = tableEl.querySelector('.calendar-table-row.positions');
-      // console.log(row.childNodes);
-      for (let i = 0; i < row.childNodes.length; i++) {
-        const cell = row.childNodes[i];
-        cell.style.position = 'fixed';
-        cell.style.top = 0;
-        cell.style.left = 0;
-      }
-    }
 
-    for (let i = 0; i < this.days.length; i++) {
-      const tableEl = this.days[i].table.el;
-      const row = tableEl.querySelector('.calendar-table-row.positions');
-      for (let i2 = 0; i2 < row.childNodes.length; i2++) {
-        const cell = row.childNodes[i2];
-        cell.style.position = 'static';
-      }
+      row.style.position = 'sticky';
+      row.style.top = 0;
+      row.style.left = 0;
+      row.style['z-index'] = 100;
     }
 
     for (let i = 0; i < this.days.length; i++) {
