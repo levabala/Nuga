@@ -302,7 +302,7 @@ class CalendarTable {
     this.lastTableWidth = 0;
 
     const arr = [];
-    const height = 5;
+    const height = 10;
     const width = 10;
 
     this.el = el('div', {
@@ -721,7 +721,7 @@ class CalendarTable {
     });
 
     let timeout = null;
-    const interval = 100;
+    const interval = 200;
     const processor = () => {
       clearTimeout(timeout);
 
