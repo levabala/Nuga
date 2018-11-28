@@ -61,9 +61,7 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 }
 
 .calendar-day {
-  // position: relative;
   overflow: hidden;
-  // padding-bottom: $padding-card / 2;
 }
 
 .calendar-card {
@@ -116,6 +114,17 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 .calendar-table-row {
   display: table-row;
   overflow: hidden;
+}
+
+.calendar-table-row.positions {
+  // position: sticky;
+  // top: 0;
+
+  position: relative;
+  display: table-row;
+  background: white;
+  z-index: 100;
+  outline: solid black 1px;
 }
 
 .calendar-table-cell {
@@ -173,6 +182,7 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   // padding-bottom: $padding-normal * 2;
   height: $padding-card;
   line-height: $padding-card;
+  width: $add-cell-button-width;
   // here you can control if non-first headers will be displayed
   // display: none;
 

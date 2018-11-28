@@ -1,6 +1,7 @@
 // import * as moment from 'moment';
 import interact from 'interactjs';
 import { el, mount, setChildren, setAttr } from 'redom';
+// import Sticky from 'sticky-js';
 import Reactor from '../scripts/reactor';
 import Card from './Card';
 import PersonData from '../classes/dataTypes/PersonData';
@@ -15,6 +16,8 @@ import ColorVariables from '../../scss/colors.scss';
 const emptyPerson = new PersonData({ name: '', surname: '' });
 
 interact.dynamicDrop(true);
+// const sticky = new Sticky('.calendar-footer');
+// sticky.update();
 
 class ReadyToAddCell {
   constructor() {
@@ -404,7 +407,7 @@ class CalendarTable {
     }
     const positionsRow = el(
       'div',
-      { class: 'calendar-table-row' },
+      { class: 'calendar-table-row positions' },
       positionCells,
     );
     // arr.push(el('div', { class: 'calendar-table-row' }, positionCells));
@@ -952,6 +955,44 @@ class CalendarCard extends Card {
       const child = el('div', { class: 'calendar-card' }, day);
       this.days.push(day);
       mount(this.el, child);
+    }
+
+    window.addEventListener('scroll', this.makePositionsStickyAgain.bind(this));
+  }
+
+  makePositionsStickyAgain() {
+    function stickPositionsRow(tableEl) {
+      const row = tableEl.querySelector('.calendar-table-row.positions');
+      // console.log(row.childNodes);
+      for (let i = 0; i < row.childNodes.length; i++) {
+        const cell = row.childNodes[i];
+        cell.style.position = 'fixed';
+        cell.style.top = 0;
+        cell.style.left = 0;
+      }
+    }
+
+    for (let i = 0; i < this.days.length; i++) {
+      const tableEl = this.days[i].table.el;
+      const row = tableEl.querySelector('.calendar-table-row.positions');
+      for (let i2 = 0; i2 < row.childNodes.length; i2++) {
+        const cell = row.childNodes[i2];
+        cell.style.position = 'static';
+      }
+    }
+
+    for (let i = 0; i < this.days.length; i++) {
+      const tableEl = this.days[i].table.el;
+      const rect = tableEl.getBoundingClientRect();
+
+      // our case
+      if (rect.y < 0 && rect.y + rect.height > 0) {
+        stickPositionsRow(tableEl);
+        break;
+      }
+
+      // stop finding case
+      if (rect.y > 0) break;
     }
   }
 }
