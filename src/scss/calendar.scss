@@ -95,7 +95,7 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   // padding-left: $thin-border-size;
   padding-top: 0;
   width: $initial-table-width;
-  position: static;
+
   // width: 100%;
 
   // FIXIT: fix bug with little zoom (~70%) when right border disappears

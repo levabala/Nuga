@@ -8,7 +8,7 @@ import generateConfig from '../scripts/drag';
 import dropConfig from '../scripts/drop';
 import DayData from '../classes/dataTypes/DayData';
 
-import RootVariables from '../../scss/root.scss';
+// import RootVariables from '../../scss/root.scss';
 import CalendarVariables from '../../scss/calendar.scss';
 import ColorVariables from '../../scss/colors.scss';
 

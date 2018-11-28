@@ -137,7 +137,7 @@ const card = new CalendarCard(days);
 
 card.el.setAttribute(
   'style',
-  `position: absolute; left: 40px; top: 40px;`, // right: 20px;`,
+  `position: relative; left: 40px; top: 40px;`, // right: 20px;`,
 );
 
 export default card;
