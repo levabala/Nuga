@@ -556,6 +556,7 @@ class CalendarTable {
     const pagesCount = potentialWidth / cellWidth;
 
     this.cellsPerPage = Math.floor(pagesCount);
+    this.cellsPerPage = Math.min(this.cellsPerPage, this.cells[0].length);
   }
 
   updateTableWidth() {
@@ -703,9 +704,12 @@ class CalendarTable {
   }
 
   updateTableScrool() {
-    this.scrolledCellIndex = Math.min(
-      this.scrolledCellIndex,
-      this.cells[0].length - this.cellsPerPage,
+    this.scrolledCellIndex = Math.max(
+      Math.min(
+        this.scrolledCellIndex,
+        this.cells[0].length - this.cellsPerPage,
+      ),
+      0,
     );
 
     console.log(
