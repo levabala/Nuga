@@ -50,11 +50,22 @@ class ReadyToAddCell {
         ),
       ),
     );
+
+    this.el.addEventListener('mouseleave', () => {
+      console.log('lleave');
+      this.el.parentNode.dispatchEvent(new Event('mouseleave'));
+    });
   }
 }
 
 class PersonCell {
-  constructor(id: string, x: number, y: number, person: ?PersonData) {
+  constructor(
+    id: string,
+    x: number,
+    y: number,
+    person: ?PersonData,
+    first: boolean = false,
+  ) {
     this.person = person || emptyPerson;
     this.mock = person === null;
     this.x = x;
@@ -64,6 +75,10 @@ class PersonCell {
     this.id = null;
 
     // FIXIT: disable placing mocking empty element
+    if (this.mock && !first) {
+      this.el = null;
+      return;
+    }
     this.el = el(
       'div',
       {
@@ -160,17 +175,23 @@ class PersonCell {
   }
 
   discardMoveBackAnimation() {
+    if (this.mock) return;
+
     this.el.setAttribute('style', `width: auto`);
     this.el.classList.remove('isDragging');
     this.el.classList.remove('movingBack');
   }
 
   setId(id) {
+    if (this.mock) return;
+
     this.id = id;
     setAttr(this, 'data-person-id', id);
   }
 
   setDayId(id) {
+    if (this.mock) return;
+
     this.dayId = id;
     setAttr(this, 'data-day-id', id);
   }
@@ -187,7 +208,6 @@ class CalendarCell extends Reactor {
   ) {
     super();
 
-    const cell = this;
     this.parentTableDiv = tableDiv;
     this.x = x;
     this.y = y;
@@ -214,6 +234,53 @@ class CalendarCell extends Reactor {
     );
 
     this.setChildPerson(person);
+  }
+
+  setChildPerson(person: PersonData) {
+    const personCell = new PersonCell(
+      this.personId,
+      this.x,
+      this.y,
+      person,
+      this.x === 0,
+    );
+    this.setChildPersonCell(personCell);
+  }
+
+  setChildPersonCell(personCell) {
+    this.personCell = personCell;
+    this.personCell.x = this.x;
+    this.personCell.y = this.y;
+    this.personCell.setId(this.personId);
+    this.personCell.setDayId(this.dayId);
+    this.personCell.discardMoveBackAnimation();
+    // const mock = new ReadyToAddCell();
+    // if (Math.random() > 0.5) setChildren(this, mock);
+    // else setChildren(this, new PersonCell(0, 0, 0, null));
+    setChildren(this.container, this.personCell);
+
+    if (this.personCell.mock) return;
+
+    interact(this.personCell.el).draggable(generateConfig(this.parentTableDiv));
+    interact(this.personCell.el).styleCursor(false);
+  }
+
+  // modifyPersonByCell(cell) {}
+}
+
+class CalendarTableCell {
+  constructor(childCell, locked) {
+    this.calendarCell = childCell;
+
+    this.el = el(
+      'div',
+      {
+        class: `calendar-table-cell ${locked ? 'locked' : ''}`,
+      },
+      childCell,
+      // el('div', { class: 'calendar-additional-border' }),
+    );
+    const cell = this.calendarCell;
 
     let addTimeout = null;
     const enterTime = 0; // 100;
@@ -224,9 +291,9 @@ class CalendarCell extends Reactor {
         return;
 
       addTimeout = setTimeout(() => {
-        if (this.personCell.mock) {
-          this.el.parentNode.classList.add('readyToAdd');
-          setChildren(this.container, new ReadyToAddCell());
+        if (this.calendarCell.personCell.mock) {
+          this.el.classList.add('readyToAdd');
+          setChildren(this.calendarCell.container, new ReadyToAddCell());
         }
       }, enterTime);
     });
@@ -236,10 +303,10 @@ class CalendarCell extends Reactor {
       // return;
 
       clearTimeout(addTimeout);
-      if (!this.el.parentNode.classList.contains('readyToAdd')) return;
+      if (!this.el.classList.contains('readyToAdd')) return;
 
-      this.el.parentNode.classList.remove('readyToAdd');
-      setChildren(this.container, new PersonCell(0, 0, 0, null));
+      this.el.classList.remove('readyToAdd');
+      setChildren(this.calendarCell.container, new PersonCell(0, 0, 0, null));
     });
 
     const config = dropConfig;
@@ -249,6 +316,7 @@ class CalendarCell extends Reactor {
 
       console.log('drop');
 
+      // debugger;
       dropzoneElement.classList.remove('readyToGetDrop');
       draggableElement.classList.remove('readyToBeDropped');
       draggableElement.parentNode.parentNode.parentNode.classList.remove(
@@ -261,32 +329,7 @@ class CalendarCell extends Reactor {
       });
     };
     interact(this.el).dropzone(config);
-
-    this.registerEvent('insertElement');
   }
-
-  setChildPerson(person: PersonData) {
-    const personCell = new PersonCell(this.personId, this.x, this.y, person);
-    this.setChildPersonCell(personCell);
-  }
-
-  setChildPersonCell(personCell) {
-    this.personCell = personCell;
-    this.personCell.x = this.x;
-    this.personCell.y = this.y;
-    this.personCell.setId(this.personId);
-    this.personCell.setDayId(this.dayId);
-    this.personCell.el.dispatchEvent(new Event('animationend'));
-    // const mock = new ReadyToAddCell();
-    // if (Math.random() > 0.5) setChildren(this, mock);
-    // else setChildren(this, new PersonCell(0, 0, 0, null));
-    setChildren(this.container, this.personCell);
-
-    interact(this.personCell.el).draggable(generateConfig(this.parentTableDiv));
-    interact(this.personCell.el).styleCursor(false);
-  }
-
-  // modifyPersonByCell(cell) {}
 }
 
 class CalendarTable {
@@ -404,8 +447,6 @@ class CalendarTable {
       this.timeCells.push(timeCell);
       arr2.push(timeCell);
 
-      // test
-
       for (let i2 = 0; i2 < width; i2++) {
         const locked = Math.random() > 1; // 0.8;
         const exist = Math.random() > 0.7;
@@ -422,18 +463,10 @@ class CalendarTable {
           locked,
         );
 
+        cell.registerEvent('insertElement');
         cell.addEventListener('insertElement', this.insertCell.bind(this));
 
-        arr2.push(
-          el(
-            'div',
-            {
-              class: `calendar-table-cell ${locked && !exist ? 'locked' : ''}`,
-            },
-            cell,
-            // el('div', { class: 'calendar-additional-border' }),
-          ),
-        );
+        arr2.push(new CalendarTableCell(cell, locked && !exist));
         this.cells[i].push(cell);
       }
 

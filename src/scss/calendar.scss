@@ -264,6 +264,8 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   background: transparent;
   transition: background 0.5s;
   position: relative;
+  // min-width: var(--calendar-cell-width);
+  // min-height: $calendar-cell-height;
 }
 
 .personCell .leftMarker {
