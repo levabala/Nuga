@@ -316,32 +316,6 @@ class CalendarTable {
     this.turnCooldownBorder = Date.now();
     this.timeCells = [];
 
-    /*
-    let [dx, dy] = [0, 0];
-    const turnBorder = 500;
-    let clearDeltaTimeout = null;
-    const clearDeltaTime = 1000;
-    this.el.addEventListener('wheel', event => {
-      return; 
-      dx += event.deltaX;
-      dy += event.deltaY;
-
-      if (Math.abs(dx) > turnBorder) {
-        if (Math.sign(dx) === -1) this.turnPageLeft();
-        else this.turnPageRight();
-
-        [dx, dy] = [0, 0];
-      }
-
-      clearTimeout(clearDeltaTimeout);
-      clearDeltaTimeout = setTimeout(() => {
-        [dx, dy] = [0, 0];
-      }, clearDeltaTime);
-
-      event.preventDefault();
-    });
-    */
-
     const cooldownAfterScroolMax = 1000;
     this.el.addEventListener('draggableMoved', event => {
       const target = event.detail;
@@ -349,9 +323,6 @@ class CalendarTable {
       const targetBottomBorder = targetBoundRect.y + targetBoundRect.height;
       const targetTopBorder = targetBoundRect.y;
       const windowHeight = window.innerHeight;
-
-      // console.log(Math.round(targetBottomBorder), Math.round(windowHeight));
-      // console.log(Math.round(targetTopBorder), 0);
 
       if (Date.now() < this.turnCooldownBorder) return;
 
@@ -940,6 +911,7 @@ class CalendarTable {
   }
 }
 
+/*
 class CalendarDayFooter {
   constructor(data: DayData) {
     this.data = data;
@@ -947,8 +919,31 @@ class CalendarDayFooter {
     this.el = el(
       'div',
       { class: 'calendar-footer' },
-      el('span', { class: 'primary-info' }, data.date.format('dddd ')),
-      el('span', { class: 'secondary-info' }, data.date.format('DD.MM.gg')),
+      el('span', { class: '' }, `было: ${''}`),
+      el('span', { class: '' }, `не пришли: ${''}`),
+    );
+  }
+}
+*/
+
+class CalendarDayHeader {
+  constructor(data: DayData) {
+    this.data = data;
+
+    this.el = el(
+      'div',
+      { class: 'calendar-header' },
+      el(
+        'span',
+        el('span', { class: 'primary-info' }, data.date.format('dddd ')),
+        el('span', { class: 'secondary-info' }, data.date.format('DD.MM.gg')),
+      ),
+      el(
+        'span',
+        { class: 'visits-info' },
+        el('span', { class: '' }, `было: ${''}`),
+        el('span', { class: '' }, `не пришли: ${''}`),
+      ),
     );
   }
 }
@@ -964,8 +959,8 @@ class CalendarDay {
     this.el = el(
       'div',
       { class: 'calendar-day', tabindex: 0 },
+      new CalendarDayHeader(data),
       this.table,
-      new CalendarDayFooter(data),
     );
   }
 }

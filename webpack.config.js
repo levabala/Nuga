@@ -1,4 +1,5 @@
 const path = require('path');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 // const autoprefixer = require('autoprefixer');
 
 module.exports = {
@@ -65,8 +66,9 @@ module.exports = {
             },
           },
         ], */
+        /*
         use: [
-          'style-loader', // creates style nodes from JS strings
+          { loader: 'style-loader' },
           { loader: 'css-loader' },
           {
             loader: 'sass-loader',
@@ -75,6 +77,19 @@ module.exports = {
             },
           },
         ],
+        */
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            'css-loader',
+            {
+              loader: 'sass-loader',
+              options: {
+                includePaths: ['./node_modules'],
+              },
+            },
+          ],
+        }),
       },
       {
         test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
@@ -82,6 +97,7 @@ module.exports = {
       },
     ],
   },
+  plugins: [new ExtractTextPlugin('bundle.css')],
   stats: {
     colors: true,
   },

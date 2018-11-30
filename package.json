@@ -32,6 +32,7 @@
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-flow": "^7.0.0",
+    "@material/elevation": "^0.41.0",
     "autoprefixer": "^9.1.5",
     "babel-eslint": "^9.0.0",
     "babel-loader": "^8.0.0",
@@ -48,6 +49,7 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-no-not-accumulator-reassign": "^0.1.0",
     "extract-loader": "^3.0.0",
+    "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^2.0.0",
     "flow-bin": "^0.82.0",
     "flow-typed": "^2.5.1",
@@ -60,7 +62,7 @@
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "url-loader": "^1.1.2",
-    "webpack": "^4.17.2",
+    "webpack": "^4.26.1",
     "webpack-cli": "^3.1.0"
   },
   "dependencies": {

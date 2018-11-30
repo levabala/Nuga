@@ -12,10 +12,11 @@
 $height-change: -4px;
 $width-change: -20px;
 
+$visits-info-right-margin: 60px;
 $calendar-cell-phone-number-top-offset: 2px;
 $left-marker-width: 3px;
 $move-back-duration: 0.5s;
-$points-circle-size: 28px; // 30px;
+$points-circle-size: 25px; // 30px;
 $visits-count-margin: 2px;
 $calendar-avatar-diameter: 50px; // + $height-change;
 $calendar-cell-width: 300px + $width-change;
@@ -41,7 +42,7 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 }
 
 .calendar-footer {
-  margin-left: $padding-card + $padding-normal * 2;
+  margin-left: $padding-card + $padding-normal * 2 - $thin-border-size;
   padding-top: $padding-normal * 2;
   // padding-bottom: $padding-normal * 2;
   display: inline-block;
@@ -54,6 +55,35 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 .calendar-footer .secondary-info {
   @extend .font-secondary;
   vertical-align: top;
+}
+
+.calendar-header {
+  $p-l: $padding-card + $padding-normal * 2 - $thin-border-size;
+  padding-left: $p-l;
+  padding-top: $padding-normal * 2;
+  // padding-bottom: $padding-normal * 2;
+  // display: inline-block;
+  display: flex;
+  justify-content: space-between;
+  width: calc(100% - #{$p-l} - #{$padding-card} - #{$visits-info-right-margin});
+  position: relative;
+  outline: solid black 1px;
+}
+
+.calendar-header .primary-info {
+  @extend .font-header-bold;
+}
+
+.calendar-header .secondary-info {
+  @extend .font-secondary;
+  vertical-align: top;
+}
+
+.calendar-header .visits-info {
+  @extend .font-primary;
+  vertical-align: bottom;
+  // position: relative;
+  // right: $visits-info-right-margin;
 }
 
 .calendar-day:focus {
