@@ -500,6 +500,23 @@ class CalendarTable {
     // launch js-performable layout fixers
     setTimeout(() => this.updateLayout(), 0);
     setInterval(() => this.updateLayout(), 300);
+
+    this.resizeFinishTimeout = null;
+    this.resizeFinishTime = 100;
+    this.isResizing = false;
+    window.addEventListener('resize', this.hadleResizing.bind(this));
+  }
+
+  // UNUSABLE
+  hadleResizing() {
+    clearTimeout(this.resizeFinishTimeout);
+    this.isResizing = true;
+
+    this.resizeFinishTimeout = setTimeout(() => {
+      console.log('resize end');
+      this.isResizing = false;
+      // this.updateLayout();
+    }, this.resizeFinishTime);
   }
 
   getTableByY(element) {
@@ -543,6 +560,8 @@ class CalendarTable {
   }
 
   updateLayout() {
+    if (this.isResizing) return;
+
     // this.updateLeftMargin();
     this.updateCellsPerPage();
     this.updateTableWidth();
@@ -805,7 +824,8 @@ class CalendarTable {
       this.scrolledCellIndex,
       this.cells[0].length - this.cellsPerPage,
     );
-    console.log(leftVisibleBorder, this.scrolledCellIndex + this.cellsPerPage);
+    // console.log(leftVisibleBorder, this.scrolledCellIndex + this.cellsPerPage);
+
     for (let y = 0; y < this.cells.length; y++)
       for (let x = 0; x < this.cells[0].length; x++) {
         const cell = this.cells[y][x];
@@ -1077,12 +1097,9 @@ class CalendarCard extends Card {
     }
 
     // window.addEventListener('scroll', this.makePositionsStickyAgain.bind(this));
-
-    this.resizeFinishTimeout = null;
-    this.resizeFinishTime = 500;
-    // window.addEventListener('resize', this.hadleResizing.bind(this));
   }
 
+  // UNUSABLE
   hadleResizing() {
     clearTimeout(this.resizeFinishTimeout);
 
