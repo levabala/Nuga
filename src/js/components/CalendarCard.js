@@ -530,21 +530,60 @@ class CalendarTable {
     this.cellsPerPage = Math.min(this.cellsPerPage, this.cells[0].length);
   }
 
+  static updateCellsWidth(widthPerCell) {
+    const eps = 5;
+    const lastCellWidth = document.documentElement.style.getPropertyValue(
+      '--calendar-cell-width',
+    );
+
+    if (Math.abs(widthPerCell - lastCellWidth) < eps) return;
+
+    document.documentElement.style.setProperty(
+      '--calendar-cell-width',
+      `${widthPerCell}px`,
+    );
+    document.documentElement.style.setProperty(
+      '--calendar-cell-width-real',
+      `${widthPerCell + parseFloat(RootVariables.thinBorderSize) * 2}px`,
+    );
+    console.log('update');
+  }
+
+  tryUpdateCellsWidth() {
+    const borderSize = parseInt(RootVariables.thinBorderSize, 10);
+    const widthPerCell = Math.floor(
+      (this.lastTableWidth - borderSize * 2) / this.cellsPerPage -
+        borderSize * 2,
+    );
+    this.constructor.updateCellsWidth(widthPerCell);
+  }
+
   updateTableWidth() {
-    function calcWidth(cellsPerPage) {
+    function calcWidth() {
+      // cellsPerPage) {
+      /*
+      const borderSize = parseInt(RootVariables.thinBorderSize, 10);
       const cellWidthReal = parseInt(
         CalendarVariables.calendarCellWidthReal,
         10,
       );
-      const borderSize = parseInt(RootVariables.thinBorderSize, 10);
-      // return cellWidth * cellsPerPage + borderSize * 3;
-      return (cellWidthReal + borderSize) * cellsPerPage; // + borderSize * 3;
+      return (cellWidthReal + borderSize) * cellsPerPage;
+      */
+      const paddingCard = parseInt(RootVariables.paddingCard, 10);
+      const cardRect = this.el.parentNode.parentNode.getBoundingClientRect();
+      const tableRect = this.el.getBoundingClientRect();
+      const bodyRect = document.body.getBoundingClientRect();
+      const leftBorder = tableRect.x;
+      const rightBorder = bodyRect.width - cardRect.x;
+      const potentialWidth = rightBorder - leftBorder - paddingCard;
+      return potentialWidth;
     }
 
-    const width = Math.ceil(calcWidth(this.cellsPerPage));
+    const width = Math.ceil(calcWidth.bind(this)(this.cellsPerPage));
 
     if (width === this.lastTableWidth) return;
     this.lastTableWidth = width;
+    this.tryUpdateCellsWidth();
 
     this.el.style.width = `${width}px`;
     setTimeout(() => this.updateVisibleCells());
@@ -934,15 +973,37 @@ class CalendarDayHeader {
       'div',
       { class: 'calendar-header' },
       el(
-        'span',
+        'p',
+        { style: 'float: left' },
         el('span', { class: 'primary-info' }, data.date.format('dddd ')),
         el('span', { class: 'secondary-info' }, data.date.format('DD.MM.gg')),
       ),
       el(
-        'span',
+        'p',
         { class: 'visits-info' },
-        el('span', { class: '' }, `было: ${''}`),
-        el('span', { class: '' }, `не пришли: ${''}`),
+        el(
+          'span',
+          el(
+            'span',
+            { class: 'visits-info-potential' },
+            `Было: `,
+            el(
+              'span',
+              { class: 'font-primary-semibold' },
+              Math.round(Math.random() * 100),
+            ),
+          ),
+          el(
+            'span',
+            { class: 'visits-info-real' },
+            `Не пришли: `,
+            el(
+              'span',
+              { class: 'font-primary-semibold' },
+              Math.round(Math.random() * 100),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -966,6 +1027,8 @@ class CalendarDay {
 }
 
 class CalendarCard extends Card {
+  days: Array<CalendarDay>;
+
   constructor(data: Array<DayData>) {
     super();
 
@@ -980,9 +1043,23 @@ class CalendarCard extends Card {
       mount(this.el, child);
     }
 
-    window.addEventListener('scroll', this.makePositionsStickyAgain.bind(this));
+    // window.addEventListener('scroll', this.makePositionsStickyAgain.bind(this));
+
+    this.resizeFinishTimeout = null;
+    this.resizeFinishTime = 500;
+    // window.addEventListener('resize', this.hadleResizing.bind(this));
   }
 
+  hadleResizing() {
+    clearTimeout(this.resizeFinishTimeout);
+
+    this.resizeFinishTimeout = setTimeout(() => {
+      console.log('resize end');
+      this.days[0].table.tryUpdateCellsWidth();
+    }, this.resizeFinishTime);
+  }
+
+  // DEPRECATED
   makePositionsStickyAgain() {
     function stickPositionsRow(tableEl) {
       const row = tableEl.querySelector('.calendar-table-row.positions');

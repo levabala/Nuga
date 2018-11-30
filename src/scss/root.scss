@@ -6,6 +6,8 @@ $thin-border-size: 1px;
 
 :export {
   thinBorderSize: $thin-border-size;
+  paddingNormal: $padding-normal;
+  paddingCard: $padding-card;
 }
 
 .elevation-max {
