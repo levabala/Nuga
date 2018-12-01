@@ -7,9 +7,15 @@ import PersonTooltip from '../PersonTooltip';
 const person_tooltips_shown = {};
 const grades = ['A', 'B', 'C']; // , 'D', 'E', 'F'];
 class PersonData implements DataInterface {
-  constructor({ name, surname, url = '/src/images/avatar.png' }) {
+  constructor({
+    name,
+    surname,
+    url = '/src/images/avatar.png',
+    patronymic = '',
+  }) {
     this.name = name;
     this.surname = surname;
+    this.patronymic = patronymic;
     this.url = url;
     this.points = Math.round(Math.random() * 20).toString();
     this.code = Math.round(Math.random() * 10000000 + 1000000).toString();

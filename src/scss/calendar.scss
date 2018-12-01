@@ -10,7 +10,7 @@
 @import 'node_modules/mathsass/dist/math';
 
 $height-change: -4px;
-$width-change: -20px;
+$width-change: -45px;
 
 $visits-info-right-margin: 60px;
 $calendar-cell-phone-number-top-offset: 2px;
@@ -18,11 +18,17 @@ $left-marker-width: 3px;
 $move-back-duration: 0.5s;
 $points-circle-size: 25px; // 30px;
 $visits-count-margin: 2px;
-$calendar-avatar-diameter: 50px; // + $height-change;
+$calendar-avatar-diameter: 45px; // + $height-change;
 $calendar-cell-width: 300px + $width-change;
 $calendar-cell-width-real: $calendar-cell-width + $thin-border-size * 2;
 $calendar-cell-height: 70px + $height-change;
 $calendar-cell-height-real: $calendar-cell-height + $thin-border-size * 2;
+/*
+$person-cell-primary-info-width: (
+  $calendar-cell-width - $padding-normal * 4 - $calendar-avatar-diameter -
+    $points-circle-size
+);
+*/
 $person-cell-primary-info-width: (
   $calendar-cell-width - $padding-normal * 4 - $calendar-avatar-diameter -
     $points-circle-size
@@ -358,7 +364,8 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 
 .calendarCell .text-info .primary-info {
   @extend .font-primary-semibold;
-  width: $person-cell-primary-info-width;
+  // width: $person-cell-primary-info-width;
+  margin-right: $points-circle-size;
   display: inline-block;
 }
 
@@ -366,6 +373,7 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   // white-space: nowrap;
   //   display: inline-block;
   float: left;
+  white-space: pre;
   // width: auto;
 }
 
@@ -459,11 +467,11 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   // border-collapse: collapse;
   // outline: $thin-border-size solid $color-select-border;
   // outline-offset: -$thin-border-size;
-  background: $color-select-background;
+  // background: $color-select-background;
 }
 
 .calendar-table-cell.readyToAdd:active {
-  background: $color-select-tap-background;
+  // background: $color-select-tap-background;
 }
 
 .readyToAddCell .content-block {

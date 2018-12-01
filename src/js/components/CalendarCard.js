@@ -52,7 +52,6 @@ class ReadyToAddCell {
     );
 
     this.el.addEventListener('mouseleave', () => {
-      console.log('lleave');
       this.el.parentNode.dispatchEvent(new Event('mouseleave'));
     });
   }
@@ -133,7 +132,19 @@ class PersonCell {
                 el(
                   'span',
                   { class: 'primary-info-block' },
-                  el('span', { class: '' }, `${this.person.name}`),
+                  `${this.person.name} `,
+                ),
+                el(
+                  'span',
+                  { class: 'primary-info-block' },
+                  el(
+                    'span',
+                    { class: '' },
+                    this.person.patronymic.length > 0
+                      ? `${this.person.patronymic[0]}.`
+                      : '',
+                  ),
+                  // el('&nbsp'),
                   el(
                     'span',
                     { class: 'visitsCount' },

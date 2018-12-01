@@ -6,18 +6,21 @@ import DayData from '../classes/dataTypes/DayData';
 
 const persons = new PersonsList([
   new PersonData({
-    name: 'Michael',
-    surname: 'Allen Dmirtievich',
+    name: 'Michaeliachol',
+    surname: 'Allenangolikoprichev',
+    patronymic: 'Dmirtievich',
     url: '/src/images/avatar1.jpeg',
   }),
   new PersonData({
     name: 'Patricia',
-    surname: 'Ball WithIn',
+    surname: 'Ball',
+    patronymic: 'WithIn',
     url: '/src/images/avatar2.png',
   }),
   new PersonData({
     name: 'Andrew',
-    surname: 'Brewster Afanasev',
+    surname: 'Brewster',
+    patronymic: 'Afanasev',
     url: '/src/images/avatar3.jpeg',
   }),
   new PersonData({
@@ -135,10 +138,7 @@ const days: Array<DayData> = [
 
 const card = new CalendarCard(days);
 
-card.el.setAttribute(
-  'style',
-  `position: relative; left: 40px; top: 40px;`, // right: 20px;`,
-);
+card.el.setAttribute('style', `margin: 0px; display: block;`);
 
 export default card;
 export const calendarCardDemo = card;
