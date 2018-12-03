@@ -82,12 +82,13 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 }
 
 .calendar-header .primary-info {
-  @extend .font-header-bold;
+  @extend .font-header;
 }
 
 .calendar-header .secondary-info {
-  @extend .font-secondary;
+  @extend .font-secondary-middle;
   vertical-align: top;
+  margin-top: 5px;
 }
 
 .calendar-header .visits-info {
@@ -182,6 +183,10 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 
   transition: opacity 0.5s;
   opacity: 1;
+}
+
+.calendar-table-cell:hover {
+  @extend .readyToAdd-border;
 }
 
 .calendar-table-cell.hidden + .calendar-table-cell {
@@ -281,6 +286,10 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   bottom: 0px;
   width: $left-marker-width;
   background: $color-mark-default;
+
+  .bordersAddCell & {
+    left: 0;
+  }
 }
 
 .personCell.isDragging {
@@ -437,7 +446,7 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 
   // TODO: make it normally
   // font-size: $points-circle-size / 4; //11pt
-  line-height: $points-circle-size;
+  line-height: $points-circle-size - 1px;
   font-weight: bold;
 
   text-align: center;
@@ -482,13 +491,17 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   /* align vertical */
 }
 
+.readyToAdd-border {
+  margin: -$thin-border-size;
+  box-shadow: inset 0 0 0 $thin-border-size $color-select-border;
+}
+
 .readyToAddCell {
   // border: $thin-border-size solid $color-select-border;
   // box-sizing: border-box;
   // border-collapse: collapse;
 
-  margin: -$thin-border-size;
-  box-shadow: inset 0 0 0 $thin-border-size $color-select-border;
+  // @extend .readyToAdd-border;
 
   height: $calendar-cell-height-real;
   width: var(--calendar-cell-width-real);
@@ -497,6 +510,10 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   left: 0px;
   top: 0px;
   // animation: appear-animation $animation-duration-opacity * 2// ease-in-out;
+
+  .calendarCell[data-coord-x='0'] & {
+    top: -1 * $calendar-cell-height;
+  }
 }
 
 .readyToAddCell .content-block .addButton {

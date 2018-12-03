@@ -52,7 +52,7 @@ class ReadyToAddCell {
     );
 
     this.el.addEventListener('mouseleave', () => {
-      this.el.parentNode.dispatchEvent(new Event('mouseleave'));
+      // this.el.parentNode.dispatchEvent(new Event('mouseleave'));
     });
   }
 }
@@ -280,6 +280,8 @@ class CalendarCell extends Reactor {
 }
 
 class CalendarTableCell {
+  calendarCell: CalendarCell;
+
   constructor(childCell, locked) {
     this.calendarCell = childCell;
 
@@ -293,23 +295,24 @@ class CalendarTableCell {
     );
     const cell = this.calendarCell;
 
-    let addTimeout = null;
-    const enterTime = 0; // 100;
+    const addTimeout = null;
+    // const enterTime = 0; // 100;
 
     // FIXIT: blinking when point on bottom border
     this.el.addEventListener('mouseenter', () => {
-      if (this.locked || this.el.parentNode.classList.contains('readyToAdd'))
-        return;
+      console.log('enter');
+      if (this.locked || this.el.classList.contains('readyToAdd')) return;
 
-      addTimeout = setTimeout(() => {
-        if (this.calendarCell.personCell.mock) {
-          this.el.classList.add('readyToAdd');
-          setChildren(this.calendarCell.container, new ReadyToAddCell());
-        }
-      }, enterTime);
+      // addTimeout = setTimeout(() => {
+      if (this.calendarCell.personCell.mock) {
+        this.el.classList.add('readyToAdd');
+        mount(this.calendarCell.container, new ReadyToAddCell());
+      }
+      // }, enterTime);
     });
 
     this.el.addEventListener('mouseleave', () => {
+      console.log('leave');
       if (this.locked) return;
       // return;
 
@@ -317,7 +320,8 @@ class CalendarTableCell {
       if (!this.el.classList.contains('readyToAdd')) return;
 
       this.el.classList.remove('readyToAdd');
-      setChildren(this.calendarCell.container, new PersonCell(0, 0, 0, null));
+      // setChildren(this.calendarCell.container, new PersonCell(0, 0, 0, null));
+      this.calendarCell.setChildPerson(null);
     });
 
     const config = dropConfig;
@@ -460,7 +464,7 @@ class CalendarTable {
 
       for (let i2 = 0; i2 < width; i2++) {
         const locked = Math.random() > 1; // 0.8;
-        const exist = Math.random() > 0.7;
+        const exist = Math.random() > 0.9;
 
         const cell = new CalendarCell(
           i2,
@@ -623,22 +627,10 @@ class CalendarTable {
 
   updateTableWidth() {
     function calcWidth() {
-      // cellsPerPage) {
-      /*
-      const borderSize = parseInt(RootVariables.thinBorderSize, 10);
-      const cellWidthReal = parseInt(
-        CalendarVariables.calendarCellWidthReal,
-        10,
-      );
-      return (cellWidthReal + borderSize) * cellsPerPage;
-      */
       const paddingCard = parseInt(RootVariables.paddingCard, 10);
-      const cardRect = this.el.parentNode.parentNode.getBoundingClientRect();
-      const tableRect = this.el.getBoundingClientRect();
-      const bodyRect = document.body.getBoundingClientRect();
-      const leftBorder = tableRect.x;
-      const rightBorder = bodyRect.width - cardRect.x;
-      const potentialWidth = rightBorder - leftBorder - paddingCard;
+      const card = this.el.parentNode.parentNode;
+      const cardRect = card.getBoundingClientRect();
+      const potentialWidth = cardRect.width - paddingCard * 2;
       return potentialWidth;
     }
 

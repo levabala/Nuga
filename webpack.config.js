@@ -98,7 +98,7 @@ module.exports = {
       {
         test: /\.(jpg|png|gif|svg)$/,
         loader: 'image-webpack-loader',
-        bypassOnDebug: true,
+        // bypassOnDebug: true,
         // Specify enforce: 'pre' to apply the loader
         // before url-loader/svg-url-loader
         // and not duplicate it in rules with them
