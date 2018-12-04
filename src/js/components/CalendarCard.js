@@ -253,7 +253,7 @@ class CalendarCell extends Reactor {
       this.x,
       this.y,
       person,
-      this.x === 0,
+      this.x === 0 || this.x === 1,
     );
     this.setChildPersonCell(personCell);
   }
@@ -288,7 +288,7 @@ class CalendarTableCell {
     this.el = el(
       'div',
       {
-        class: `calendar-table-cell ${locked ? 'locked' : ''}`,
+        class: `calendar-table-cell main-grid ${locked ? 'locked' : ''}`,
       },
       childCell,
       // el('div', { class: 'calendar-additional-border' }),
@@ -300,7 +300,7 @@ class CalendarTableCell {
 
     // FIXIT: blinking when point on bottom border
     this.el.addEventListener('mouseenter', () => {
-      console.log('enter');
+      // console.log('enter');
       if (this.locked || this.el.classList.contains('readyToAdd')) return;
 
       // addTimeout = setTimeout(() => {
@@ -312,7 +312,7 @@ class CalendarTableCell {
     });
 
     this.el.addEventListener('mouseleave', () => {
-      console.log('leave');
+      // console.log('leave');
       if (this.locked) return;
       // return;
 
@@ -450,7 +450,7 @@ class CalendarTable {
       const timeCell = el(
         'div',
         {
-          class: 'calendar-table-cell  timeCell ',
+          class: 'calendar-table-cell timeCell ',
         },
         el(
           'div',
@@ -464,7 +464,7 @@ class CalendarTable {
 
       for (let i2 = 0; i2 < width; i2++) {
         const locked = Math.random() > 1; // 0.8;
-        const exist = Math.random() > 0.9;
+        const exist = Math.random() > 0.7;
 
         const cell = new CalendarCell(
           i2,
@@ -613,7 +613,7 @@ class CalendarTable {
       '--calendar-cell-width-real',
       `${widthPerCell + parseFloat(RootVariables.thinBorderSize) * 2}px`,
     );
-    console.log('update');
+    // console.log('update');
   }
 
   tryUpdateCellsWidth() {
@@ -1092,14 +1092,76 @@ class CalendarCard extends Card {
     this.days = [];
     this.stickyPositionsRow = null;
 
+    const averageIndex = Math.floor(this.data.length / 2);
+    this.loadedBorder = [averageIndex, averageIndex];
+
+    const day = new CalendarDay(
+      data[averageIndex],
+      averageIndex === 0,
+      this.days,
+    );
+    const child = el('div', { class: 'calendar-card' }, day);
+    this.days.push(day);
+    mount(this.el, child);
+
+    /*
     for (let i = 0; i < data.length; i++) {
       const day = new CalendarDay(data[i], i === 0, this.days);
       const child = el('div', { class: 'calendar-card' }, day);
       this.days.push(day);
       mount(this.el, child);
     }
+    */
 
     // window.addEventListener('scroll', this.makePositionsStickyAgain.bind(this));
+    window.addEventListener('scroll', this.handleVerticalBorders.bind(this));
+    this.handleVerticalBorders();
+  }
+
+  handleVerticalBorders() {
+    const bodyRect = document.body.getBoundingClientRect();
+    const trigger = window.innerHeight / 2;
+
+    // check top border
+    const needLoadTop = -bodyRect.y < trigger;
+    if (needLoadTop) this.loadTopDay();
+
+    // check bottom border
+    const diff = bodyRect.bottom - window.innerHeight;
+    const needLoadBottom = diff < trigger;
+    if (needLoadBottom) this.loadBottomDay();
+  }
+
+  loadTopDay() {
+    const topIndex = this.loadedBorder[0] - 1;
+    if (topIndex < 0) return;
+
+    this.loadedBorder[0] = topIndex;
+
+    const day = new CalendarDay(this.data[topIndex], topIndex === 0, this.days);
+    const child = el('div', { class: 'calendar-card' }, day);
+    this.days.push(day);
+    mount(this.el, child, this.el.children[0]);
+
+    console.log('Loaded TOP day');
+  }
+
+  loadBottomDay() {
+    const bottomIndex = this.loadedBorder[1] + 1;
+    if (bottomIndex >= this.data.length) return;
+
+    this.loadedBorder[1] = bottomIndex;
+
+    const day = new CalendarDay(
+      this.data[bottomIndex],
+      bottomIndex === 0,
+      this.days,
+    );
+    const child = el('div', { class: 'calendar-card' }, day);
+    this.days.push(day);
+    mount(this.el, child);
+
+    console.log('Loaded BOTTOM day');
   }
 
   // UNUSABLE

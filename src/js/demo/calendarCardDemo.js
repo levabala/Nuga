@@ -134,6 +134,61 @@ const days: Array<DayData> = [
     }),
     visits,
   }),
+
+  new DayData({
+    date: moment({
+      y: 2018,
+      M: 11,
+      d: 7,
+      h: Math.round(Math.random() * 23),
+      m: Math.round(Math.random() * 59),
+    }),
+    visits,
+  }),
+
+  new DayData({
+    date: moment({
+      y: 2018,
+      M: 11,
+      d: 8,
+      h: Math.round(Math.random() * 23),
+      m: Math.round(Math.random() * 59),
+    }),
+    visits,
+  }),
+
+  new DayData({
+    date: moment({
+      y: 2018,
+      M: 11,
+      d: 9,
+      h: Math.round(Math.random() * 23),
+      m: Math.round(Math.random() * 59),
+    }),
+    visits,
+  }),
+
+  new DayData({
+    date: moment({
+      y: 2018,
+      M: 11,
+      d: 10,
+      h: Math.round(Math.random() * 23),
+      m: Math.round(Math.random() * 59),
+    }),
+    visits,
+  }),
+
+  new DayData({
+    date: moment({
+      y: 2018,
+      M: 11,
+      d: 11,
+      h: Math.round(Math.random() * 23),
+      m: Math.round(Math.random() * 59),
+    }),
+    visits,
+  }),
 ];
 
 const card = new CalendarCard(days);
