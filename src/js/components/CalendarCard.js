@@ -373,6 +373,7 @@ class CalendarTable {
     this.turnCooldownTime = 1500;
     this.turnCooldownBorder = Date.now();
     this.timeCells = [];
+    this.firstLoadIteration = true;
 
     const cooldownAfterScroolMax = 1000;
     this.el.addEventListener('draggableMoved', event => {
@@ -622,6 +623,7 @@ class CalendarTable {
       (this.lastTableWidth - borderSize * 2) / this.cellsPerPage -
         borderSize * 2,
     );
+
     this.constructor.updateCellsWidth(widthPerCell);
   }
 
@@ -798,7 +800,6 @@ class CalendarTable {
         const tableRect = this.el.getBoundingClientRect();
         const cellRect = element.getBoundingClientRect();
         const diff = cellRect.x - tableRect.x;
-        console.log(diff);
         setTimeout(() => {
           this.el.scrollLeft -= diff;
         });
@@ -832,14 +833,24 @@ class CalendarTable {
     for (let y = 0; y < this.cells.length; y++)
       for (let x = 0; x < this.cells[0].length; x++) {
         const cell = this.cells[y][x];
+
         if (
           x >= leftVisibleBorder &&
           x < this.scrolledCellIndex + this.cellsPerPage
         )
           cell.el.parentNode.classList.remove('hidden');
         // if (!cell.personCell.el.classList.contains('isDragging'))
-        else cell.el.parentNode.classList.add('hidden');
+        else {
+          if (this.firstLoadIteration)
+            cell.el.parentNode.classList.add('immediately');
+
+          cell.el.parentNode.classList.add('hidden');
+        }
+        if (!this.firstLoadIteration)
+          cell.el.parentNode.classList.remove('immediately');
       }
+
+    this.firstLoadIteration = false;
   }
 
   static turnPageRight(t) {
@@ -1085,10 +1096,16 @@ class CalendarDay {
 class CalendarCard extends Card {
   days: Array<CalendarDay>;
 
-  constructor(data: Array<DayData>) {
+  constructor(
+    data: Array<DayData>,
+    requestTopDay: () => ?void = () => null,
+    requestBottomDay: () => ?void = () => null,
+  ) {
     super();
 
     this.data = data;
+    this.requestTopDay = requestTopDay;
+    this.requestBottomDay = requestBottomDay;
     this.days = [];
     this.stickyPositionsRow = null;
 
@@ -1115,12 +1132,14 @@ class CalendarCard extends Card {
 
     // window.addEventListener('scroll', this.makePositionsStickyAgain.bind(this));
     window.addEventListener('scroll', this.handleVerticalBorders.bind(this));
+
     this.handleVerticalBorders();
+    setTimeout(() => this.handleVerticalBorders(), 500);
   }
 
   handleVerticalBorders() {
     const bodyRect = document.body.getBoundingClientRect();
-    const trigger = window.innerHeight / 2;
+    const trigger = window.innerHeight;
 
     // check top border
     const needLoadTop = -bodyRect.y < trigger;
@@ -1133,22 +1152,39 @@ class CalendarCard extends Card {
   }
 
   loadTopDay() {
-    const topIndex = this.loadedBorder[0] - 1;
-    if (topIndex < 0) return;
+    let topIndex = this.loadedBorder[0] - 1;
+    if (topIndex < 0) {
+      const topDay = this.requestTopDay(this.data[0]);
+      if (topDay === null) return;
+
+      topIndex++;
+      this.data.unshift(topDay);
+    }
 
     this.loadedBorder[0] = topIndex;
 
     const day = new CalendarDay(this.data[topIndex], topIndex === 0, this.days);
     const child = el('div', { class: 'calendar-card' }, day);
-    this.days.push(day);
+    this.days.unshift(day);
     mount(this.el, child, this.el.children[0]);
+
+    if (window.scrollY === 0) {
+      const cardRect = this.days[0].el.getBoundingClientRect();
+      const scrollHeightTarget = cardRect.height;
+      window.scrollTo(0, scrollHeightTarget);
+    }
 
     console.log('Loaded TOP day');
   }
 
   loadBottomDay() {
     const bottomIndex = this.loadedBorder[1] + 1;
-    if (bottomIndex >= this.data.length) return;
+    if (bottomIndex >= this.data.length) {
+      const bottomDay = this.requestBottomDay(this.data[this.data.length - 1]);
+      if (bottomDay === null) return;
+
+      this.data.push(bottomDay);
+    }
 
     this.loadedBorder[1] = bottomIndex;
 

@@ -10,13 +10,13 @@
 @import 'node_modules/mathsass/dist/math';
 
 $height-change: -4px;
-$width-change: -45px;
+$width-change: -35px;
 
 $visits-info-right-margin: 60px;
 $calendar-cell-phone-number-top-offset: 2px;
 $left-marker-width: 3px;
 $move-back-duration: 0.5s;
-$points-circle-size: 25px; // 30px;
+$points-circle-size: 22px; // 25px; // 30px;
 $visits-count-margin: 2px;
 $calendar-avatar-diameter: 45px; // + $height-change;
 $calendar-cell-width: 300px + $width-change;
@@ -138,7 +138,7 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   margin-left: $padding-card;
   margin-top: -$padding-normal * 2;
   padding-bottom: $thin-border-size;
-  padding-left: $thin-border-size * 2;
+  // padding-left: $thin-border-size * 2;
   padding-top: 0;
   width: $initial-table-width;
 
@@ -204,6 +204,11 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   transition: background 0.5s, opacity 0.5s, border-color 0.5s;
   opacity: 0;
   border-color: transparent;
+}
+
+.calendar-table-cell.immediately {
+  transition: all 0s;
+  opacity: 0;
 }
 
 .calendar-border {
@@ -446,12 +451,9 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   width: $points-circle-size;
   max-width: $points-circle-size;
   height: $points-circle-size;
-  // padding: $padding-normal;
   border-radius: 50%;
 
-  // TODO: make it normally
-  // font-size: $points-circle-size / 4; //11pt
-  line-height: $points-circle-size - 1px;
+  line-height: $points-circle-size; // - 1px;
   font-weight: bold;
 
   text-align: center;

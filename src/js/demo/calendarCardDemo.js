@@ -84,106 +84,7 @@ const days: Array<DayData> = [
     date: moment({
       y: 2018,
       M: 11,
-      d: 2,
-      h: Math.round(Math.random() * 23),
-      m: Math.round(Math.random() * 59),
-    }),
-    visits,
-  }),
-
-  new DayData({
-    date: moment({
-      y: 2018,
-      M: 11,
       d: 3,
-      h: Math.round(Math.random() * 23),
-      m: Math.round(Math.random() * 59),
-    }),
-    visits,
-  }),
-
-  new DayData({
-    date: moment({
-      y: 2018,
-      M: 11,
-      d: 4,
-      h: Math.round(Math.random() * 23),
-      m: Math.round(Math.random() * 59),
-    }),
-    visits,
-  }),
-
-  new DayData({
-    date: moment({
-      y: 2018,
-      M: 11,
-      d: 5,
-      h: Math.round(Math.random() * 23),
-      m: Math.round(Math.random() * 59),
-    }),
-    visits,
-  }),
-
-  new DayData({
-    date: moment({
-      y: 2018,
-      M: 11,
-      d: 6,
-      h: Math.round(Math.random() * 23),
-      m: Math.round(Math.random() * 59),
-    }),
-    visits,
-  }),
-
-  new DayData({
-    date: moment({
-      y: 2018,
-      M: 11,
-      d: 7,
-      h: Math.round(Math.random() * 23),
-      m: Math.round(Math.random() * 59),
-    }),
-    visits,
-  }),
-
-  new DayData({
-    date: moment({
-      y: 2018,
-      M: 11,
-      d: 8,
-      h: Math.round(Math.random() * 23),
-      m: Math.round(Math.random() * 59),
-    }),
-    visits,
-  }),
-
-  new DayData({
-    date: moment({
-      y: 2018,
-      M: 11,
-      d: 9,
-      h: Math.round(Math.random() * 23),
-      m: Math.round(Math.random() * 59),
-    }),
-    visits,
-  }),
-
-  new DayData({
-    date: moment({
-      y: 2018,
-      M: 11,
-      d: 10,
-      h: Math.round(Math.random() * 23),
-      m: Math.round(Math.random() * 59),
-    }),
-    visits,
-  }),
-
-  new DayData({
-    date: moment({
-      y: 2018,
-      M: 11,
-      d: 11,
       h: Math.round(Math.random() * 23),
       m: Math.round(Math.random() * 59),
     }),
@@ -191,7 +92,19 @@ const days: Array<DayData> = [
   }),
 ];
 
-const card = new CalendarCard(days);
+const loadTopDayCallback = (newestDay: DayData) =>
+  new DayData({
+    date: newestDay.date.add(1, 'days'),
+    visits,
+  });
+
+const loadBottomDayCallback = (newestDay: DayData) =>
+  new DayData({
+    date: newestDay.date.subtract(1, 'days'),
+    visits,
+  });
+
+const card = new CalendarCard(days, loadTopDayCallback, loadBottomDayCallback);
 
 card.el.setAttribute('style', `margin: 0px; display: block;`);
 
