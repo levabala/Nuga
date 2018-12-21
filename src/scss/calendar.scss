@@ -188,6 +188,18 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 
 .calendar-table-cell.main-grid:hover {
   @extend .readyToAdd-border;
+  // border-color: transparent;
+  /*
+  position: relative;
+  top: -$thin-border-size;
+  left: -$thin-border-size / 2;
+  */
+}
+
+.calendar-table-cell.main-grid:hover > .calendarCell {
+  // position: relative;
+
+  // height: $calendar-cell-height + $thin-border-size * 1;
 }
 
 .calendar-table-cell.hidden + .calendar-table-cell {
@@ -440,7 +452,7 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 
 .calendarCell.draggingOrigin {
   margin: -$thin-border-size;
-  box-shadow: inset 0 0 0 $thin-border-size $color-select-border;
+  box-shadow: 0 0 0 $thin-border-size $color-select-border;
 }
 
 .calendarCell .points {
@@ -499,7 +511,6 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 }
 
 .readyToAdd-border {
-  margin: -$thin-border-size;
   box-shadow: inset 0 0 0 $thin-border-size $color-select-border;
 }
 

@@ -90,20 +90,41 @@ const days: Array<DayData> = [
     }),
     visits,
   }),
+  new DayData({
+    date: moment({
+      y: 2018,
+      M: 11,
+      d: 2,
+      h: Math.round(Math.random() * 23),
+      m: Math.round(Math.random() * 59),
+    }),
+    visits,
+  }),
+  new DayData({
+    date: moment({
+      y: 2018,
+      M: 11,
+      d: 1,
+      h: Math.round(Math.random() * 23),
+      m: Math.round(Math.random() * 59),
+    }),
+    visits,
+  }),
 ];
 
 const loadTopDayCallback = (newestDay: DayData) =>
   new DayData({
-    date: newestDay.date.add(1, 'days'),
+    date: newestDay.date.clone().add(1, 'days'),
     visits,
   });
 
 const loadBottomDayCallback = (newestDay: DayData) =>
   new DayData({
-    date: newestDay.date.subtract(1, 'days'),
+    date: newestDay.date.clone().subtract(1, 'days'),
     visits,
   });
 
+console.log(days);
 const card = new CalendarCard(days, loadTopDayCallback, loadBottomDayCallback);
 
 card.el.setAttribute('style', `margin: 0px; display: block;`);
