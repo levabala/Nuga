@@ -34,16 +34,6 @@ class CalendarCard extends Card {
     this.days.push(day);
     mount(this.el, child);
 
-    /*
-    for (let i = 0; i < data.length; i++) {
-      const day = new CalendarDay(data[i], i === 0, this.days);
-      const child = el('div', { class: 'calendar-card' }, day);
-      this.days.push(day);
-      mount(this.el, child);
-    }
-    */
-
-    // window.addEventListener('scroll', this.makePositionsStickyAgain.bind(this));
     window.addEventListener('scroll', this.handleVerticalBorders.bind(this));
 
     this.handleVerticalBorders();

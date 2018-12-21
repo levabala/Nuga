@@ -61,14 +61,12 @@ class CalendarTable {
       const l = (targetBoundRect.width / 3) * 2;
       const n = targetBoundRect.x + targetBoundRect.width / 2;
       const r = boundRect.x + boundRect.width - targetBoundRect.width / 3;
-      // console.log(Math.floor(n - l));
 
       const index = this.getTableByY(target);
       if (index === -1) return;
 
       const targetTable = this.otherDays[index];
 
-      // console.log(Math.round(l), Math.round(n), Math.round(r));
       // TODO: optimize
       if (n > r) {
         this.constructor.turnPageRight(targetTable);
@@ -98,7 +96,6 @@ class CalendarTable {
       { class: 'calendar-table-row positions' },
       positionCells,
     );
-    // arr.push(el('div', { class: 'calendar-table-row' }, positionCells));
 
     // create main grid
     for (let i = 0; i < height; i++) {
@@ -189,12 +186,10 @@ class CalendarTable {
     this.resizeFinishTimeout = setTimeout(() => {
       console.log('resize end');
       this.isResizing = false;
-      // this.updateLayout();
     }, this.resizeFinishTime);
   }
 
   getTableByY(element) {
-    // const bodyRect = document.body.getBoundingClientRect();
     const targetRect = element.getBoundingClientRect();
     const targetTop = targetRect.top;
 
@@ -202,9 +197,7 @@ class CalendarTable {
       const rect = this.otherDays[i].table.el.getBoundingClientRect();
       const dayTop = rect.top;
       const dayBottom = rect.bottom;
-      // console.log(Math.round(targetTop), Math.round(dayTop));
       if (targetTop > dayTop && targetTop < dayBottom) {
-        // console.log(`TURNING: ${i}`);
         return i;
       }
     }
@@ -236,7 +229,6 @@ class CalendarTable {
   updateLayout() {
     if (this.isResizing) return;
 
-    // this.updateLeftMargin();
     this.updateCellsPerPage();
     this.updateTableWidth();
   }
@@ -272,7 +264,6 @@ class CalendarTable {
       '--calendar-cell-width-real',
       `${widthPerCell + parseFloat(RootVariables.thinBorderSize) * 2}px`,
     );
-    // console.log('update');
   }
 
   tryUpdateCellsWidth() {
@@ -442,10 +433,9 @@ class CalendarTable {
         1})`,
     );
     const element = this.cells[0][this.scrolledCellIndex].el;
-    // element.style.background = 'red';
     element.parentNode.scrollIntoView({
       behavior: 'smooth',
-      inline: 'start', // forward ? 'start' : 'end',
+      inline: 'start',
       block: 'nearest',
     });
 
@@ -467,17 +457,6 @@ class CalendarTable {
     };
     this.el.addEventListener('scroll', processor);
 
-    // force updating left margin
-    /*
-    setTimeout(() => {
-      console.log('update!');
-      const table = element.parentNode.parentNode.parentNode;
-      const styles = getComputedStyle(table);
-      const marginLeft = styles.getPropertyValue('margin-left');
-      console.log(marginLeft);
-      table.style['margin-left'] = marginLeft;
-    }); */
-
     this.updateVisibleCells();
   }
 
@@ -486,7 +465,6 @@ class CalendarTable {
       this.scrolledCellIndex,
       this.cells[0].length - this.cellsPerPage,
     );
-    // console.log(leftVisibleBorder, this.scrolledCellIndex + this.cellsPerPage);
 
     for (let y = 0; y < this.cells.length; y++)
       for (let x = 0; x < this.cells[0].length; x++) {
@@ -497,7 +475,6 @@ class CalendarTable {
           x < this.scrolledCellIndex + this.cellsPerPage
         )
           cell.el.parentNode.classList.remove('hidden');
-        // if (!cell.personCell.el.classList.contains('isDragging'))
         else {
           if (this.firstLoadIteration)
             cell.el.parentNode.classList.add('immediately');
@@ -615,7 +592,6 @@ class CalendarTable {
         this.shiftRow(elementsToShift.reverse(), 1);
       }
 
-      // if (filled) this.cells[y][x].setChildPerson(movingPerson);
       this.cells[y][x].setChildPerson(movingPerson);
 
       return true;

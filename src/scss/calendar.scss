@@ -16,19 +16,13 @@ $visits-info-right-margin: 60px;
 $calendar-cell-phone-number-top-offset: 2px;
 $left-marker-width: 3px;
 $move-back-duration: 0.5s;
-$points-circle-size: 22px; // 25px; // 30px;
+$points-circle-size: 22px;
 $visits-count-margin: 2px;
-$calendar-avatar-diameter: 45px; // + $height-change;
+$calendar-avatar-diameter: 45px;
 $calendar-cell-width: 300px + $width-change;
 $calendar-cell-width-real: $calendar-cell-width + $thin-border-size * 2;
 $calendar-cell-height: 70px + $height-change;
 $calendar-cell-height-real: $calendar-cell-height + $thin-border-size * 2;
-/*
-$person-cell-primary-info-width: (
-  $calendar-cell-width - $padding-normal * 4 - $calendar-avatar-diameter -
-    $points-circle-size
-);
-*/
 $person-cell-primary-info-width: (
   $calendar-cell-width - $padding-normal * 4 - $calendar-avatar-diameter -
     $points-circle-size
@@ -55,7 +49,6 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 .calendar-footer {
   margin-left: $padding-card + $padding-normal * 2 - $thin-border-size;
   padding-top: $padding-normal * 2;
-  // padding-bottom: $padding-normal * 2;
   display: inline-block;
 }
 
@@ -72,9 +65,6 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   $p-l: $padding-card + $padding-normal * 2;
   padding-left: $p-l;
   margin: 0;
-  // padding-top: $padding-normal * 2;
-  // padding-bottom: $padding-normal * 2;
-  // display: inline-block;
   display: flex;
   justify-content: space-between;
   width: calc(100% - #{$p-l} - #{$padding-card} - #{$visits-info-right-margin});
@@ -111,13 +101,11 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 }
 
 .calendar-card {
-  // padding-bottom: $padding-normal * 4;
   position: relative;
 
   overflow: hidden;
   margin: -$padding-card;
   margin-bottom: $padding-card;
-  // width: auto;
 }
 
 .calendar-day-divider {
@@ -138,11 +126,8 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   margin-left: $padding-card;
   margin-top: -$padding-normal * 2;
   padding-bottom: $thin-border-size;
-  // padding-left: $thin-border-size * 2;
   padding-top: 0;
   width: $initial-table-width;
-
-  // width: 100%;
 
   // FIXIT: fix bug with little zoom (~70%) when right border disappears
 }
@@ -165,9 +150,6 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 }
 
 .calendar-table-row.positions {
-  // position: sticky;
-  // top: 0;
-
   position: relative;
   display: table-row;
   background: white;
@@ -179,7 +161,6 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   display: table-cell;
   white-space: nowrap;
   position: relative;
-  // height: $calendar-cell-height;
   padding: 0;
 
   transition: opacity 0.5s;
@@ -188,18 +169,6 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 
 .calendar-table-cell.main-grid:hover {
   @extend .readyToAdd-border;
-  // border-color: transparent;
-  /*
-  position: relative;
-  top: -$thin-border-size;
-  left: -$thin-border-size / 2;
-  */
-}
-
-.calendar-table-cell.main-grid:hover > .calendarCell {
-  // position: relative;
-
-  // height: $calendar-cell-height + $thin-border-size * 1;
 }
 
 .calendar-table-cell.hidden + .calendar-table-cell {
@@ -231,7 +200,6 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 // FIXIT: not working dot-dash style
 .calendar-additional-border {
   position: absolute;
-  // background: none;
   pointer-events: none;
   left: -$thin-border-size;
   top: -$thin-border-size;
@@ -245,15 +213,9 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   @extend .font-primary-semibold;
 
   border: none;
-  // outline: none;
   padding-left: $padding-normal * 2;
-  // padding-bottom: $padding-normal * 2;
   height: $padding-card;
   line-height: $padding-card;
-  // width: var(--calendar-cell-width);
-
-  // here you can control if non-first headers will be displayed
-  // display: none;
 
   .calendar-table.first & {
     display: table-cell;
@@ -264,14 +226,9 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   @extend .font-primary-semibold;
 
   border: none;
-  // outline: none;
-  // padding-left: 0;
-  // padding-left: 0; //$padding-normal;
-  // padding-right: $padding-normal * 2;
   text-align: center;
   position: absolute;
-  // width: $padding-card;
-  left: 0; //$padding-card / 4;
+  left: 0;
   height: $calendar-cell-height;
   width: $padding-card;
 }
@@ -293,8 +250,6 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   background: transparent;
   transition: background 0.5s;
   position: relative;
-  // min-width: var(--calendar-cell-width);
-  // min-height: $calendar-cell-height;
 }
 
 .personCell .leftMarker {
@@ -313,7 +268,7 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 .personCell.isDragging {
   position: fixed;
   box-shadow: 10px 10px 30px 4px rgba(0, 0, 0, 0.06);
-  transition: box-shadow 0.3s ease-in-out; //, background 0.5s;
+  transition: box-shadow 0.3s ease-in-out;
   background: $color-calendar-cell-background;
   z-index: 999;
 }
@@ -332,18 +287,15 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   border-style: dashed;
   border-width: $thin-border-size;
   border-color: $color-dragging-origin-cell-border;
-  // background: $color-calendar-cell-ready-to-get-drop;
   transition: background 0.5s, border 0.5s;
 }
 
 .calendarCell {
-  // position: relative;
   display: inline-block;
   text-align: center;
   transition: background 0.5s;
   width: var(--calendar-cell-width);
   max-width: var(--calendar-cell-width);
-  // height: $calendar-cell-height;
   animation: appear-animation $animation-duration-opacity;
 }
 
@@ -364,7 +316,6 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 }
 
 .content-block {
-  // make it centered vertically
   display: inline-block;
   position: relative;
   top: 50%;
@@ -374,37 +325,17 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 .calendarCell .text-info {
   display: inline-block;
   text-align: left;
-
-  // position: relative;
-  // text-align: left;
-  // transform: translateY(25%);
-
-  /*
-  height: 50%;
-  overflow: auto;
-  margin: auto;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  border: solid black;
-  */
 }
 
 .calendarCell .text-info .primary-info {
   @extend .font-primary-semibold;
-  // width: $person-cell-primary-info-width;
   margin-right: $points-circle-size;
   display: inline-block;
 }
 
 .calendarCell .text-info .primary-info .primary-info-block {
-  // white-space: nowrap;
-  //   display: inline-block;
   float: left;
   white-space: pre;
-  // width: auto;
 }
 
 .calendarCell .text-info .primary-info .visitsCount {
@@ -425,14 +356,6 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   clear: both;
   margin-top: $calendar-cell-phone-number-top-offset;
 }
-
-/*
-.calendar-table-cell.draggingOrigin {
-  border-style: dashed;
-  border-width: $thin-border-size;
-  border-color: $color-dragging-origin-cell-border;
-}
-*/
 
 .calendar-table-cell.locked {
   $lines-count: 10;
@@ -465,7 +388,7 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   height: $points-circle-size;
   border-radius: 50%;
 
-  line-height: $points-circle-size; // - 1px;
+  line-height: $points-circle-size;
   font-weight: bold;
 
   text-align: center;
@@ -489,25 +412,10 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   }
 }
 
-.calendar-table-cell.readyToAdd {
-  // border: $thin-border-size * 3 solid $color-select-border;
-  // box-sizing: border-box;
-  // border-collapse: collapse;
-  // outline: $thin-border-size solid $color-select-border;
-  // outline-offset: -$thin-border-size;
-  // background: $color-select-background;
-}
-
-.calendar-table-cell.readyToAdd:active {
-  // background: $color-select-tap-background;
-}
-
 .readyToAddCell .content-block {
   display: flex;
   justify-content: center;
-  /* align horizontal */
   align-items: center;
-  /* align vertical */
 }
 
 .readyToAdd-border {
@@ -515,19 +423,12 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
 }
 
 .readyToAddCell {
-  // border: $thin-border-size solid $color-select-border;
-  // box-sizing: border-box;
-  // border-collapse: collapse;
-
-  // @extend .readyToAdd-border;
-
   height: $calendar-cell-height-real;
   width: var(--calendar-cell-width-real);
   position: absolute;
   text-align: center;
   left: 0px;
   top: 0px;
-  // animation: appear-animation $animation-duration-opacity * 2// ease-in-out;
 
   .calendarCell[data-coord-x='0'] & {
     top: -1 * $calendar-cell-height;
@@ -554,5 +455,4 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   left: $add-cell-button-left-margin + $add-cell-button-right-margin +
     $add-cell-button-width -
     get-negative-margin-plus-icon($add-cell-button-width);
-  // margin-left: -$add-cell-button-width;
 }

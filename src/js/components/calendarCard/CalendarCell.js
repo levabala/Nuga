@@ -25,9 +25,7 @@ class CalendarCell extends Reactor {
     this.personId = `${this.id}_person`;
     this.dayId = dayId;
 
-    this.container = el('div', {
-      // class: `calendarCell-container`,
-    });
+    this.container = el('div', {});
 
     this.el = el(
       'div',
@@ -62,9 +60,7 @@ class CalendarCell extends Reactor {
     this.personCell.setId(this.personId);
     this.personCell.setDayId(this.dayId);
     this.personCell.discardMoveBackAnimation();
-    // const mock = new ReadyToAddCell();
-    // if (Math.random() > 0.5) setChildren(this, mock);
-    // else setChildren(this, new PersonCell(0, 0, 0, null));
+
     setChildren(this.container, this.personCell);
 
     if (this.personCell.mock) return;
@@ -72,8 +68,6 @@ class CalendarCell extends Reactor {
     interact(this.personCell.el).draggable(generateConfig(this.parentTableDiv));
     interact(this.personCell.el).styleCursor(false);
   }
-
-  // modifyPersonByCell(cell) {}
 }
 
 export default CalendarCell;
