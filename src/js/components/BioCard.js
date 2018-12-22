@@ -3,6 +3,7 @@
 import { el, mount, Element } from 'redom';
 import Card from './Card';
 import type { IDataElement } from '../classes/dataTypes/DataInterface';
+import '../../scss/bio.scss';
 
 class BioTableHead {
   el: Element;
@@ -37,7 +38,7 @@ export type BioData = {
   title: string,
   avatarURL: string,
   data: DataType,
-}
+};
 
 class BioTable {
   el: Element;
@@ -45,10 +46,7 @@ class BioTable {
   constructor(title: string, data: DataType) {
     this.el = el('div', { id: 'bio-table', class: 'bioTable' }, [
       new BioTableHead(title),
-      ...Array.from(data,
-        ([prop, val]) =>
-          new BioTableRow(prop, val),
-      ),
+      ...Array.from(data, ([prop, val]) => new BioTableRow(prop, val)),
     ]);
   }
 }
