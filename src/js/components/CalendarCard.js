@@ -2,7 +2,7 @@ import interact from 'interactjs';
 import { el, mount } from 'redom';
 import Card from './Card';
 import DayData from '../classes/dataTypes/DayData';
-import CalendarDay from './calendarCard/CalendarDay';
+import CalendarDay from './calendarComponents/CalendarDay';
 
 interact.dynamicDrop(true);
 

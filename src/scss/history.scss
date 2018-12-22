@@ -1,8 +1,21 @@
+@import 'style.scss';
+@import 'root.scss';
+@import 'colors.scss';
+@import 'fonts.scss';
+
+$card-padding-horizontal: 20px;
+$card-padding-vertical: 25px;
+$divider-width: 5px;
+$event-margin-vertical: 35px;
+$event-margin-horizontal: 17px;
+$event-padding-vertical: 10px;
+$event-padding-horizontal: 20px;
+$date-padding-vertical: 15px;
+
 .history-card {
-  --divider-width: 5px;
   width: 600px;
   background: #f5f4f1;
-  padding: var(--padding-single);
+  padding: $card-padding-vertical $card-padding-horizontal;
   text-align: center;
   font-size: 14px;
   display: inline-block;
@@ -29,15 +42,18 @@
 
 .history-event {
   width: 50%;
-  padding-top: var(--padding-single);
-  padding-bottom: var(--padding-single);
+  padding: $event-margin-vertical 0;
 }
 
 .history-event .content {
   background: #ebeae8;
-  padding: var(--padding-single-half);
+  padding: $event-padding-vertical $event-padding-horizontal;
   text-align: left;
   font-size: 14px;
+
+  & :last-child {
+    margin-bottom: 0;
+  }
 }
 
 .history-event .content {
@@ -51,17 +67,17 @@
 }
 
 .history-event.even {
-  margin-left: calc(50% - var(--divider-width) / 2);
+  margin-left: calc(50% - #{$divider-width} / 2);
   box-sizing: border-box;
-  border-left: solid #ebeae8 var(--divider-width);
-  padding-left: var(--padding-single);
+  border-left: solid #ebeae8 $divider-width;
+  padding-left: $event-margin-horizontal;
 }
 
 .history-event.odd {
-  width: calc(50% + var(--divider-width) / 2);
+  width: calc(50% + #{$divider-width} / 2);
   box-sizing: border-box;
-  padding-right: var(--padding-single);
-  border-right: solid #ebeae8 var(--divider-width);
+  padding-right: $event-margin-horizontal;
+  border-right: solid #ebeae8 $divider-width;
 }
 
 .history-date {
@@ -69,8 +85,7 @@
   font-size: 14px;
   display: inline-block;
   color: #595959;
-  margin-top: var(--padding-single-half);
-  margin-bottom: var(--padding-single-half);
+  margin: $date-padding-vertical 0;
 }
 
 @keyframes scaleFromTop {

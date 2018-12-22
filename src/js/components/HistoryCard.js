@@ -3,6 +3,7 @@
 import { el } from 'redom';
 import type Moment from 'moment';
 import HistoryEvent from '../classes/HistoryEvent';
+import '../../scss/history.scss';
 
 class HistoryCard {
   events: Array<HistoryEvent>;
@@ -34,11 +35,9 @@ class HistoryCard {
     });
     const firstBlock: ?Element = this.el.querySelector('.history-add-block');
     // we need to check if block exists to pass flow checking
-    if (!(firstBlock instanceof Element))
-      throw new Error();
+    if (!(firstBlock instanceof Element)) throw new Error();
     const firstEvent = firstBlock.querySelector('.history-event');
-    if (!(firstEvent instanceof Element))
-      throw new Error();
+    if (!(firstEvent instanceof Element)) throw new Error();
 
     const even = firstEvent.classList.contains('odd');
     const element = this.constructor.createEventElement(historyEvent, even);
@@ -51,8 +50,7 @@ class HistoryCard {
     block.appendChild(element);
     if (add_divider) block.appendChild(this.createDateDivider(historyEvent));
 
-    if (!(firstBlock.parentNode instanceof Element))
-      throw new Error();
+    if (!(firstBlock.parentNode instanceof Element)) throw new Error();
 
     firstBlock.parentNode.insertBefore(block, firstBlock);
 
@@ -75,8 +73,7 @@ class HistoryCard {
 
     // remove (if exists) last date divider
     if (this.events.length > 0) {
-      if (!(this.el.lastChild instanceof Element))
-        throw new Error();
+      if (!(this.el.lastChild instanceof Element)) throw new Error();
       const dates = this.el.lastChild.querySelectorAll('.history-date');
       const toRemove = dates[dates.length - 1];
       toRemove.remove();
