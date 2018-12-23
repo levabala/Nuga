@@ -1,8 +1,9 @@
 import interact from 'interactjs';
-import { el, mount } from 'redom';
+import { el, mount, setAttr } from 'redom';
 import Card from './Card';
 import DayData from '../classes/dataTypes/DayData';
 import CalendarDay from './calendarComponents/CalendarDay';
+import '../../scss/calendar.scss';
 
 interact.dynamicDrop(true);
 
@@ -32,6 +33,7 @@ class CalendarCard extends Card {
     );
     const child = el('div', { class: 'calendar-card' }, day);
     this.days.push(day);
+    setAttr(this.el, 'id', 'calendar-container');
     mount(this.el, child);
 
     window.addEventListener('scroll', this.handleVerticalBorders.bind(this));

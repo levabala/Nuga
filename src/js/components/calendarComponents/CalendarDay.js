@@ -1,6 +1,6 @@
 import { el } from 'redom';
 import DayData from '../../classes/dataTypes/DayData';
-import CalendarTable from './CalendarTable';
+import CalendarTable from './grid/CalendarTable';
 import CalendarDayHeader from './CalendarDayHeader';
 
 class CalendarDay {

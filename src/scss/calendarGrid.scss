@@ -1,0 +1,77 @@
+@import 'root.scss';
+
+$calendar-positions-per-page: 4;
+$calendar-time-stamps-count: 8;
+$calendar-cell-width: 300px;
+$calendar-cell-height: 70px;
+$calendar-time-cell-width: $padding-card;
+$calendar-cell-border-width: $thin-border-size;
+
+.calendarTable {
+  display: grid;
+  position: relative;
+
+  grid-template-areas:
+    'time wrapper'
+    'time wrapper';
+
+  grid-template-columns: $calendar-time-cell-width auto;
+  grid-template-rows: $calendar-cell-height auto;
+
+  margin-right: $padding-card;
+  margin-left: $padding-card;
+  padding-bottom: $thin-border-size;
+
+  .wrapper {
+    display: grid;
+    grid-area: wrapper;
+
+    grid-template-columns: auto;
+    grid-template-rows: $calendar-cell-height auto;
+
+    box-shadow: 0 0 0 1px black;
+
+    grid-template-areas:
+      'positions'
+      'main';
+
+    overflow: hidden;
+
+    .positionsRow {
+      display: inline-flex;
+      grid-area: positions;
+
+      .item {
+        width: $calendar-cell-width;
+      }
+    }
+
+    .mainGrid {
+      display: grid;
+      grid-area: main;
+
+      grid-template-columns: repeat(auto-fit, $calendar-cell-width);
+      grid-template-rows: repeat(auto-fit, $calendar-cell-height);
+    }
+  }
+
+  .timeColumn {
+    display: grid;
+    grid-area: time;
+
+    .item {
+      display: flex;
+      height: $calendar-cell-height;
+    }
+  }
+
+  .item {
+    display: grid;
+    background: lightgray;
+    font-size: 30px;
+    justify-content: center;
+    align-items: center;
+    // border: solid black 1px;
+    box-shadow: 0 0 0 1px black;
+  }
+}
