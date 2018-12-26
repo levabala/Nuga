@@ -6,8 +6,11 @@ $calendar-cell-width: 300px;
 $calendar-cell-height: 70px;
 $calendar-time-cell-width: $padding-card;
 $calendar-cell-border-width: $thin-border-size;
+$calendar-main-width-start: $calendar-cell-width * 5;
 
 .calendarTable {
+  --calendar-main-width: #{$calendar-main-width-start};
+
   display: grid;
   position: relative;
 
@@ -23,6 +26,8 @@ $calendar-cell-border-width: $thin-border-size;
   padding-bottom: $thin-border-size;
 
   .wrapper {
+    --positions-count: 10;
+
     display: grid;
     grid-area: wrapper;
 
@@ -38,11 +43,16 @@ $calendar-cell-border-width: $thin-border-size;
     overflow: hidden;
 
     .positionsRow {
-      display: inline-flex;
+      display: grid;
       grid-area: positions;
 
+      width: var(--calendar-main-width);
+
+      grid-template-columns: repeat(var(--positions-count), auto);
+      grid-template-rows: repeat(auto-fit, $calendar-cell-height);
+
       .item {
-        width: $calendar-cell-width;
+        // width: $calendar-cell-width;
       }
     }
 
@@ -50,8 +60,10 @@ $calendar-cell-border-width: $thin-border-size;
       display: grid;
       grid-area: main;
 
-      grid-template-columns: repeat(auto-fit, $calendar-cell-width);
+      grid-template-columns: repeat(var(--positions-count), auto);
       grid-template-rows: repeat(auto-fit, $calendar-cell-height);
+
+      width: var(--calendar-main-width);
     }
   }
 

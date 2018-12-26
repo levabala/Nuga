@@ -9,9 +9,66 @@ class CalendarTable {
     isFirst: boolean,
     otherDays: Array<CalendarTable>,
   ) {
-    this.data = data;
     this.isFirst = isFirst;
     this.otherDays = otherDays;
+    this.minElWidth = 100;
+
+    this.setData(data);
+
+    window.addEventListener('keydown', e => {
+      switch (e.code) {
+        case 'ArrowRight':
+          this.turnPageRight();
+          break;
+        case 'ArrowLeft':
+          this.turnPageLeft();
+          break;
+        default:
+          break;
+      }
+    });
+  }
+
+  setPositionsCount(count) {
+    this.layoutInfo.positionsCount = count;
+    this.layoutComponents.wrapper.style.setProperty('--positions-count', count);
+  }
+
+  setMainGridWidth(width) {
+    this.layoutComponents.calendarTable.style.setProperty(
+      '--calendar-main-width',
+      `${width}px`,
+    );
+  }
+
+  /* eslint-disable-next-line */
+  updateMainWidth() {
+    const calcPositionsPerPage = (wrapperWidth, minElWidth) => {};
+
+    const calcMainWidth = (positionsCount, wrapper, minElWidth) => {
+      const rect = wrapper.getBoundingClientRect();
+      const wrapperWidth = rect.width;
+      const positionsPerPage = calcPositionsPerPage(wrapperWidth, minElWidth);
+      // const pagesCount = Math.ceil(positionsCount / positionsPerPage);
+      const elWidth = wrapperWidth / positionsPerPage;
+      const width = elWidth * positionsCount;
+
+      return width;
+    };
+
+    /*
+    [
+      this.layoutInfo.positionsCount,
+      this.layoutComponents.wrapper,
+      this.minElWidth,
+    ]
+      |> ([positionsCount, wrapper, minElWidth]) => calcMainWidth)
+      |> this.setMainGridWidth;
+      */
+  }
+
+  setData(data: DayData) {
+    this.data = data;
 
     const timeStamps = 3;
     const positionsCount = 5;
@@ -50,25 +107,21 @@ class CalendarTable {
       [timeColumn, wrapper],
     );
 
-    window.addEventListener('keydown', e => {
-      console.log(e.code);
-      switch (e.code) {
-        case 'ArrowRight':
-          this.turnPageRight();
-          break;
-        case 'ArrowLeft':
-          this.turnPageLeft();
-          break;
-        default:
-          break;
-      }
-    });
+    this.layoutInfo = {
+      timeStamps,
+      positionsCount,
+    };
 
-    /*
-    stickybits('.calendar-card', {
-      scrollEl: 'calendar-container',
-    });
-    */
+    this.layoutComponents = {
+      calendarTable: this.el,
+      mainGrid,
+      wrapper,
+      timeColumn,
+      positionsRow,
+    };
+
+    this.setPositionsCount(this.layoutInfo.positionsCount);
+    this.updateMainWidth();
   }
 
   turnPageRight() {
