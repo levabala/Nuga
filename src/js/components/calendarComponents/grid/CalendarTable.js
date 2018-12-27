@@ -11,17 +11,16 @@ class CalendarTable {
   ) {
     this.isFirst = isFirst;
     this.otherDays = otherDays;
-    this.minElWidth = 100;
 
     this.setData(data);
 
     window.addEventListener('keydown', e => {
       switch (e.code) {
         case 'ArrowRight':
-          this.turnPageRight();
+          // this.turnPageRight();
           break;
         case 'ArrowLeft':
-          this.turnPageLeft();
+          // this.turnPageLeft();
           break;
         default:
           break;
@@ -33,7 +32,7 @@ class CalendarTable {
     window.addEventListener('resize', () => {
       const updateAll = () => {
         setTimeout(() => {
-          this.updateMainWidth();
+          this.updateAll();
         }, 0);
 
         clearTimeout(updateTimeout);
@@ -44,6 +43,81 @@ class CalendarTable {
 
       if (updateTimeout === null) updateAll();
     });
+
+    window.addEventListener('scroll', () => {
+      this.scrollHandler();
+    });
+
+    const totalUpdateInterval = 501;
+    setInterval(this.updateAll.bind(this), totalUpdateInterval);
+  }
+
+  scrollHandler() {
+    const rect = this.layoutComponents.calendarTable.getBoundingClientRect();
+    if (rect.bottom < 0 || rect.top > 0) {
+      this.makePositionsUnSticky();
+      return;
+    }
+
+    if (rect.top < 1 && rect.bottom > 0) this.makePositionsSticky();
+
+    if (this.layoutInfo.positionsRowSticky) {
+      const rowRect = this.layoutComponents.stickyRowContainer.getBoundingClientRect();
+      if (rect.bottom <= rowRect.height) this.dockPositionsBottom();
+      else this.unDockPositionsBottom();
+    }
+  }
+
+  makePositionsUnSticky() {
+    this.layoutInfo.positionsRowSticky = false;
+
+    if (this.layoutComponents.stickyRowContainer) {
+      console.log('unsticky!');
+      this.layoutComponents.stickyRowContainer.remove();
+      this.layoutComponents.stickyRowContainer = false;
+    }
+  }
+
+  dockPositionsBottom() {
+    if (
+      !this.layoutComponents.stickyRowContainer.classList.contains('dockBottom')
+    ) {
+      console.log('dock bottom');
+      this.layoutComponents.stickyRowContainer.classList.add('dockBottom');
+    }
+  }
+
+  unDockPositionsBottom() {
+    if (
+      this.layoutComponents.stickyRowContainer.classList.contains('dockBottom')
+    ) {
+      console.log('undock bottom');
+      this.layoutComponents.stickyRowContainer.classList.remove('dockBottom');
+    }
+  }
+
+  makePositionsSticky() {
+    if (this.layoutInfo.positionsRowSticky) return;
+
+    console.log('sticky!');
+
+    const clonedRow = this.layoutComponents.positionsRow.cloneNode(true);
+    const rowContainer = el(
+      'div',
+      {
+        class: 'stickyContainer',
+      },
+      clonedRow,
+    );
+
+    this.layoutComponents.wrapper.appendChild(rowContainer);
+
+    this.layoutInfo.positionsRowSticky = true;
+    this.layoutComponents.stickyRowContainer = rowContainer;
+  }
+
+  updateAll() {
+    this.updateMainWidth();
   }
 
   setPositionsCount(count) {
@@ -51,9 +125,30 @@ class CalendarTable {
     this.layoutComponents.wrapper.style.setProperty('--positions-count', count);
   }
 
-  setMainGridWidth(width) {
+  setMainFullWidth(width) {
+    const val = this.layoutComponents.calendarTable.style.getPropertyValue(
+      '--calendar-main-width',
+    );
+
+    if (val === width) return;
+
     this.layoutComponents.calendarTable.style.setProperty(
       '--calendar-main-width',
+      `${width}px`,
+    );
+  }
+
+  setWrapperWidth(width) {
+    const val = this.layoutComponents.calendarTable.style.getPropertyValue(
+      '--wrapper-width',
+    );
+
+    console.log(val);
+
+    if (val === width) return;
+
+    this.layoutComponents.calendarTable.style.setProperty(
+      '--wrapper-width',
       `${width}px`,
     );
   }
@@ -73,8 +168,17 @@ class CalendarTable {
         positionsCount,
       );
       const elWidth = wrapperWidth / positionsPerPage;
+      const pagesCount = Math.ceil(positionsCount / positionsPerPage);
       const width =
-        elWidth * positionsCount + parseFloat(RootVariables.thinBorderSize);
+        elWidth * positionsCount + parseFloat(RootVariables.thinBorderSize) * 2;
+
+      this.layoutInfo.positionsPerPage = positionsPerPage;
+      this.layoutInfo.pageIndexMax = pagesCount;
+      this.layoutInfo.mainGridWidth = wrapperWidth;
+      this.layoutInfo.mainGridWidthInner =
+        wrapperWidth + parseFloat(RootVariables.thinBorderSize);
+
+      this.setWrapperWidth(wrapperWidth);
 
       return width;
     };
@@ -83,16 +187,16 @@ class CalendarTable {
     [
       this.layoutInfo.positionsCount,
       this.layoutComponents.wrapper,
-      this.minElWidth,
+      this.layoutInfo.minElWidth,
     ]
       |> calcMainWidth
-      |> this.setMainGridWidth;
+      |> this.setMainFullWidth;
   }
 
   setData(data: DayData) {
     this.data = data;
 
-    const timeStamps = 3;
+    const timeStamps = 5;
     const positionsCount = 11;
 
     const items = [];
@@ -132,14 +236,23 @@ class CalendarTable {
     this.layoutInfo = {
       timeStamps,
       positionsCount,
+      mainGridWidth: 0,
+      mainGridWidthInner: 0,
+      minElWidth: 100,
+      pageIndex: 0,
+      pageIndexMax: 1,
+      positionsPerPage: 1,
+      positionsRowSticky: false,
     };
 
     this.layoutComponents = {
       calendarTable: this.el,
+      cells: items,
       mainGrid,
       wrapper,
       timeColumn,
       positionsRow,
+      stickyRowContainer: el('div'),
     };
 
     this.setPositionsCount(this.layoutInfo.positionsCount);
@@ -147,11 +260,33 @@ class CalendarTable {
   }
 
   turnPageRight() {
-    this.scrollableArea.scrollLeft += 100;
+    this.layoutInfo.pageIndex += 1;
+    this.layoutInfo.pageIndex = Math.max(
+      0,
+      Math.min(this.layoutInfo.pageIndex, this.layoutInfo.pageIndexMax),
+    );
+    this.updatePageScroll();
   }
 
   turnPageLeft() {
-    this.scrollableArea.scrollLeft -= 100;
+    this.layoutInfo.pageIndex -= 1;
+    this.layoutInfo.pageIndex = Math.max(
+      0,
+      Math.min(this.layoutInfo.pageIndex, this.layoutInfo.pageIndexMax),
+    );
+    this.updatePageScroll();
+  }
+
+  updatePageScroll() {
+    const targetElementIndex =
+      this.layoutInfo.positionsPerPage * this.layoutInfo.pageIndex;
+    const targetElement = this.layoutComponents.cells[targetElementIndex];
+
+    targetElement.scrollIntoView({
+      behavior: 'smooth',
+      inline: 'start',
+      block: 'nearest',
+    });
   }
 }
 

@@ -10,6 +10,7 @@ $calendar-main-width-start: $calendar-cell-width * 5;
 
 .calendarTable {
   --calendar-main-width: #{$calendar-main-width-start};
+  --wrapper-width: 0px;
 
   display: grid;
   position: relative;
@@ -30,6 +31,7 @@ $calendar-main-width-start: $calendar-cell-width * 5;
 
     display: grid;
     grid-area: wrapper;
+    position: relative;
 
     grid-template-columns: auto;
     grid-template-rows: $calendar-cell-height auto;
@@ -46,14 +48,30 @@ $calendar-main-width-start: $calendar-cell-width * 5;
       display: grid;
       grid-area: positions;
 
-      // grid-template-columns: repeat(var(--positions-count), auto);
+      grid-template-columns: repeat(var(--positions-count), 1fr);
       grid-template-rows: repeat(auto-fit, $calendar-cell-height);
-      grid-auto-columns: 1fr;
 
       width: var(--calendar-main-width);
+    }
 
-      .item {
-        grid-row: 1;
+    .stickyContainer {
+      position: fixed;
+      top: 1px;
+      overflow-x: hidden;
+      box-shadow: 0 0 0 1px black;
+      width: var(--wrapper-width);
+
+      &.dockBottom {
+        position: absolute;
+        bottom: 0;
+        top: unset;
+        z-index: 100;
+      }
+
+      & .dockTop {
+        position: absolute;
+        top: 0;
+        z-index: 100;
       }
     }
 
@@ -61,7 +79,7 @@ $calendar-main-width-start: $calendar-cell-width * 5;
       display: grid;
       grid-area: main;
 
-      grid-template-columns: repeat(var(--positions-count), auto);
+      grid-template-columns: repeat(var(--positions-count), 1fr);
       grid-template-rows: repeat(auto-fit, $calendar-cell-height);
 
       width: var(--calendar-main-width);
