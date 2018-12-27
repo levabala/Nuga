@@ -26,6 +26,10 @@ $calendar-main-width-start: $calendar-cell-width * 5;
   margin-left: $padding-card;
   padding-bottom: $thin-border-size;
 
+  &.hidden {
+    visibility: hidden;
+  }
+
   .wrapper {
     --positions-count: 10;
 

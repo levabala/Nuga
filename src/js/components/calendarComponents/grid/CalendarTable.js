@@ -66,13 +66,16 @@ class CalendarTable {
       if (rect.bottom <= rowRect.height) this.dockPositionsBottom();
       else this.unDockPositionsBottom();
     }
+
+    // TODO: make checks every N pixels
+    this.tryToHide();
   }
 
   makePositionsUnSticky() {
     this.layoutInfo.positionsRowSticky = false;
 
     if (this.layoutComponents.stickyRowContainer) {
-      console.log('unsticky!');
+      // console.log('unsticky!');
       this.layoutComponents.stickyRowContainer.remove();
       this.layoutComponents.stickyRowContainer = false;
     }
@@ -82,7 +85,7 @@ class CalendarTable {
     if (
       !this.layoutComponents.stickyRowContainer.classList.contains('dockBottom')
     ) {
-      console.log('dock bottom');
+      // console.log('dock bottom');
       this.layoutComponents.stickyRowContainer.classList.add('dockBottom');
     }
   }
@@ -91,7 +94,7 @@ class CalendarTable {
     if (
       this.layoutComponents.stickyRowContainer.classList.contains('dockBottom')
     ) {
-      console.log('undock bottom');
+      // console.log('undock bottom');
       this.layoutComponents.stickyRowContainer.classList.remove('dockBottom');
     }
   }
@@ -120,6 +123,16 @@ class CalendarTable {
     this.updateMainWidth();
   }
 
+  tryToHide() {
+    const rect = this.layoutComponents.calendarTable.getBoundingClientRect();
+    const buffer = rect.height * 2;
+    const couldHide =
+      rect.top < -buffer || rect.bottom > window.innerHeight + buffer;
+
+    if (couldHide) this.layoutComponents.calendarTable.classList.add('hidden');
+    else this.layoutComponents.calendarTable.classList.remove('hidden');
+  }
+
   setPositionsCount(count) {
     this.layoutInfo.positionsCount = count;
     this.layoutComponents.wrapper.style.setProperty('--positions-count', count);
@@ -142,8 +155,6 @@ class CalendarTable {
     const val = this.layoutComponents.calendarTable.style.getPropertyValue(
       '--wrapper-width',
     );
-
-    console.log(val);
 
     if (val === width) return;
 
