@@ -1,7 +1,7 @@
 import { el } from 'redom';
-// import stickybits from 'stickybits';
 import DayData from '../../../classes/dataTypes/DayData';
 import '../../../../scss/calendarGrid.scss';
+import RootVariables from '../../../../scss/root.scss';
 
 class CalendarTable {
   constructor(
@@ -27,6 +27,23 @@ class CalendarTable {
           break;
       }
     });
+
+    let updateTimeout = null;
+    const updateIntervalLength = 100;
+    window.addEventListener('resize', () => {
+      const updateAll = () => {
+        setTimeout(() => {
+          this.updateMainWidth();
+        }, 0);
+
+        clearTimeout(updateTimeout);
+        updateTimeout = setTimeout(() => {
+          updateTimeout = null;
+        }, updateIntervalLength);
+      };
+
+      if (updateTimeout === null) updateAll();
+    });
   }
 
   setPositionsCount(count) {
@@ -41,37 +58,42 @@ class CalendarTable {
     );
   }
 
-  /* eslint-disable-next-line */
   updateMainWidth() {
-    const calcPositionsPerPage = (wrapperWidth, minElWidth) => {};
+    const calcPositionsPerPage = (wrapperWidth, minElWidth, positionsCount) =>
+      Math.min(Math.floor(wrapperWidth / minElWidth), positionsCount);
 
-    const calcMainWidth = (positionsCount, wrapper, minElWidth) => {
+    const calcMainWidth = ([positionsCount, wrapper, minElWidth]) => {
       const rect = wrapper.getBoundingClientRect();
       const wrapperWidth = rect.width;
-      const positionsPerPage = calcPositionsPerPage(wrapperWidth, minElWidth);
-      // const pagesCount = Math.ceil(positionsCount / positionsPerPage);
+      if (wrapperWidth === 0) return 0;
+
+      const positionsPerPage = calcPositionsPerPage(
+        wrapperWidth,
+        minElWidth,
+        positionsCount,
+      );
       const elWidth = wrapperWidth / positionsPerPage;
-      const width = elWidth * positionsCount;
+      const width =
+        elWidth * positionsCount + parseFloat(RootVariables.thinBorderSize);
 
       return width;
     };
 
-    /*
+    /* eslint-disable-next-line no-unused-expressions */
     [
       this.layoutInfo.positionsCount,
       this.layoutComponents.wrapper,
       this.minElWidth,
     ]
-      |> ([positionsCount, wrapper, minElWidth]) => calcMainWidth)
+      |> calcMainWidth
       |> this.setMainGridWidth;
-      */
   }
 
   setData(data: DayData) {
     this.data = data;
 
     const timeStamps = 3;
-    const positionsCount = 5;
+    const positionsCount = 11;
 
     const items = [];
     const times = [el('div', { class: 'item' }, '')];
@@ -121,7 +143,7 @@ class CalendarTable {
     };
 
     this.setPositionsCount(this.layoutInfo.positionsCount);
-    this.updateMainWidth();
+    setTimeout(() => this.updateMainWidth(), 0);
   }
 
   turnPageRight() {

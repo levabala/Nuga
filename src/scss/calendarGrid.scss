@@ -46,13 +46,14 @@ $calendar-main-width-start: $calendar-cell-width * 5;
       display: grid;
       grid-area: positions;
 
+      // grid-template-columns: repeat(var(--positions-count), auto);
+      grid-template-rows: repeat(auto-fit, $calendar-cell-height);
+      grid-auto-columns: 1fr;
+
       width: var(--calendar-main-width);
 
-      grid-template-columns: repeat(var(--positions-count), auto);
-      grid-template-rows: repeat(auto-fit, $calendar-cell-height);
-
       .item {
-        // width: $calendar-cell-width;
+        grid-row: 1;
       }
     }
 
