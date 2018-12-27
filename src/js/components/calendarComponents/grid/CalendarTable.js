@@ -131,6 +131,8 @@ class CalendarTable {
 
     if (couldHide) this.layoutComponents.calendarTable.classList.add('hidden');
     else this.layoutComponents.calendarTable.classList.remove('hidden');
+
+    // TODO: freeze listeners&scrolling
   }
 
   setPositionsCount(count) {
