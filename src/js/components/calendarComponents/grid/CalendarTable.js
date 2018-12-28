@@ -345,7 +345,6 @@ class CalendarTable extends Reactor {
 
   isInViewport() {
     const rect = this.el.getBoundingClientRect();
-    console.log('check check');
     return (
       rect.top >= 0 &&
       rect.left >= 0 &&

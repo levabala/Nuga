@@ -24,7 +24,7 @@ $calendar-main-width-start: $calendar-cell-width * 5;
 
   margin-right: $padding-card;
   margin-left: $padding-card;
-  padding-bottom: $thin-border-size;
+  padding-bottom: $thin-border-size * 2;
 
   &.hidden {
     visibility: hidden;
