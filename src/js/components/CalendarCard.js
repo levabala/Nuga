@@ -103,7 +103,9 @@ class CalendarCard extends Card {
     if (window.scrollY === 0) {
       const cardRect = this.days[0].el.getBoundingClientRect();
       const scrollHeightTarget = cardRect.height;
-      window.scrollTo(0, scrollHeightTarget);
+      setTimeout(() => {
+        window.scrollTo(0, scrollHeightTarget);
+      });
     }
 
     console.log('Loaded TOP day');

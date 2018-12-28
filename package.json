@@ -9,7 +9,8 @@
     "webpack_watch": "webpack --watch",
     "flow": "flow",
     "start_all": "concurrently \"npm:start_server\" \"npm:webpack_watch\"",
-    "update_config": "npm install --dev-save eslint-config-levabala@latest"
+    "update_config": "npm install --dev-save eslint-config-levabala@latest",
+    "update_assemblies": "npm install --dev-save assemblies@latest"
   },
   "repository": {
     "type": "git",
