@@ -11,21 +11,21 @@
       "text": "TODO:",
       // "border": "1px solid red",
       "borderRadius": "2px", //NOTE: using borderRadius along with `border` or you will see nothing change
-      "backgroundColor": "rgba(0,0,0,.2)"
+      "backgroundColor": "transparent"
       //other styling properties goes here ...
     },
     {
       "text": "FIXIT:",
       // "border": "1px solid red",
       "borderRadius": "2px", //NOTE: using borderRadius along with `border` or you will see nothing change
-      "backgroundColor": "rgba(0,0,0,.2)"
+      "backgroundColor": "transparent"
       //other styling properties goes here ...
     },
     {
       "text": "DEPRECATED",
       // "border": "1px solid red",
       "borderRadius": "2px", //NOTE: using borderRadius along with `border` or you will see nothing change
-      "backgroundColor": "rgba(0,0,0,.2)",
+      "backgroundColor": "transparent",
       "color": "darkorange"
       //other styling properties goes here ...
     },
@@ -33,7 +33,19 @@
       "text": "UNUSABLE",
       "color": "#9999ff",
       "borderRadius": "2px",
-      "backgroundColor": "rgba(0,0,0,.2)"
+      "backgroundColor": "transparent"
+    },
+    {
+      "text": "DEBUG_FUNC",
+      "color": "#990000",
+      "borderRadius": "2px",
+      "backgroundColor": "transparent"
+    },
+    {
+      "text": "DEBUG_VAR",
+      "color": "#990000",
+      "borderRadius": "2px",
+      "backgroundColor": "transparent"
     }
   ]
 }

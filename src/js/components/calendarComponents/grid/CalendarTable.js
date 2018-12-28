@@ -1,26 +1,60 @@
 import { el } from 'redom';
+import { Reactor } from 'assemblies';
 import DayData from '../../../classes/dataTypes/DayData';
 import '../../../../scss/calendarGrid.scss';
 import RootVariables from '../../../../scss/root.scss';
 
-class CalendarTable {
+class CalendarTable extends Reactor {
+  layoutInfo: {
+    timeStamps: number,
+    positionsCount: number,
+    mainGridWidth: number,
+    mainGridWidthInner: number,
+    minElWidth: number,
+    pageIndex: number,
+    pageIndexMax: number,
+    positionsPerPage: number,
+    scrollTriggerTimeout: number,
+    lastWindowScroll: number,
+    positionsRowSticky: boolean,
+    hidden: boolean,
+  };
+
+  layoutComponents: {
+    calendarTable: HTMLElement,
+    cells: Array<HTMLElement>,
+    mainGrid: HTMLElement,
+    wrapper: HTMLElement,
+    timeColumn: HTMLElement,
+    positionsRow: HTMLElement,
+    stickyRowContainer: HTMLElement,
+  };
+
   constructor(
     data: DayData,
     isFirst: boolean,
     otherDays: Array<CalendarTable>,
   ) {
+    super();
+
     this.isFirst = isFirst;
     this.otherDays = otherDays;
+    this.layoutInfo = {
+      hidden: false,
+    };
+    this.layoutComponents = {};
+
+    this.registerEvent('visibilityChanged');
 
     this.setData(data);
 
     window.addEventListener('keydown', e => {
       switch (e.code) {
         case 'ArrowRight':
-          // this.turnPageRight();
+          if (this.isInViewport()) this.turnPageRight();
           break;
         case 'ArrowLeft':
-          // this.turnPageLeft();
+          if (this.isInViewport()) this.turnPageLeft();
           break;
         default:
           break;
@@ -53,9 +87,32 @@ class CalendarTable {
   }
 
   scrollHandler() {
+    const lastWindowScroll = this.layoutInfo.lastWindowScroll || window.scrollY;
+    const scrollTriggerTimeout = this.layoutInfo.scrollTriggerTimeout || 0;
+
+    const delta = Math.abs(window.scrollY - lastWindowScroll);
+    const newScrollTrigger = scrollTriggerTimeout - delta;
+
+    this.layoutInfo.lastWindowScroll = window.scrollY;
+
     const rect = this.layoutComponents.calendarTable.getBoundingClientRect();
+    const bodyRect = document.body.getBoundingClientRect();
+    const newDelta = Math.abs(rect.top - bodyRect.top);
+
     if (rect.bottom < 0 || rect.top > 0) {
       this.makePositionsUnSticky();
+
+      // console.log(Math.floor(newScrollTrigger));
+      if (newScrollTrigger > 0) {
+        this.layoutInfo.scrollTriggerTimeout = newScrollTrigger;
+        // return;
+      }
+
+      // console.log('innnnnnn');
+      this.layoutInfo.scrollTriggerTimeout = newDelta;
+
+      // TODO: make checks every N pixels
+      this.tryToHide(rect);
       return;
     }
 
@@ -66,9 +123,6 @@ class CalendarTable {
       if (rect.bottom <= rowRect.height) this.dockPositionsBottom();
       else this.unDockPositionsBottom();
     }
-
-    // TODO: make checks every N pixels
-    this.tryToHide();
   }
 
   makePositionsUnSticky() {
@@ -123,14 +177,31 @@ class CalendarTable {
     this.updateMainWidth();
   }
 
-  tryToHide() {
-    const rect = this.layoutComponents.calendarTable.getBoundingClientRect();
+  tryToHide(rect: DOMRect) {
+    // DEBUG_VAR
+    if (window.freezedHiding) return;
+
+    // const rect = this.layoutComponents.calendarTable.getBoundingClientRect();
     const buffer = rect.height * 2;
     const couldHide =
       rect.top < -buffer || rect.bottom > window.innerHeight + buffer;
 
-    if (couldHide) this.layoutComponents.calendarTable.classList.add('hidden');
-    else this.layoutComponents.calendarTable.classList.remove('hidden');
+    const lastState = this.layoutComponents.calendarTable.classList.contains(
+      'hidden',
+    );
+    if (couldHide) {
+      this.layoutComponents.calendarTable.classList.add('hidden');
+      this.layoutInfo.hidden = true;
+    } else {
+      this.layoutComponents.calendarTable.classList.remove('hidden');
+      this.layoutInfo.hidden = false;
+    }
+
+    if (lastState !== this.layoutInfo.hidden) {
+      this.dispatchEvent('visibilityChanged', {
+        hidden: this.layoutInfo.hidden,
+      });
+    }
 
     // TODO: freeze listeners&scrolling
   }
@@ -210,7 +281,7 @@ class CalendarTable {
     this.data = data;
 
     const timeStamps = 5;
-    const positionsCount = 11;
+    const positionsCount = 25;
 
     const items = [];
     const times = [el('div', { class: 'item' }, '')];
@@ -246,7 +317,7 @@ class CalendarTable {
       [timeColumn, wrapper],
     );
 
-    this.layoutInfo = {
+    Object.assign(this.layoutInfo, {
       timeStamps,
       positionsCount,
       mainGridWidth: 0,
@@ -256,7 +327,7 @@ class CalendarTable {
       pageIndexMax: 1,
       positionsPerPage: 1,
       positionsRowSticky: false,
-    };
+    });
 
     this.layoutComponents = {
       calendarTable: this.el,
@@ -270,6 +341,18 @@ class CalendarTable {
 
     this.setPositionsCount(this.layoutInfo.positionsCount);
     setTimeout(() => this.updateMainWidth(), 0);
+  }
+
+  isInViewport() {
+    const rect = this.el.getBoundingClientRect();
+    console.log('check check');
+    return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <=
+        (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
   }
 
   turnPageRight() {

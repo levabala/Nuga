@@ -22,6 +22,7 @@ class CalendarCard extends Card {
     this.requestBottomDay = requestBottomDay;
     this.days = [];
     this.stickyPositionsRow = null;
+    this.hiddenDays = 0;
 
     const averageIndex = Math.floor(this.data.length / 2);
     this.loadedBorder = [averageIndex, averageIndex];
@@ -31,6 +32,12 @@ class CalendarCard extends Card {
       averageIndex === 0,
       this.days,
     );
+
+    day.table.addEventListener(
+      'visibilityChanged',
+      this.handleTableHiding.bind(this),
+    );
+
     const child = el('div', { class: 'calendar-card' }, day);
     this.days.push(day);
     setAttr(this.el, 'id', 'calendar-container');
@@ -39,6 +46,19 @@ class CalendarCard extends Card {
     window.addEventListener('scroll', this.handleVerticalBorders.bind(this));
 
     this.handleVerticalBorders();
+  }
+
+  handleTableHiding(e) {
+    this.hiddenDays += e.hidden ? 1 : -1;
+    // console.log(this.hiddenDays);
+  }
+
+  // DEBUG_FUNC
+  countAllHiddenTables() {
+    return this.days.reduce((count: number, day: CalendarDay) => {
+      console.log(day.table.layoutInfo.hidden);
+      return count + (day.table.layoutInfo.hidden ? 1 : 0);
+    }, 0);
   }
 
   handleVerticalBorders() {
@@ -71,6 +91,11 @@ class CalendarCard extends Card {
     this.loadedBorder[0] = topIndex;
 
     const day = new CalendarDay(this.data[topIndex], topIndex === 0, this.days);
+    day.table.addEventListener(
+      'visibilityChanged',
+      this.handleTableHiding.bind(this),
+    );
+
     const child = el('div', { class: 'calendar-card' }, day);
     this.days.unshift(day);
     mount(this.el, child, this.el.children[0]);
@@ -100,6 +125,12 @@ class CalendarCard extends Card {
       bottomIndex === 0,
       this.days,
     );
+
+    day.table.addEventListener(
+      'visibilityChanged',
+      this.handleTableHiding.bind(this),
+    );
+
     const child = el('div', { class: 'calendar-card' }, day);
     this.days.push(day);
     mount(this.el, child);
