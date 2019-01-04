@@ -28,6 +28,7 @@ class CalendarTable extends Reactor {
     timeColumn: HTMLElement,
     positionsRow: HTMLElement,
     stickyRowContainer: HTMLElement,
+    stickyRowGrid: HTMLElement,
   };
 
   constructor(
@@ -51,10 +52,12 @@ class CalendarTable extends Reactor {
     window.addEventListener('keydown', e => {
       switch (e.code) {
         case 'ArrowRight':
-          if (this.isInViewport()) this.turnPageRight();
+          // if (this.isInViewport()) this.turnPageRight();
+          if (this.isBodyPercentInViewByHeight(0.6)) this.turnPageRight();
           break;
         case 'ArrowLeft':
-          if (this.isInViewport()) this.turnPageLeft();
+          // if (this.isInViewport()) this.turnPageLeft();
+          if (this.isBodyPercentInViewByHeight(0.6)) this.turnPageLeft();
           break;
         default:
           break;
@@ -129,8 +132,9 @@ class CalendarTable extends Reactor {
     this.layoutInfo.positionsRowSticky = false;
 
     if (this.layoutComponents.stickyRowContainer) {
-      // console.log('unsticky!');
-      this.layoutComponents.stickyRowContainer.remove();
+      // this.layoutComponents.stickyRowContainer.remove();
+      // console.log('unsticky');
+      this.layoutComponents.stickyRowContainer.classList.add('hidden');
       this.layoutComponents.stickyRowContainer = false;
     }
   }
@@ -156,6 +160,13 @@ class CalendarTable extends Reactor {
   makePositionsSticky() {
     if (this.layoutInfo.positionsRowSticky) return;
 
+    if (this.layoutComponents.stickyRowContainer) {
+      this.layoutComponents.stickyRowContainer.classList.remove('hidden');
+      this.updatePageScroll();
+
+      return;
+    }
+
     console.log('sticky!');
 
     const clonedRow = this.layoutComponents.positionsRow.cloneNode(true);
@@ -171,6 +182,7 @@ class CalendarTable extends Reactor {
 
     this.layoutInfo.positionsRowSticky = true;
     this.layoutComponents.stickyRowContainer = rowContainer;
+    this.layoutComponents.stickyRowGrid = clonedRow;
   }
 
   updateAll() {
@@ -257,7 +269,7 @@ class CalendarTable extends Reactor {
         elWidth * positionsCount + parseFloat(RootVariables.thinBorderSize) * 2;
 
       this.layoutInfo.positionsPerPage = positionsPerPage;
-      this.layoutInfo.pageIndexMax = pagesCount;
+      this.layoutInfo.pageIndexMax = pagesCount - 1;
       this.layoutInfo.mainGridWidth = wrapperWidth;
       this.layoutInfo.mainGridWidthInner =
         wrapperWidth + parseFloat(RootVariables.thinBorderSize);
@@ -280,8 +292,8 @@ class CalendarTable extends Reactor {
   setData(data: DayData) {
     this.data = data;
 
-    const timeStamps = 5;
-    const positionsCount = 25;
+    const timeStamps = 10;
+    const positionsCount = 15;
 
     const items = [];
     const times = [el('div', { class: 'item' }, '')];
@@ -322,7 +334,7 @@ class CalendarTable extends Reactor {
       positionsCount,
       mainGridWidth: 0,
       mainGridWidthInner: 0,
-      minElWidth: 100,
+      minElWidth: 300,
       pageIndex: 0,
       pageIndexMax: 1,
       positionsPerPage: 1,
@@ -354,6 +366,16 @@ class CalendarTable extends Reactor {
     );
   }
 
+  isBodyPercentInViewByHeight(percent: number) {
+    const rect = this.el.getBoundingClientRect();
+    const realHeight = rect.height;
+    const viewingHeight =
+      Math.min(window.innerHeight, rect.bottom) - Math.max(rect.top, 0);
+    const coeff = viewingHeight / realHeight;
+
+    return coeff > percent;
+  }
+
   turnPageRight() {
     this.layoutInfo.pageIndex += 1;
     this.layoutInfo.pageIndex = Math.max(
@@ -373,15 +395,40 @@ class CalendarTable extends Reactor {
   }
 
   updatePageScroll() {
-    const targetElementIndex =
-      this.layoutInfo.positionsPerPage * this.layoutInfo.pageIndex;
+    const targetElementIndex = Math.min(
+      this.layoutInfo.positionsPerPage * this.layoutInfo.pageIndex,
+      this.layoutInfo.positionsCount - 1,
+    );
     const targetElement = this.layoutComponents.cells[targetElementIndex];
 
+    /*
     targetElement.scrollIntoView({
       behavior: 'smooth',
       inline: 'start',
       block: 'nearest',
+    }); 
+    */
+
+    const scrollLeft = targetElement.offsetLeft; //  + parseFloat(RootVariables.thinBorderSize);
+
+    this.layoutComponents.wrapper.scrollTo({
+      top: 0,
+      left: scrollLeft,
+      behavior: 'smooth',
     });
+
+    if (this.layoutInfo.positionsRowSticky) {
+      const container = this.layoutComponents.stickyRowContainer;
+      const row = this.layoutComponents.stickyRowGrid;
+      const targetElementSticky = row.children[targetElementIndex];
+
+      // container.scrollLeft = targetElementSticky.offsetLeft;
+      container.scrollTo({
+        top: 0,
+        left: targetElementSticky.offsetLeft,
+        behavior: 'smooth',
+      });
+    }
   }
 }
 

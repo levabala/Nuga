@@ -72,10 +72,14 @@ $calendar-main-width-start: $calendar-cell-width * 5;
         z-index: 100;
       }
 
-      & .dockTop {
+      &.dockTop {
         position: absolute;
         top: 0;
         z-index: 100;
+      }
+
+      &.hidden {
+        visibility: hidden;
       }
     }
 
