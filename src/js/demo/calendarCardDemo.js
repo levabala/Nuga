@@ -66,17 +66,22 @@ const persons = new PersonsList([
   new PersonData({ name: 'Bally', surname: 'Perpy' }), */
 ]);
 
-const visits = [];
+const visits: Array<{
+  date: moment.Moment,
+  client: PersonData,
+  position: number,
+}> = [];
 for (let i = 0; i < persons.count; i++)
   visits.push({
     date: moment({
       y: 2018,
       M: 11,
-      d: Math.round(Math.random() * 21),
+      d: Math.round(Math.random() * 6),
       h: Math.round(Math.random() * 23),
       m: Math.round(Math.random() * 59),
     }),
     client: persons.getByIndex(i),
+    position: Math.round(Math.random() * 10),
   });
 
 const days: Array<DayData> = [
@@ -88,41 +93,26 @@ const days: Array<DayData> = [
       h: Math.round(Math.random() * 23),
       m: Math.round(Math.random() * 59),
     }),
-    visits,
-  }),
-  new DayData({
-    date: moment({
-      y: 2018,
-      M: 11,
-      d: 2,
-      h: Math.round(Math.random() * 23),
-      m: Math.round(Math.random() * 59),
-    }),
-    visits,
-  }),
-  new DayData({
-    date: moment({
-      y: 2018,
-      M: 11,
-      d: 1,
-      h: Math.round(Math.random() * 23),
-      m: Math.round(Math.random() * 59),
-    }),
-    visits,
+    visits: [],
   }),
 ];
 
-const loadTopDayCallback = (newestDay: DayData) =>
-  new DayData({
-    date: newestDay.date.clone().add(1, 'days'),
-    visits,
+const loadTopDayCallback = (newestDay: DayData) => {
+  const date = newestDay.date.clone().add(1, 'days');
+  return new DayData({
+    date,
+    visits:
+      visits.filter(visit => Math.abs(visit.date.diff(date, 'days')) < 1) || [],
   });
+};
 
-const loadBottomDayCallback = (newestDay: DayData) =>
-  new DayData({
-    date: newestDay.date.clone().subtract(1, 'days'),
-    visits,
+const loadBottomDayCallback = (oldestDay: DayData) => {
+  const date = oldestDay.date.clone().subtract(1, 'days');
+  return new DayData({
+    date,
+    visits: visits.filter(visit => visit.date.diff(date, 'days') < 1) || [],
   });
+};
 
 console.log(days);
 const card = new CalendarCard(days, loadTopDayCallback, loadBottomDayCallback);

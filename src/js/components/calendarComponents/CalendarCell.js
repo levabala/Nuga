@@ -21,6 +21,7 @@ class CalendarCell extends Reactor {
     this.y = y;
     this.locked = locked;
     this.personCell = null;
+    this.person = person;
     this.id = `tableCell_${this.x}_${this.y}`;
     this.personId = `${this.id}_person`;
     this.dayId = dayId;

@@ -5,6 +5,7 @@ import { Reactor } from 'assemblies';
 import DayData from '../../../classes/dataTypes/DayData';
 import '../../../../scss/calendarGrid.scss';
 import RootVariables from '../../../../scss/root.scss';
+import CalendarCell from '../CalendarCell';
 
 const moment = extendMoment(Moment);
 
@@ -309,17 +310,20 @@ class CalendarTable extends Reactor {
       return el('div', { class: 'positionsRow' }, positions);
     }
 
-    function generateTimeColumn(
+    function generateTimeStamps(
       range: [moment.Moment, moment.Moment],
       interval: [number, string], // amount, metric unit
-    ): HTMLElement {
+    ) {
       const timeRange = moment.range(...range);
-      const timeSteps = Array.from(
+      const timeStamps = Array.from(
         timeRange.by(interval[1], { step: interval[0] }),
       );
+      return timeStamps;
+    }
 
+    function generateTimeColumn(timeStamps: Array<moment.Moment>): HTMLElement {
       const times = [el('div', { class: 'item' }, '')].concat(
-        timeSteps.map(stamp =>
+        timeStamps.map(stamp =>
           el('div', { class: 'item' }, `${stamp.format('HH:mm')}`),
         ),
       );
@@ -327,41 +331,84 @@ class CalendarTable extends Reactor {
       return el('div', { class: 'timeColumn' }, times);
     }
 
-    function generateGrid(positionsCount, timesCount) {
+    function generateGridCells(
+      positionsCount: number,
+      timesCount: number,
+    ): HTMLElement {
       const items = [];
-      let id = 0;
+      // let id = 0;
       for (let y = 0; y < timesCount; y++)
         for (let x = 0; x < positionsCount; x++) {
-          const item = el('div', { class: 'item' }, `${x}:${y} #${id}`);
+          const item = el('div', { class: 'item' }); // , `${x}:${y} #${id}`);
           items.push(item);
 
-          id++;
+          // id++;
         }
 
       return el('div', { class: 'mainGrid' }, items);
     }
 
+    function generateClientCells(
+      allDates: Array<moment.Moment>,
+      interval: [number, string], // amount, metric unit
+    ) {
+      function calcY(visit) {
+        const { date } = visit;
+        for (let i = 0; i < allDates.length; i++)
+          if (allDates[i].diff(date, interval[1]) <= interval[0]) return i;
+        return allDates.length - 1;
+      }
+
+      function calcX(visit) {
+        const { position } = visit;
+        return position;
+      }
+
+      const cells = data.visits.map(
+        visit =>
+          new CalendarCell(
+            calcX(visit),
+            calcY(visit),
+            visit.client,
+            null,
+            null,
+          ),
+      );
+      return cells;
+    }
+
     this.data = data;
 
-    const timeStamps = 10;
     const positionsCount = 15;
 
-    const testStart = moment()
-      .startOf('day')
-      .hours(7);
-    const testEnd = moment()
-      .startOf('day')
-      .hours(15);
-    const range = [testStart, testEnd];
+    const allDates = data.visits
+      .map(visit => visit.date)
+      .sort((left, right) =>
+        moment.utc(left.timeStamp).diff(moment.utc(right.timeStamp)),
+      );
+    const range = [moment.min(allDates), moment.max(allDates)];
     const interval = [60, 'minutes'];
+    const timeStamps = generateTimeStamps(range, interval);
 
-    const timeColumn = generateTimeColumn(range, interval);
+    const timeColumn = generateTimeColumn(timeStamps);
     const positionsRow = generatePositionsRow('Position', [1, positionsCount]);
-    const mainGrid = generateGrid(
+    const mainGrid = generateGridCells(
       positionsRow.childElementCount,
       timeColumn.childElementCount - 1, // -1 because of 1 mock time cell in left-top corner
     );
     const wrapper = el('div', { class: 'wrapper' }, [positionsRow, mainGrid]);
+    const clientCells = generateClientCells(allDates, interval);
+
+    clientCells.forEach(cell => {
+      const index = cell.x + cell.y * positionsCount;
+      const container = mainGrid.children[index];
+      while (container.firstChild) container.removeChild(container.firstChild);
+
+      container.appendChild(
+        el('div', `${cell.person.name} ${cell.person.surname}`),
+      );
+      console.log(container);
+    });
 
     this.scrollableArea = wrapper;
 

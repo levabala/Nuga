@@ -56,10 +56,12 @@ class CalendarCard extends Card {
 
   // DEBUG_FUNC
   countAllHiddenTables() {
-    return this.days.reduce((count: number, day: CalendarDay) => 
-      // console.log(day.table.layoutInfo.hidden);
-       count + (day.table.layoutInfo.hidden ? 1 : 0)
-    , 0);
+    return this.days.reduce(
+      (count: number, day: CalendarDay) =>
+        // console.log(day.table.layoutInfo.hidden);
+        count + (day.table.layoutInfo.hidden ? 1 : 0),
+      0,
+    );
   }
 
   handleVerticalBorders() {
