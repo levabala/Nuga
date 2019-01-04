@@ -30,6 +30,10 @@ $calendar-main-width-start: $calendar-cell-width * 5;
     visibility: hidden;
   }
 
+  &.unloaded {
+    visibility: hidden;
+  }
+
   .wrapper {
     --positions-count: 10;
 

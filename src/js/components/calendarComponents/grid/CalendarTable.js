@@ -18,6 +18,7 @@ class CalendarTable extends Reactor {
     lastWindowScroll: number,
     positionsRowSticky: boolean,
     hidden: boolean,
+    loaded: boolean,
   };
 
   layoutComponents: {
@@ -42,6 +43,7 @@ class CalendarTable extends Reactor {
     this.otherDays = otherDays;
     this.layoutInfo = {
       hidden: false,
+      loaded: false,
     };
     this.layoutComponents = {};
 
@@ -53,11 +55,11 @@ class CalendarTable extends Reactor {
       switch (e.code) {
         case 'ArrowRight':
           // if (this.isInViewport()) this.turnPageRight();
-          if (this.isBodyPercentInViewByHeight(0.6)) this.turnPageRight();
+          if (this.isBodyPercentInViewByHeight(0.4)) this.turnPageRight();
           break;
         case 'ArrowLeft':
           // if (this.isInViewport()) this.turnPageLeft();
-          if (this.isBodyPercentInViewByHeight(0.6)) this.turnPageLeft();
+          if (this.isBodyPercentInViewByHeight(0.4)) this.turnPageLeft();
           break;
         default:
           break;
@@ -168,7 +170,7 @@ class CalendarTable extends Reactor {
       return;
     }
 
-    console.log('sticky!');
+    // console.log('sticky!');
 
     const clonedRow = this.layoutComponents.positionsRow.cloneNode(true);
     const rowContainer = el(
@@ -325,7 +327,7 @@ class CalendarTable extends Reactor {
     this.el = el(
       'div',
       {
-        class: 'calendarTable',
+        class: 'calendarTable unloaded',
       },
       [timeColumn, wrapper],
     );
@@ -335,7 +337,7 @@ class CalendarTable extends Reactor {
       positionsCount,
       mainGridWidth: 0,
       mainGridWidthInner: 0,
-      minElWidth: 300,
+      minElWidth: 200,
       pageIndex: 0,
       pageIndexMax: 1,
       positionsPerPage: 1,
@@ -353,7 +355,14 @@ class CalendarTable extends Reactor {
     };
 
     this.setPositionsCount(this.layoutInfo.positionsCount);
-    setTimeout(() => this.updateMainWidth(), 0);
+    setTimeout(() => this.initLayout(), 0);
+  }
+
+  initLayout() {
+    this.updateMainWidth();
+    this.layoutInfo.loaded = true;
+
+    this.el.classList.remove('unloaded');
   }
 
   isInViewport() {

@@ -46,6 +46,7 @@ class CalendarCard extends Card {
     window.addEventListener('scroll', this.handleVerticalBorders.bind(this));
 
     this.handleVerticalBorders();
+    setTimeout(() => this.handleVerticalBorders());
   }
 
   handleTableHiding(e) {
@@ -63,7 +64,7 @@ class CalendarCard extends Card {
 
   handleVerticalBorders() {
     const bodyRect = document.body.getBoundingClientRect();
-    const trigger = window.innerHeight;
+    const trigger = window.innerHeight * 2;
 
     // check top border
     const needLoadTop = -bodyRect.y < trigger;
