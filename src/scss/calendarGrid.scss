@@ -24,7 +24,7 @@ $calendar-main-width-start: $calendar-cell-width * 5;
 
   margin-right: $padding-card;
   margin-left: $padding-card;
-  padding-bottom: $thin-border-size * 2;
+  padding-bottom: $thin-border-size; // * 2;
 
   &.hidden {
     visibility: hidden;
@@ -60,6 +60,10 @@ $calendar-main-width-start: $calendar-cell-width * 5;
       grid-template-rows: repeat(auto-fit, $calendar-cell-height);
 
       width: var(--calendar-main-width);
+
+      .item {
+        font-size: 23px;
+      }
     }
 
     .stickyContainer {
@@ -95,6 +99,10 @@ $calendar-main-width-start: $calendar-cell-width * 5;
       grid-template-rows: repeat(auto-fit, $calendar-cell-height);
 
       width: var(--calendar-main-width);
+
+      .item {
+        font-size: 20px;
+      }
     }
   }
 
@@ -111,7 +119,7 @@ $calendar-main-width-start: $calendar-cell-width * 5;
   .item {
     display: grid;
     background: lightgray;
-    font-size: 30px;
+    font-size: 16px;
     justify-content: center;
     align-items: center;
     // border: solid black 1px;

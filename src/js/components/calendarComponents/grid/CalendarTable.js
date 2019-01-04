@@ -1,8 +1,12 @@
+import Moment from 'moment';
+import { extendMoment } from 'moment-range';
 import { el } from 'redom';
 import { Reactor } from 'assemblies';
 import DayData from '../../../classes/dataTypes/DayData';
 import '../../../../scss/calendarGrid.scss';
 import RootVariables from '../../../../scss/root.scss';
+
+const moment = extendMoment(Moment);
 
 class CalendarTable extends Reactor {
   layoutInfo: {
@@ -54,11 +58,9 @@ class CalendarTable extends Reactor {
     window.addEventListener('keydown', e => {
       switch (e.code) {
         case 'ArrowRight':
-          // if (this.isInViewport()) this.turnPageRight();
           if (this.isBodyPercentInViewByHeight(0.4)) this.turnPageRight();
           break;
         case 'ArrowLeft':
-          // if (this.isInViewport()) this.turnPageLeft();
           if (this.isBodyPercentInViewByHeight(0.4)) this.turnPageLeft();
           break;
         default:
@@ -293,33 +295,72 @@ class CalendarTable extends Reactor {
   }
 
   setData(data: DayData) {
+    function generatePositionsRow(
+      prefix: string,
+      range: [number, number],
+    ): HTMLElement {
+      const positions = [];
+
+      for (let i = range[0]; i <= range[1]; i++) {
+        const positionCell = el('div', { class: 'item' }, `Position ${i}`);
+        positions.push(positionCell);
+      }
+
+      return el('div', { class: 'positionsRow' }, positions);
+    }
+
+    function generateTimeColumn(
+      range: [moment.Moment, moment.Moment],
+      interval: [number, string], // amount, metric unit
+    ): HTMLElement {
+      const timeRange = moment.range(...range);
+      const timeSteps = Array.from(
+        timeRange.by(interval[1], { step: interval[0] }),
+      );
+
+      const times = [el('div', { class: 'item' }, '')].concat(
+        timeSteps.map(stamp =>
+          el('div', { class: 'item' }, `${stamp.format('HH:mm')}`),
+        ),
+      );
+
+      return el('div', { class: 'timeColumn' }, times);
+    }
+
+    function generateGrid(positionsCount, timesCount) {
+      const items = [];
+      let id = 0;
+      for (let y = 0; y < timesCount; y++)
+        for (let x = 0; x < positionsCount; x++) {
+          const item = el('div', { class: 'item' }, `${x}:${y} #${id}`);
+          items.push(item);
+
+          id++;
+        }
+
+      return el('div', { class: 'mainGrid' }, items);
+    }
+
     this.data = data;
 
     const timeStamps = 10;
     const positionsCount = 15;
 
-    const items = [];
-    const times = [el('div', { class: 'item' }, '')];
-    const positions = [];
+    const testStart = moment()
+      .startOf('day')
+      .hours(7);
+    const testEnd = moment()
+      .startOf('day')
+      .hours(15);
+    const range = [testStart, testEnd];
+    const interval = [60, 'minutes'];
 
-    for (let i = 0; i < positionsCount; i++) {
-      const positionCell = el('div', { class: 'item' }, `p${i}`);
-      positions.push(positionCell);
-    }
-
-    for (let i = 0; i < positionsCount * timeStamps; i++) {
-      const item = el('div', { class: 'item' }, i);
-      items.push(item);
-
-      if (i % positionsCount === 0) {
-        const timeCell = el('div', { class: 'item' }, `t${i / positionsCount}`);
-        times.push(timeCell);
-      }
-    }
-
-    const mainGrid = el('div', { class: 'mainGrid' }, items);
-    const timeColumn = el('div', { class: 'timeColumn' }, times);
-    const positionsRow = el('div', { class: 'positionsRow' }, positions);
+    const timeColumn = generateTimeColumn(range, interval);
+    const positionsRow = generatePositionsRow('Position', [1, positionsCount]);
+    const mainGrid = generateGrid(
+      positionsRow.childElementCount,
+      timeColumn.childElementCount - 1, // -1 because of 1 mock time cell in left-top corner
+    );
     const wrapper = el('div', { class: 'wrapper' }, [positionsRow, mainGrid]);
 
     this.scrollableArea = wrapper;
@@ -346,7 +387,7 @@ class CalendarTable extends Reactor {
 
     this.layoutComponents = {
       calendarTable: this.el,
-      cells: items,
+      cells: mainGrid.children,
       mainGrid,
       wrapper,
       timeColumn,

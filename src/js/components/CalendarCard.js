@@ -56,10 +56,10 @@ class CalendarCard extends Card {
 
   // DEBUG_FUNC
   countAllHiddenTables() {
-    return this.days.reduce((count: number, day: CalendarDay) => {
-      console.log(day.table.layoutInfo.hidden);
-      return count + (day.table.layoutInfo.hidden ? 1 : 0);
-    }, 0);
+    return this.days.reduce((count: number, day: CalendarDay) => 
+      // console.log(day.table.layoutInfo.hidden);
+       count + (day.table.layoutInfo.hidden ? 1 : 0)
+    , 0);
   }
 
   handleVerticalBorders() {
@@ -109,7 +109,7 @@ class CalendarCard extends Card {
       });
     }
 
-    console.log('Loaded TOP day');
+    // console.log('Loaded TOP day');
   }
 
   loadBottomDay() {
@@ -138,7 +138,7 @@ class CalendarCard extends Card {
     this.days.push(day);
     mount(this.el, child);
 
-    console.log('Loaded BOTTOM day');
+    // console.log('Loaded BOTTOM day');
   }
 
   // UNUSABLE
@@ -146,7 +146,7 @@ class CalendarCard extends Card {
     clearTimeout(this.resizeFinishTimeout);
 
     this.resizeFinishTimeout = setTimeout(() => {
-      console.log('resize end');
+      // console.log('resize end');
       this.days[0].table.tryUpdateCellsWidth();
     }, this.resizeFinishTime);
   }
