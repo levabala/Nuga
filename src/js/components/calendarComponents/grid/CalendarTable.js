@@ -135,7 +135,6 @@ class CalendarTable extends Reactor {
       // this.layoutComponents.stickyRowContainer.remove();
       // console.log('unsticky');
       this.layoutComponents.stickyRowContainer.classList.add('hidden');
-      this.layoutComponents.stickyRowContainer = false;
     }
   }
 
@@ -162,7 +161,9 @@ class CalendarTable extends Reactor {
 
     if (this.layoutComponents.stickyRowContainer) {
       this.layoutComponents.stickyRowContainer.classList.remove('hidden');
-      this.updatePageScroll();
+      this.layoutInfo.positionsRowSticky = true;
+
+      this.updatePageScroll(true);
 
       return;
     }
@@ -348,7 +349,7 @@ class CalendarTable extends Reactor {
       wrapper,
       timeColumn,
       positionsRow,
-      stickyRowContainer: el('div'),
+      stickyRowContainer: false,
     };
 
     this.setPositionsCount(this.layoutInfo.positionsCount);
@@ -394,7 +395,7 @@ class CalendarTable extends Reactor {
     this.updatePageScroll();
   }
 
-  updatePageScroll() {
+  updatePageScroll(immediately = false) {
     const targetElementIndex = Math.min(
       this.layoutInfo.positionsPerPage * this.layoutInfo.pageIndex,
       this.layoutInfo.positionsCount - 1,
@@ -414,19 +415,20 @@ class CalendarTable extends Reactor {
     this.layoutComponents.wrapper.scrollTo({
       top: 0,
       left: scrollLeft,
-      behavior: 'smooth',
+      behavior: immediately ? 'auto' : 'smooth',
     });
 
     if (this.layoutInfo.positionsRowSticky) {
       const container = this.layoutComponents.stickyRowContainer;
       const row = this.layoutComponents.stickyRowGrid;
+      if (!row || !container) return;
+
       const targetElementSticky = row.children[targetElementIndex];
 
-      // container.scrollLeft = targetElementSticky.offsetLeft;
       container.scrollTo({
         top: 0,
         left: targetElementSticky.offsetLeft,
-        behavior: 'smooth',
+        behavior: immediately ? 'auto' : 'smooth',
       });
     }
   }
