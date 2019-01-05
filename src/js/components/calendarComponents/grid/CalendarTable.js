@@ -335,7 +335,7 @@ class CalendarTable extends Reactor {
     function generateGridCells(
       positionsCount: number,
       timesCount: number,
-    ): HTMLElement {
+    ): Array<CalendarCell> {
       const cells = [];
       for (let y = 0; y < timesCount; y++)
         for (let x = 0; x < positionsCount; x++) {
@@ -343,6 +343,10 @@ class CalendarTable extends Reactor {
           cells.push(cell);
         }
 
+      return cells;
+    }
+
+    function generateGrid(cells) {
       return el('div', { class: 'mainGrid' }, cells);
     }
 
@@ -352,8 +356,11 @@ class CalendarTable extends Reactor {
     ) {
       function calcY(visit) {
         const { date } = visit;
-        for (let i = 0; i < allDates.length; i++)
-          if (allDates[i].diff(date, interval[1]) <= interval[0]) return i;
+        for (let i = 0; i < allDates.length; i++) {
+          const diff = date.diff(allDates[i], interval[1]);
+          console.log(diff);
+          if (diff <= interval[0]) return i;
+        }
         return allDates.length - 1;
       }
 
@@ -377,28 +384,37 @@ class CalendarTable extends Reactor {
       .sort((left, right) =>
         moment.utc(left.timeStamp).diff(moment.utc(right.timeStamp)),
       );
-    const range = [moment.min(allDates), moment.max(allDates)];
+
+    // using min&max dates
+    const range = [
+      moment
+        .min(allDates)
+        .hour(7)
+        .minute(0),
+      moment
+        .max(allDates)
+        .hour(16)
+        .minute(0),
+    ];
     const interval = [60, 'minutes'];
     const timeStamps = generateTimeStamps(range, interval);
 
     const timeColumn = generateTimeColumn(timeStamps);
     const positionsRow = generatePositionsRow('Position', [1, positionsCount]);
-    const mainGrid = generateGridCells(
+    const gridCells = generateGridCells(
       positionsRow.childElementCount,
       timeColumn.childElementCount - 1, // -1 because of 1 mock time cell in left-top corner
     );
+
+    const mainGrid = generateGrid(gridCells);
     const wrapper = el('div', { class: 'wrapper' }, [positionsRow, mainGrid]);
-    const clientCells = generateClientCells(allDates, interval);
+    const clientCells = generateClientCells(timeStamps, interval);
 
     clientCells.forEach(cell => {
       const index = cell.cellX + cell.cellY * positionsCount;
-      const container = mainGrid.children[index];
-      while (container.firstChild) container.removeChild(container.firstChild);
+      const gridCell = gridCells[index];
 
-      container.appendChild(
-        el('div', `${cell.person.name} ${cell.person.surname}`),
-      );
-      console.log(container);
+      gridCell.assignPersonCell(cell);
     });
 
     this.scrollableArea = wrapper;

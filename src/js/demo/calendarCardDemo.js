@@ -58,12 +58,6 @@ const persons = new PersonsList([
     surname: 'Karry',
     url: '/src/images/avatar3.jpeg',
   }),
-  /*
-  new PersonData({ name: 'Martin', surname: 'Milkway' }),
-  new PersonData({ name: 'Kitty', surname: 'South' }),
-  new PersonData({ name: 'Lammy', surname: 'Blacksm' }),
-  new PersonData({ name: 'Mundak', surname: 'Rismatch' }),
-  new PersonData({ name: 'Bally', surname: 'Perpy' }), */
 ]);
 
 const visits: Array<{
@@ -71,16 +65,17 @@ const visits: Array<{
   client: PersonData,
   position: number,
 }> = [];
-for (let i = 0; i < persons.count; i++)
+const scale = 10;
+for (let i = 0; i < persons.count * scale; i++)
   visits.push({
     date: moment({
       y: 2018,
       M: 11,
       d: Math.round(Math.random() * 6),
-      h: Math.round(Math.random() * 23),
+      h: 7 + Math.round(Math.random() * 8),
       m: Math.round(Math.random() * 59),
     }),
-    client: persons.getByIndex(i),
+    client: persons.getByIndex(Math.floor(i / scale)),
     position: Math.round(Math.random() * 10),
   });
 
@@ -90,8 +85,6 @@ const days: Array<DayData> = [
       y: 2018,
       M: 11,
       d: 3,
-      h: Math.round(Math.random() * 23),
-      m: Math.round(Math.random() * 59),
     }),
     visits: [],
   }),
@@ -102,7 +95,15 @@ const loadTopDayCallback = (newestDay: DayData) => {
   return new DayData({
     date,
     visits:
-      visits.filter(visit => Math.abs(visit.date.diff(date, 'days')) < 1) || [],
+      visits.filter(
+        visit =>
+          Math.abs(
+            visit.date
+              .clone()
+              .startOf('day')
+              .diff(date.clone().startOf('day'), 'days'),
+          ) < 1 && visit.date.day() === date.day(),
+      ) || [],
   });
 };
 
@@ -110,7 +111,17 @@ const loadBottomDayCallback = (oldestDay: DayData) => {
   const date = oldestDay.date.clone().subtract(1, 'days');
   return new DayData({
     date,
-    visits: visits.filter(visit => visit.date.diff(date, 'days') < 1) || [],
+    visits:
+      visits.filter(
+        visit =>
+          Math.abs(
+            visit.date
+              .clone()
+              .startOf('day')
+              .diff(date.clone().startOf('day'), 'days'),
+          ) < 1 && visit.date.day() === date.day(),
+        // visit.date.diff(date, 'days') < 1 && visit.date.day() === date.day(),
+      ) || [],
   });
 };
 

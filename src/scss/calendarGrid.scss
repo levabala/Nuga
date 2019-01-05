@@ -62,6 +62,9 @@ $calendar-main-width-start: $calendar-cell-width * 5;
       width: var(--calendar-main-width);
 
       .item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 23px;
       }
     }
@@ -113,20 +116,42 @@ $calendar-main-width-start: $calendar-cell-width * 5;
     .item {
       display: flex;
       height: $calendar-cell-height;
+
+      align-items: center;
+      justify-content: center;
     }
   }
 
   .item {
-    display: grid;
+    // display: grid;
+    position: relative;
     background: lightgray;
     font-size: 16px;
-    justify-content: center;
-    align-items: center;
-    // border: solid black 1px;
     box-shadow: 0 0 0 1px black;
+    overflow: visible;
   }
 
   .calendarCell {
     background: lightgray;
+  }
+
+  .personCell {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+
+    background: rgb(255, 255, 227);
+    // border: solid darkcyan 1px;
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.moving {
+      position: fixed;
+      z-index: 100;
+    }
   }
 }
