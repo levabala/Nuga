@@ -125,4 +125,8 @@ $calendar-main-width-start: $calendar-cell-width * 5;
     // border: solid black 1px;
     box-shadow: 0 0 0 1px black;
   }
+
+  .calendarCell {
+    background: lightgray;
+  }
 }

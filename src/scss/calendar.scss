@@ -238,6 +238,12 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   vertical-align: top;
 }
 
+.readyToAdd-border {
+  box-shadow: inset 0 0 0 $thin-border-size $color-select-border;
+}
+
+/*
+
 .calendarCell-container {
   padding-left: $calendar-cell-padding;
   padding-right: $calendar-cell-padding;
@@ -418,10 +424,6 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
   align-items: center;
 }
 
-.readyToAdd-border {
-  box-shadow: inset 0 0 0 $thin-border-size $color-select-border;
-}
-
 .readyToAddCell {
   height: $calendar-cell-height-real;
   width: var(--calendar-cell-width-real);
@@ -456,3 +458,5 @@ $initial-table-width: ($calendar-cell-width) * $calendar-cells-per-page;
     $add-cell-button-width -
     get-negative-margin-plus-icon($add-cell-button-width);
 }
+
+*/

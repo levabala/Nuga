@@ -5,7 +5,8 @@ import { Reactor } from 'assemblies';
 import DayData from '../../../classes/dataTypes/DayData';
 import '../../../../scss/calendarGrid.scss';
 import RootVariables from '../../../../scss/root.scss';
-import CalendarCell from '../CalendarCell';
+import CalendarCell from './CalendarCell';
+import PersonCell from './PersonCell';
 
 const moment = extendMoment(Moment);
 
@@ -335,17 +336,14 @@ class CalendarTable extends Reactor {
       positionsCount: number,
       timesCount: number,
     ): HTMLElement {
-      const items = [];
-      // let id = 0;
+      const cells = [];
       for (let y = 0; y < timesCount; y++)
         for (let x = 0; x < positionsCount; x++) {
-          const item = el('div', { class: 'item' }); // , `${x}:${y} #${id}`);
-          items.push(item);
-
-          // id++;
+          const cell = new CalendarCell(x, y);
+          cells.push(cell);
         }
 
-      return el('div', { class: 'mainGrid' }, items);
+      return el('div', { class: 'mainGrid' }, cells);
     }
 
     function generateClientCells(
@@ -365,14 +363,7 @@ class CalendarTable extends Reactor {
       }
 
       const cells = data.visits.map(
-        visit =>
-          new CalendarCell(
-            calcX(visit),
-            calcY(visit),
-            visit.client,
-            null,
-            null,
-          ),
+        visit => new PersonCell(calcX(visit), calcY(visit), visit.client),
       );
       return cells;
     }
@@ -400,7 +391,7 @@ class CalendarTable extends Reactor {
     const clientCells = generateClientCells(allDates, interval);
 
     clientCells.forEach(cell => {
-      const index = cell.x + cell.y * positionsCount;
+      const index = cell.cellX + cell.cellY * positionsCount;
       const container = mainGrid.children[index];
       while (container.firstChild) container.removeChild(container.firstChild);
 
