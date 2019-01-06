@@ -3,3 +3,7 @@ extends:
   - prettier
 plugins:
   - flowtype
+rules:
+  no-param-reassign:
+    - 2
+    - props: false

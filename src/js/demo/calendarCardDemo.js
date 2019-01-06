@@ -76,7 +76,7 @@ for (let i = 0; i < persons.count * scale; i++)
       m: Math.round(Math.random() * 59),
     }),
     client: persons.getByIndex(Math.floor(i / scale)),
-    position: Math.round(Math.random() * 10),
+    position: Math.round(Math.random() * 12),
   });
 
 const days: Array<DayData> = [

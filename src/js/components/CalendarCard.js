@@ -64,6 +64,19 @@ class CalendarCard extends Card {
     );
   }
 
+  // DEBUG_FUNC
+  countAllActiveDropzones() {
+    return this.days.reduce(
+      (count: number, day: CalendarDay) =>
+        count +
+        day.table.layoutComponents.gridCells.reduce(
+          (acc, cell) => acc + (cell.dropzoneActive ? 1 : 0),
+          0,
+        ),
+      0,
+    );
+  }
+
   handleVerticalBorders() {
     const bodyRect = document.body.getBoundingClientRect();
     const trigger = window.innerHeight * 2;

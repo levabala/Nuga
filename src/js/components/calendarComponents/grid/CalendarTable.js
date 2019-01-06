@@ -31,6 +31,7 @@ class CalendarTable extends Reactor {
     calendarTable: HTMLElement,
     cells: Array<HTMLElement>,
     mainGrid: HTMLElement,
+    gridCells: Array<CalendarCell>,
     wrapper: HTMLElement,
     timeColumn: HTMLElement,
     positionsRow: HTMLElement,
@@ -197,6 +198,22 @@ class CalendarTable extends Reactor {
   }
 
   tryToHide(rect: DOMRect) {
+    const hide = () => {
+      this.layoutComponents.calendarTable.classList.add('hidden');
+      this.layoutInfo.hidden = true;
+      this.layoutComponents.gridCells.forEach(cell => {
+        cell.disactivateDropzone();
+      });
+    };
+
+    const show = () => {
+      this.layoutComponents.calendarTable.classList.remove('hidden');
+      this.layoutInfo.hidden = false;
+      this.layoutComponents.gridCells.forEach(cell => {
+        cell.activateDropzone();
+      });
+    };
+
     // DEBUG_VAR
     if (window.freezedHiding) return;
 
@@ -208,13 +225,8 @@ class CalendarTable extends Reactor {
     const lastState = this.layoutComponents.calendarTable.classList.contains(
       'hidden',
     );
-    if (couldHide) {
-      this.layoutComponents.calendarTable.classList.add('hidden');
-      this.layoutInfo.hidden = true;
-    } else {
-      this.layoutComponents.calendarTable.classList.remove('hidden');
-      this.layoutInfo.hidden = false;
-    }
+    if (couldHide) hide();
+    else show();
 
     if (lastState !== this.layoutInfo.hidden) {
       this.dispatchEvent('visibilityChanged', {
@@ -296,6 +308,64 @@ class CalendarTable extends Reactor {
       |> this.setMainFullWidth;
   }
 
+  tryToFreeUpGridCell(originCell: CalendarCell, x, y) {
+    const { gridCells } = this.layoutComponents;
+    const { positionsCount } = this.layoutInfo;
+
+    // get row
+    const range = [y * positionsCount, (y + 1) * positionsCount - 1];
+    const row = gridCells.slice(...range);
+
+    if (originCell) {
+      if (originCell.yCoord !== y) {
+        const rowFilled = row.every(cell => cell.personCell !== null);
+        if (rowFilled) return false;
+      }
+
+      originCell.unassignPersonCell();
+    }
+
+    const makeShiftLeft = (from, to) => {
+      for (let i = from; i <= to - 1; i++) {
+        const current = gridCells[i];
+        const next = gridCells[i + 1];
+
+        const personCell = next.unassignPersonCell();
+        current.assignPersonCell(personCell);
+      }
+    };
+
+    for (let i = range[0] + x - 1; i >= range[0]; i--) {
+      const cell = gridCells[i];
+      if (cell.personCell === null) {
+        makeShiftLeft(i, range[0] + x);
+        console.log('shifted left');
+        return true;
+      }
+    }
+
+    const makeShiftRight = (from, to) => {
+      for (let i = from; i >= to + 1; i--) {
+        const current = gridCells[i];
+        const next = gridCells[i - 1];
+
+        const personCell = next.unassignPersonCell();
+        current.assignPersonCell(personCell);
+      }
+    };
+
+    for (let i = range[0] + x + 1; i < range[1]; i++) {
+      const cell = gridCells[i];
+      if (cell.personCell === null) {
+        makeShiftRight(i, range[0] + x);
+        console.log('shifted right');
+        return true;
+      }
+    }
+
+    return true;
+  }
+
   setData(data: DayData) {
     function generatePositionsRow(
       prefix: string,
@@ -335,11 +405,12 @@ class CalendarTable extends Reactor {
     function generateGridCells(
       positionsCount: number,
       timesCount: number,
+      freePlaceCallback: (x: number, y: number) => boolean,
     ): Array<CalendarCell> {
       const cells = [];
       for (let y = 0; y < timesCount; y++)
         for (let x = 0; x < positionsCount; x++) {
-          const cell = new CalendarCell(x, y);
+          const cell = new CalendarCell(x, y, freePlaceCallback);
           cells.push(cell);
         }
 
@@ -358,7 +429,6 @@ class CalendarTable extends Reactor {
         const { date } = visit;
         for (let i = 0; i < allDates.length; i++) {
           const diff = date.diff(allDates[i], interval[1]);
-          console.log(diff);
           if (diff <= interval[0]) return i;
         }
         return allDates.length - 1;
@@ -377,7 +447,7 @@ class CalendarTable extends Reactor {
 
     this.data = data;
 
-    const positionsCount = 15;
+    const positionsCount = 13;
 
     const allDates = data.visits
       .map(visit => visit.date)
@@ -404,18 +474,11 @@ class CalendarTable extends Reactor {
     const gridCells = generateGridCells(
       positionsRow.childElementCount,
       timeColumn.childElementCount - 1, // -1 because of 1 mock time cell in left-top corner
+      this.tryToFreeUpGridCell.bind(this),
     );
 
     const mainGrid = generateGrid(gridCells);
     const wrapper = el('div', { class: 'wrapper' }, [positionsRow, mainGrid]);
-    const clientCells = generateClientCells(timeStamps, interval);
-
-    clientCells.forEach(cell => {
-      const index = cell.cellX + cell.cellY * positionsCount;
-      const gridCell = gridCells[index];
-
-      gridCell.assignPersonCell(cell);
-    });
 
     this.scrollableArea = wrapper;
 
@@ -443,11 +506,21 @@ class CalendarTable extends Reactor {
       calendarTable: this.el,
       cells: mainGrid.children,
       mainGrid,
+      gridCells,
       wrapper,
       timeColumn,
       positionsRow,
       stickyRowContainer: false,
     };
+
+    const clientCells = generateClientCells(timeStamps, interval);
+
+    clientCells.forEach(cell => {
+      const index = cell.cellX + cell.cellY * positionsCount;
+      const gridCell = gridCells[index];
+
+      gridCell.assignPersonCell(cell);
+    });
 
     this.setPositionsCount(this.layoutInfo.positionsCount);
     setTimeout(() => this.initLayout(), 0);
