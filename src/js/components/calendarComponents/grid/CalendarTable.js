@@ -396,14 +396,13 @@ class CalendarTable extends Reactor {
         top,
         behavior: 'smooth',
       });
-      table.handleScrollingOfTurning();
+      newTempDay.table.handleScrollingOfTurning();
 
       return;
     }
 
     // check if need scroll up
     if (y + cellHeight < scrollTrigger) {
-      console.log('scroll');
       // find next table
       const tableIndex = table.otherDays.findIndex(day => day.id === table.id);
       const newTempDay = table.otherDays[tableIndex - 1];
@@ -416,7 +415,7 @@ class CalendarTable extends Reactor {
         top,
         behavior: 'smooth',
       });
-      table.handleScrollingOfTurning();
+      newTempDay.table.handleScrollingOfTurning();
       return;
     }
 
