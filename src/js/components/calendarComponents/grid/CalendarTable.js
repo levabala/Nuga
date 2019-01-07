@@ -381,14 +381,27 @@ class CalendarTable extends Reactor {
     if (!table.layoutInfo.turnCooldowned) return;
 
     const scrollTrigger = cellHeight;
+    const rect = table.el.getBoundingClientRect();
 
     // check if need scroll down
     if (y > window.innerHeight - scrollTrigger) {
+      // check if bottom is overflowing
+      if (rect.height + rect.top > window.innerHeight) {
+        console.log('argh');
+        const middle = window.scrollY + window.innerHeight / 2;
+        window.scrollTo({
+          top: middle,
+          behavior: 'smooth',
+        });
+        table.handleScrollingOfTurning();
+
+        return;
+      }
+
       // find previous table
       const tableIndex = table.otherDays.findIndex(day => day.id === table.id);
       const newTempDay = table.otherDays[tableIndex + 1];
       sender.assignTempTable(newTempDay.table);
-
       const top =
         newTempDay.el.getBoundingClientRect().y -
         document.body.getBoundingClientRect().top;
@@ -419,7 +432,6 @@ class CalendarTable extends Reactor {
       return;
     }
 
-    const rect = table.el.getBoundingClientRect();
     const turnTrigger = cellWidth * 0.3;
 
     // check if need turnRight
