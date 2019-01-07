@@ -5,12 +5,14 @@ import CalendarDayHeader from './CalendarDayHeader';
 
 class CalendarDay {
   constructor(
+    id: number,
     data: DayData,
     isFirst: boolean = false,
     otherDays: Array<CalendarDay>,
   ) {
+    this.id = id;
     this.otherDays = otherDays;
-    this.table = new CalendarTable(data, isFirst, otherDays);
+    this.table = new CalendarTable(id, data, isFirst, otherDays);
     this.el = el(
       'div',
       { class: 'calendar-day', tabindex: 0 },

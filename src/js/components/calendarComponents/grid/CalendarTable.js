@@ -7,6 +7,7 @@ import '../../../../scss/calendarGrid.scss';
 import RootVariables from '../../../../scss/root.scss';
 import CalendarCell from './CalendarCell';
 import PersonCell from './PersonCell';
+import CalendarDay from '../CalendarDay';
 
 const moment = extendMoment(Moment);
 
@@ -22,6 +23,9 @@ class CalendarTable extends Reactor {
     positionsPerPage: number,
     scrollTriggerTimeout: number,
     lastWindowScroll: number,
+    turnCooldownMax: number,
+    turnCooldowned: boolean,
+    turnCooldownTimeout: number,
     positionsRowSticky: boolean,
     hidden: boolean,
     loaded: boolean,
@@ -40,12 +44,14 @@ class CalendarTable extends Reactor {
   };
 
   constructor(
+    id: number,
     data: DayData,
     isFirst: boolean,
-    otherDays: Array<CalendarTable>,
+    otherDays: Array<CalendarDay>,
   ) {
     super();
 
+    this.id = id;
     this.isFirst = isFirst;
     this.otherDays = otherDays;
     this.layoutInfo = {
@@ -339,7 +345,6 @@ class CalendarTable extends Reactor {
       const cell = gridCells[i];
       if (cell.personCell === null) {
         makeShiftLeft(i, range[0] + x);
-        console.log('shifted left');
         return true;
       }
     }
@@ -358,12 +363,84 @@ class CalendarTable extends Reactor {
       const cell = gridCells[i];
       if (cell.personCell === null) {
         makeShiftRight(i, range[0] + x);
-        console.log('shifted right');
         return true;
       }
     }
 
     return true;
+  }
+
+  static personCellMoveHandler(
+    sender: PersonCell,
+    x: number,
+    y: number,
+    cellWidth: number,
+    cellHeight: number,
+    handleScrollStart: () => void,
+  ) {
+    const table = sender.tempTable || sender.currentTable;
+    // console.log(table.layoutInfo.turnCooldowned);
+    if (!table.layoutInfo.turnCooldowned) return;
+
+    // console.log('now table:', table.id);
+    const rect = table.el.getBoundingClientRect();
+
+    // check if need scroll down
+    if (y > rect.top + rect.height) {
+      // find previous table
+      const tableIndex = table.otherDays.findIndex(day => day.id === table.id);
+      // console.log(tableIndex);
+      const newTempTable = table.otherDays[tableIndex + 1].table;
+      sender.assignTempTable(newTempTable);
+
+      handleScrollStart();
+      newTempTable.el.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'start',
+      });
+      table.handleScrollingOfTurning();
+      // table.personCellMoveHandler(...arguments);
+
+      console.log('scroll');
+      return;
+    }
+
+    // check if need scroll up
+    if (y + cellHeight < rect.top) {
+      // find next table
+      const tableIndex = table.otherDays.findIndex(day => day.id === table.id);
+      // console.log(tableIndex);
+      const newTempTable = table.otherDays[tableIndex - 1].table;
+      sender.assignTempTable(newTempTable);
+
+      handleScrollStart();
+      newTempTable.el.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'start',
+      });
+      table.handleScrollingOfTurning();
+      // table.personCellMoveHandler(...arguments);
+
+      console.log('scroll');
+      return;
+    }
+
+    const turnTrigger = cellWidth * 0.3;
+
+    // check if need turnRight
+    const rightBorder = rect.left + rect.width;
+    if (x + cellWidth - rightBorder > turnTrigger) {
+      table.turnPageRight();
+      return;
+    }
+
+    // check if need turnLeft
+    const leftBorder = rect.left;
+    if (leftBorder - x > turnTrigger) {
+      table.turnPageLeft();
+    }
   }
 
   setData(data: DayData) {
@@ -403,6 +480,7 @@ class CalendarTable extends Reactor {
     }
 
     function generateGridCells(
+      parentTable: CalendarTable,
       positionsCount: number,
       timesCount: number,
       freePlaceCallback: (x: number, y: number) => boolean,
@@ -410,7 +488,7 @@ class CalendarTable extends Reactor {
       const cells = [];
       for (let y = 0; y < timesCount; y++)
         for (let x = 0; x < positionsCount; x++) {
-          const cell = new CalendarCell(x, y, freePlaceCallback);
+          const cell = new CalendarCell(parentTable, x, y, freePlaceCallback);
           cells.push(cell);
         }
 
@@ -424,6 +502,7 @@ class CalendarTable extends Reactor {
     function generateClientCells(
       allDates: Array<moment.Moment>,
       interval: [number, string], // amount, metric unit
+      moveHandler: (x: number, y: number) => void,
     ) {
       function calcY(visit) {
         const { date } = visit;
@@ -440,7 +519,8 @@ class CalendarTable extends Reactor {
       }
 
       const cells = data.visits.map(
-        visit => new PersonCell(calcX(visit), calcY(visit), visit.client),
+        visit =>
+          new PersonCell(calcX(visit), calcY(visit), visit.client, moveHandler),
       );
       return cells;
     }
@@ -472,6 +552,7 @@ class CalendarTable extends Reactor {
     const timeColumn = generateTimeColumn(timeStamps);
     const positionsRow = generatePositionsRow('Position', [1, positionsCount]);
     const gridCells = generateGridCells(
+      this,
       positionsRow.childElementCount,
       timeColumn.childElementCount - 1, // -1 because of 1 mock time cell in left-top corner
       this.tryToFreeUpGridCell.bind(this),
@@ -500,6 +581,8 @@ class CalendarTable extends Reactor {
       pageIndexMax: 1,
       positionsPerPage: 1,
       positionsRowSticky: false,
+      turnCooldownMax: 500,
+      turnCooldowned: true,
     });
 
     this.layoutComponents = {
@@ -513,7 +596,11 @@ class CalendarTable extends Reactor {
       stickyRowContainer: false,
     };
 
-    const clientCells = generateClientCells(timeStamps, interval);
+    const clientCells = generateClientCells(
+      timeStamps,
+      interval,
+      this.constructor.personCellMoveHandler,
+    );
 
     clientCells.forEach(cell => {
       const index = cell.cellX + cell.cellY * positionsCount;
@@ -554,13 +641,22 @@ class CalendarTable extends Reactor {
     return coeff > percent;
   }
 
+  handleScrollingOfTurning() {
+    this.layoutInfo.turnCooldowned = false;
+    this.layoutInfo.turnCooldownTimeout = setTimeout(() => {
+      this.layoutInfo.turnCooldowned = true;
+    }, this.layoutInfo.turnCooldownMax);
+  }
+
   turnPageRight() {
     this.layoutInfo.pageIndex += 1;
     this.layoutInfo.pageIndex = Math.max(
       0,
       Math.min(this.layoutInfo.pageIndex, this.layoutInfo.pageIndexMax),
     );
+
     this.updatePageScroll();
+    this.handleScrollingOfTurning();
   }
 
   turnPageLeft() {
@@ -569,7 +665,9 @@ class CalendarTable extends Reactor {
       0,
       Math.min(this.layoutInfo.pageIndex, this.layoutInfo.pageIndexMax),
     );
+
     this.updatePageScroll();
+    this.handleScrollingOfTurning();
   }
 
   updatePageScroll(immediately = false) {
@@ -578,16 +676,7 @@ class CalendarTable extends Reactor {
       this.layoutInfo.positionsCount - 1,
     );
     const targetElement = this.layoutComponents.cells[targetElementIndex];
-
-    /*
-    targetElement.scrollIntoView({
-      behavior: 'smooth',
-      inline: 'start',
-      block: 'nearest',
-    }); 
-    */
-
-    const scrollLeft = targetElement.offsetLeft; //  + parseFloat(RootVariables.thinBorderSize);
+    const scrollLeft = targetElement.offsetLeft;
 
     this.layoutComponents.wrapper.scrollTo({
       top: 0,

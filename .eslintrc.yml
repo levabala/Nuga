@@ -7,3 +7,5 @@ rules:
   no-param-reassign:
     - 2
     - props: false
+  prefer-rest-params:
+    - 0

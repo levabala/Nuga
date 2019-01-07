@@ -1,11 +1,13 @@
 import { el, setChildren } from 'redom';
 import interact from 'interactjs';
 import PersonCell from './PersonCell';
+import CalendarTable from './CalendarTable';
 
 class CalendarCell {
   personCell: ?PersonCell;
 
   constructor(
+    parentTable: CalendarTable,
     xCoord: number,
     yCoord: number,
     freePlaceCallback: (x: number, y: number) => boolean,
@@ -14,6 +16,7 @@ class CalendarCell {
     this.yCoord = yCoord;
     this.personCell = null;
     this.dropzoneActive = false;
+    this.parentTable = parentTable;
 
     this.callbacks = {
       freePlaceCallback,
@@ -34,7 +37,6 @@ class CalendarCell {
         )
           return;
 
-        console.log(e);
         this.assignPersonCell(personCell);
       },
       ondragenter: e => {

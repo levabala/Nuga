@@ -23,11 +23,13 @@ class CalendarCard extends Card {
     this.days = [];
     this.stickyPositionsRow = null;
     this.hiddenDays = 0;
+    this.idCounter = 0;
 
     const averageIndex = Math.floor(this.data.length / 2);
     this.loadedBorder = [averageIndex, averageIndex];
 
     const day = new CalendarDay(
+      this.idCounter,
       data[averageIndex],
       averageIndex === 0,
       this.days,
@@ -106,7 +108,12 @@ class CalendarCard extends Card {
 
     this.loadedBorder[0] = topIndex;
 
-    const day = new CalendarDay(this.data[topIndex], topIndex === 0, this.days);
+    const day = new CalendarDay(
+      ++this.idCounter,
+      this.data[topIndex],
+      topIndex === 0,
+      this.days,
+    );
     day.table.addEventListener(
       'visibilityChanged',
       this.handleTableHiding.bind(this),
@@ -139,6 +146,7 @@ class CalendarCard extends Card {
     this.loadedBorder[1] = bottomIndex;
 
     const day = new CalendarDay(
+      ++this.idCounter,
       this.data[bottomIndex],
       bottomIndex === 0,
       this.days,
