@@ -16,7 +16,6 @@ class PersonCell {
       y: number,
       cellWidth: number,
       cellHeight: number,
-      handleScrollStart: () => void,
     ) => void,
   ) {
     this.person = person;

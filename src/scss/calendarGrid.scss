@@ -134,24 +134,29 @@ $calendar-main-width-start: $calendar-cell-width * 5;
   .calendarCell {
     background: lightgray;
   }
+}
 
-  .personCell {
-    position: absolute;
-    left: 0px;
-    top: 0px;
+.personCell {
+  position: absolute;
+  left: 0px;
+  top: 0px;
 
-    background: rgb(255, 255, 227);
-    // border: solid darkcyan 1px;
-    height: 100%;
-    width: 100%;
+  font-size: 20px;
+  background: rgb(255, 255, 227);
+  // border: solid darkcyan 1px;
+  height: 100%;
+  width: 100%;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    &.moving {
-      position: fixed;
-      z-index: 100;
-    }
+  &.moving {
+    position: fixed;
+    z-index: 100;
+  }
+
+  &.hidden {
+    visibility: hidden;
   }
 }

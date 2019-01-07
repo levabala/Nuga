@@ -5,52 +5,58 @@ function generateConfig(moveCallback): interact.DraggableOptions {
   let y = 0;
   let width = 0;
   let height = 0;
-  let inScroll = false;
   let lastScrollY = window.scrollY;
+  let tempNode = null;
 
   function startHandler(e: interact.InteractEvent) {
     // make person cell fixed
     const cell: HTMLElement = e.target;
     const rect = cell.getBoundingClientRect();
+
+    tempNode = cell.cloneNode(true);
+
+    document.body.appendChild(tempNode);
     x = rect.left;
     y = rect.top;
     ({ width, height } = rect);
 
-    cell.classList.add('moving');
-    cell.style.top = y;
-    cell.style.left = x;
-    cell.style.width = `${width}px`;
-    cell.style.height = `${height}px`;
+    cell.classList.add('hidden');
+    tempNode.classList.add('moving');
+    tempNode.style.top = y;
+    tempNode.style.left = x;
+    tempNode.style.width = `${width}px`;
+    tempNode.style.height = `${height}px`;
     lastScrollY = window.scrollY;
   }
 
   function endHandler(e: interact.InteractEvent) {
     // make person cell unfixed
     const cell: HTMLElement = e.target;
+    cell.classList.remove('hidden');
+    /*
     cell.classList.remove('moving');
     cell.style.top = '';
     cell.style.left = '';
     cell.style.width = '';
     cell.style.height = '';
-  }
-
-  function scrollStartHandler() {
-    inScroll = true;
+    */
+    document.body.removeChild(tempNode);
   }
 
   function moveHandler(e: interact.InteractEvent) {
-    const cell: HTMLElement = e.target;
+    // const cell: HTMLElement = e.target;
     const scrollDiff = window.scrollY - lastScrollY;
-    console.log(scrollDiff);
     x += e.dx;
     y += e.dy - scrollDiff;
 
     // TODO: realize it via transform-translate
-    cell.style.top = y;
-    cell.style.left = x;
+    tempNode.style.top = y;
+    tempNode.style.left = x;
     lastScrollY = window.scrollY;
 
-    moveCallback(x, y, width, height, scrollStartHandler);
+    // console.log(...[x, y, width, height].map(Math.round));
+
+    moveCallback(x, y, width, height);
   }
 
   return {

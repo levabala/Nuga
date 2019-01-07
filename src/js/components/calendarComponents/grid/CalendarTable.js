@@ -376,57 +376,51 @@ class CalendarTable extends Reactor {
     y: number,
     cellWidth: number,
     cellHeight: number,
-    handleScrollStart: () => void,
   ) {
     const table = sender.tempTable || sender.currentTable;
-    // console.log(table.layoutInfo.turnCooldowned);
     if (!table.layoutInfo.turnCooldowned) return;
 
-    // console.log('now table:', table.id);
-    const rect = table.el.getBoundingClientRect();
+    const scrollTrigger = cellHeight;
 
     // check if need scroll down
-    if (y > rect.top + rect.height) {
+    if (y > window.innerHeight - scrollTrigger) {
       // find previous table
       const tableIndex = table.otherDays.findIndex(day => day.id === table.id);
-      // console.log(tableIndex);
-      const newTempTable = table.otherDays[tableIndex + 1].table;
-      sender.assignTempTable(newTempTable);
+      const newTempDay = table.otherDays[tableIndex + 1];
+      sender.assignTempTable(newTempDay.table);
 
-      handleScrollStart();
-      newTempTable.el.scrollIntoView({
+      const top =
+        newTempDay.el.getBoundingClientRect().y -
+        document.body.getBoundingClientRect().top;
+      window.scrollTo({
+        top,
         behavior: 'smooth',
-        block: 'start',
-        inline: 'start',
       });
       table.handleScrollingOfTurning();
-      // table.personCellMoveHandler(...arguments);
 
-      console.log('scroll');
       return;
     }
 
     // check if need scroll up
-    if (y + cellHeight < rect.top) {
+    if (y + cellHeight < scrollTrigger) {
+      console.log('scroll');
       // find next table
       const tableIndex = table.otherDays.findIndex(day => day.id === table.id);
-      // console.log(tableIndex);
-      const newTempTable = table.otherDays[tableIndex - 1].table;
-      sender.assignTempTable(newTempTable);
+      const newTempDay = table.otherDays[tableIndex - 1];
+      sender.assignTempTable(newTempDay.table);
 
-      handleScrollStart();
-      newTempTable.el.scrollIntoView({
+      const top =
+        newTempDay.el.getBoundingClientRect().y -
+        document.body.getBoundingClientRect().top;
+      window.scrollTo({
+        top,
         behavior: 'smooth',
-        block: 'start',
-        inline: 'start',
       });
       table.handleScrollingOfTurning();
-      // table.personCellMoveHandler(...arguments);
-
-      console.log('scroll');
       return;
     }
 
+    const rect = table.el.getBoundingClientRect();
     const turnTrigger = cellWidth * 0.3;
 
     // check if need turnRight
