@@ -676,12 +676,16 @@ class CalendarTable extends Reactor {
   }
 
   updatePageScroll(immediately = false) {
+    const { positionsPerPage, pageIndex, positionsCount } = this.layoutInfo;
     const targetElementIndex = Math.min(
-      this.layoutInfo.positionsPerPage * this.layoutInfo.pageIndex,
-      this.layoutInfo.positionsCount - 1,
+      positionsPerPage * pageIndex,
+      Math.floor(positionsCount / positionsPerPage) * (positionsPerPage - 1),
     );
     const targetElement = this.layoutComponents.cells[targetElementIndex];
-    const scrollLeft = targetElement.offsetLeft;
+    // targetElement.style.background = 'red';
+
+    const scrollLeft =
+      targetElement.offsetLeft - parseFloat(RootVariables.thinBorderSize);
 
     this.layoutComponents.wrapper.scrollTo({
       top: 0,

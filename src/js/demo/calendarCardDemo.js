@@ -130,7 +130,7 @@ const card = new CalendarCard(days, loadTopDayCallback, loadBottomDayCallback);
 
 window.testCard = card;
 
-card.el.setAttribute('style', `margin: 0px; display: block;`);
+card.el.setAttribute('style', `margin: 30px; display: block;`);
 
 export default card;
 export const calendarCardDemo = card;

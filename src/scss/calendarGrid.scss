@@ -1,5 +1,6 @@
 @import 'root.scss';
 @import 'fonts.scss';
+@import 'style.scss';
 
 // calendar variables
 $calendar-positions-per-page: 4;
@@ -13,9 +14,20 @@ $calendar-main-width-start: $calendar-cell-width * 5;
 $visits-info-right-margin: 60px;
 
 .calendarCard {
+  @extend .elevation-min;
+
   padding: 0 $padding-card;
+  overflow: visible;
+  background: white;
 
   .calendarDay {
+    margin-left: -1 * $calendar-time-cell-width;
+
+    &:focus {
+      outline: none;
+    }
+
+    // header - summary info about the day
     .calendarHeader {
       $p-l: $padding-card + $padding-normal * 2;
       padding-left: $p-l;
@@ -26,6 +38,8 @@ $visits-info-right-margin: 60px;
         100% - #{$p-l} - #{$padding-card} - #{$visits-info-right-margin}
       );
       position: relative;
+      margin-bottom: -$padding-normal * 2;
+      z-index: 100;
 
       .primaryInfo {
         @extend .font-header;
@@ -49,6 +63,7 @@ $visits-info-right-margin: 60px;
       }
     }
 
+    // not using now
     .calendarFooter {
       margin-left: $padding-card + $padding-normal * 2 - $thin-border-size;
       padding-top: $padding-normal * 2;
@@ -64,6 +79,7 @@ $visits-info-right-margin: 60px;
       }
     }
 
+    // the main part of calendar card
     .calendarTable {
       --calendar-main-width: #{$calendar-main-width-start};
       --wrapper-width: 0px;
@@ -79,6 +95,7 @@ $visits-info-right-margin: 60px;
       grid-template-rows: $calendar-cell-height auto;
 
       padding-bottom: $thin-border-size; // * 2;
+      // overflow: visible;
 
       &.hidden {
         visibility: hidden;
@@ -95,10 +112,16 @@ $visits-info-right-margin: 60px;
         grid-area: wrapper;
         position: relative;
 
+        padding-bottom: 2px;
+
         grid-template-columns: auto;
         grid-template-rows: $calendar-cell-height auto;
 
-        box-shadow: 0 0 0 1px black;
+        // box-shadow: 0 0 0 $thin-border-size black;
+        box-shadow: ($calendar-cell-height / 2 + 1)
+          ($calendar-cell-height / 2 - 1) 0 (-1 * $calendar-cell-height / 2)
+          black;
+        padding-left: $thin-border-size;
 
         grid-template-areas:
           'positions'
@@ -120,19 +143,21 @@ $visits-info-right-margin: 60px;
             align-items: center;
             justify-content: center;
             font-size: 23px;
+            box-shadow: none;
           }
         }
 
         .stickyContainer {
           position: fixed;
-          top: 1px;
+          top: $thin-border-size;
           overflow-x: hidden;
-          box-shadow: 0 0 0 1px black;
-          width: var(--wrapper-width);
+          box-shadow: 0 0 0 $thin-border-size black;
+          width: calc(var(--wrapper-width) - #{$thin-border-size});
 
           &.dockBottom {
             position: absolute;
-            bottom: 0;
+            bottom: $thin-border-size;
+            left: $thin-border-size;
             top: unset;
             z-index: 100;
           }
@@ -146,6 +171,10 @@ $visits-info-right-margin: 60px;
           &.hidden {
             visibility: hidden;
           }
+
+          .item {
+            // background: transparent;
+          }
         }
 
         .mainGrid {
@@ -158,7 +187,8 @@ $visits-info-right-margin: 60px;
           width: var(--calendar-main-width);
 
           .item {
-            font-size: 20px;
+            // border-left: solid black $thin-border-size;
+            // border-right: solid black $thin-border-size;
           }
         }
       }
@@ -170,49 +200,50 @@ $visits-info-right-margin: 60px;
         .item {
           display: flex;
           height: $calendar-cell-height;
-
           align-items: center;
           justify-content: center;
+          box-shadow: none;
+
+          font-size: 12px;
         }
       }
 
+      // default calendar cell item
       .item {
-        // display: grid;
         position: relative;
-        background: lightgray;
+        background: white;
         font-size: 16px;
-        box-shadow: 0 0 0 1px black;
+        box-shadow: 0 0 0 $thin-border-size black;
         overflow: visible;
       }
 
       .calendarCell {
-        background: lightgray;
       }
     }
+  }
+}
 
-    .personCell {
-      position: absolute;
-      left: 0px;
-      top: 0px;
+.personCell {
+  position: absolute;
+  left: 0px;
+  top: 0px;
 
-      font-size: 20px;
-      background: rgb(255, 255, 227);
-      // border: solid darkcyan 1px;
-      height: 100%;
-      width: 100%;
+  font-size: 20px;
+  background: rgb(255, 255, 227);
+  // border: solid darkcyan $thin-border-size;
+  height: 100%;
+  width: 100%;
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-      &.moving {
-        position: fixed;
-        z-index: 100;
-      }
+  &.moving {
+    position: fixed;
+    z-index: 100;
+  }
 
-      &.hidden {
-        visibility: hidden;
-      }
-    }
+  &.hidden {
+    visibility: hidden;
   }
 }
