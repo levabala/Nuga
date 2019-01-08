@@ -7,21 +7,21 @@ class CalendarDayHeader {
 
     this.el = el(
       'div',
-      { class: 'calendar-header' },
+      { class: 'calendarHeader' },
       el(
         'p',
         { style: 'float: left' },
-        el('span', { class: 'primary-info' }, data.date.format('dddd ')),
-        el('span', { class: 'secondary-info' }, data.date.format('DD.MM.gg')),
+        el('span', { class: 'primaryInfo' }, data.date.format('dddd ')),
+        el('span', { class: 'secondaryInfo' }, data.date.format('DD.MM.gg')),
       ),
       el(
         'p',
-        { class: 'visits-info' },
+        { class: 'visitsInfo' },
         el(
           'span',
           el(
             'span',
-            { class: 'visits-info-potential' },
+            { class: 'visitsInfoPotential' },
             `Было: `,
             el(
               'span',
@@ -31,11 +31,11 @@ class CalendarDayHeader {
           ),
           el(
             'span',
-            { class: 'visits-info-real' },
+            { class: 'visitsInfoReal' },
             `Не пришли: `,
             el(
               'span',
-              { class: 'font-primary-semibold' },
+              { class: 'fontPrimarySemibold' },
               Math.round(Math.random() * 100),
             ),
           ),

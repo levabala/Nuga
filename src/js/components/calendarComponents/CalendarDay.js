@@ -15,7 +15,7 @@ class CalendarDay {
     this.table = new CalendarTable(id, data, isFirst, otherDays);
     this.el = el(
       'div',
-      { class: 'calendar-day', tabindex: 0 },
+      { class: 'calendarDay', tabindex: 0 },
       new CalendarDayHeader(data),
       this.table,
     );

@@ -3,7 +3,8 @@ import { el, mount, setAttr } from 'redom';
 import Card from './Card';
 import DayData from '../classes/dataTypes/DayData';
 import CalendarDay from './calendarComponents/CalendarDay';
-import '../../scss/calendar.scss';
+
+// import '../../scss/calendar.scss';
 
 interact.dynamicDrop(true);
 
@@ -40,9 +41,9 @@ class CalendarCard extends Card {
       this.handleTableHiding.bind(this),
     );
 
-    const child = el('div', { class: 'calendar-card' }, day);
+    const child = el('div', { class: 'calendarCard' }, day);
     this.days.push(day);
-    setAttr(this.el, 'id', 'calendar-container');
+    setAttr(this.el, 'id', 'calendarContainer');
     mount(this.el, child);
 
     window.addEventListener('scroll', this.handleVerticalBorders.bind(this));
@@ -119,11 +120,12 @@ class CalendarCard extends Card {
       this.handleTableHiding.bind(this),
     );
 
-    const child = el('div', { class: 'calendar-card' }, day);
+    const child = el('div', { class: 'calendarCard' }, day);
     this.days.unshift(day);
     mount(this.el, child, this.el.children[0]);
 
     if (window.scrollY === 0) {
+      console.log('SCroool is ZERO!!! Fallllback!');
       const cardRect = this.days[0].el.getBoundingClientRect();
       const scrollHeightTarget = cardRect.height;
       setTimeout(() => {
@@ -157,7 +159,7 @@ class CalendarCard extends Card {
       this.handleTableHiding.bind(this),
     );
 
-    const child = el('div', { class: 'calendar-card' }, day);
+    const child = el('div', { class: 'calendarCard' }, day);
     this.days.push(day);
     mount(this.el, child);
 
