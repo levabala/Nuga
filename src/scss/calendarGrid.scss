@@ -1,6 +1,7 @@
 @import 'root.scss';
 @import 'fonts.scss';
-@import 'style.scss';
+// @import 'style.scss';
+// @import 'animations.scss';
 
 // calendar variables
 $calendar-positions-per-page: 4;
@@ -11,7 +12,12 @@ $calendar-time-cell-width: $padding-card;
 $calendar-cell-border-width: $thin-border-size;
 $calendar-main-width-start: $calendar-cell-width * 5;
 
+// header variables
 $visits-info-right-margin: 60px;
+
+// personCell variables
+$marker-width: 3px;
+$avatar-left-margin: 8px;
 
 .calendar-border {
   border: dotted $thin-border-size $color-secondary-border;
@@ -163,13 +169,11 @@ $visits-info-right-margin: 60px;
         }
 
         .stickyContainer {
-          // @extend .calendar-border;
-
           position: fixed;
-          top: $thin-border-size;
           overflow-x: hidden;
-          // box-shadow: 0 0 0 $thin-border-size black;
-          // width: calc(var(--wrapper-width) - #{$thin-border-size});
+          top: 0;
+          // top: $thin-border-size;
+          // left: $padding-card;
 
           width: var(--wrapper-width);
 
@@ -207,8 +211,6 @@ $visits-info-right-margin: 60px;
           width: calc(var(--calendar-main-width) + #{$thin-border-size});
 
           .item {
-            // border-left: solid black $thin-border-size;
-            // border-right: solid black $thin-border-size;
             margin-right: -1 * $thin-border-size;
             margin-bottom: -1 * $thin-border-size;
           }
@@ -249,7 +251,12 @@ $visits-info-right-margin: 60px;
         background: white;
         font-size: 16px;
         overflow: visible;
+        transition: opacity 0.5s;
         // box-shadow: 0 0 0 $thin-border-size black;
+
+        &.hiddenSmooth {
+          opacity: 0;
+        }
       }
     }
   }
@@ -262,9 +269,9 @@ $visits-info-right-margin: 60px;
 
   font-size: 20px;
   background: rgb(255, 255, 227);
-  // border: solid darkcyan $thin-border-size;
   height: 100%;
   width: 100%;
+  // border: solid darkcyan $thin-border-size;
 
   display: flex;
   align-items: center;
@@ -277,5 +284,33 @@ $visits-info-right-margin: 60px;
 
   &.hidden {
     visibility: hidden;
+  }
+
+  .marker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: $marker-width;
+
+    background: green;
+  }
+
+  .avatar {
+    position: absolute;
+
+    left: $avatar-left-margin;
+    top: $avatar-left-margin;
+    bottom: $avatar-left-margin;
+
+    width: $calendar-cell-height - $avatar-left-margin * 2 - $thin-border-size;
+
+    background: lightblue;
+  }
+
+  .mainInfo {
+  }
+
+  .points {
   }
 }

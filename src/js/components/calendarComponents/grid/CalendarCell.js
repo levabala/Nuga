@@ -40,7 +40,7 @@ class CalendarCell {
         this.assignPersonCell(personCell);
       },
       ondragenter: e => {
-        e.target.style.background = 'gray';
+        if (e.target.children.length === 0) e.target.style.background = 'gray';
       },
       ondragleave: e => {
         e.target.style.background = '';

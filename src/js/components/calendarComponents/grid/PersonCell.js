@@ -24,7 +24,12 @@ class PersonCell {
     this.currentTable = null;
     this.tempTable = null;
 
-    this.el = el('div', { class: 'personCell' }, person.name);
+    this.el = el('div', { class: 'personCell' }, [
+      el('div', { class: 'marker' }),
+      el('div', { class: 'avatar' }),
+      el('div', { class: 'mainInfo' }),
+      el('div', { class: 'points' }),
+    ]);
     this.el.personCell = this;
 
     interact(this.el).draggable(

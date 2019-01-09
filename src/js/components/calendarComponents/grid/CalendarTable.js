@@ -18,6 +18,7 @@ class CalendarTable extends Reactor {
     mainGridWidth: number,
     mainGridWidthInner: number,
     minElWidth: number,
+    scrolledFirstIndex: number,
     pageIndex: number,
     pageIndexMax: number,
     positionsPerPage: number,
@@ -696,6 +697,8 @@ class CalendarTable extends Reactor {
     const targetElement = this.layoutComponents.cells[targetElementIndex];
     // targetElement.style.background = 'red';
 
+    this.layoutInfo.scrolledFirstIndex = targetElementIndex;
+
     // const scrollLeft =
     //   targetElement.offsetLeft - parseFloat(RootVariables.thinBorderSize);
     // const scrollLeft = targetElement.offsetLeft;
@@ -705,7 +708,6 @@ class CalendarTable extends Reactor {
       targetElRect.left -
       wrapperRect.left +
       this.layoutComponents.wrapper.scrollLeft;
-    console.log(scrollLeft);
 
     window.currentWrapper = this.layoutComponents.wrapper;
 
@@ -714,6 +716,8 @@ class CalendarTable extends Reactor {
       left: scrollLeft,
       behavior: immediately ? 'auto' : 'smooth',
     });
+
+    this.updatePersonCellsVisibility();
 
     if (this.layoutInfo.positionsRowSticky) {
       const container = this.layoutComponents.stickyRowContainer;
@@ -727,6 +731,23 @@ class CalendarTable extends Reactor {
         left: targetElementSticky.offsetLeft,
         behavior: immediately ? 'auto' : 'smooth',
       });
+    }
+  }
+
+  updatePersonCellsVisibility() {
+    const {
+      scrolledFirstIndex,
+      positionsPerPage,
+      positionsCount,
+    } = this.layoutInfo;
+    const { cells } = this.layoutComponents;
+    for (let i = 0; i < cells.length; i++) {
+      const x = i - positionsCount * Math.floor(i / positionsCount);
+      const visible =
+        x >= scrolledFirstIndex && x < scrolledFirstIndex + positionsPerPage;
+
+      if (visible) cells[i].classList.remove('hiddenSmooth');
+      else cells[i].classList.add('hiddenSmooth');
     }
   }
 }
