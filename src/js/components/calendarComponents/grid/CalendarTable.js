@@ -288,10 +288,14 @@ class CalendarTable extends Reactor {
         minElWidth,
         positionsCount,
       );
-      const elWidth = wrapperWidth / positionsPerPage;
+      const elWidth =
+        (wrapperWidth - parseFloat(RootVariables.thinBorderSize) * 2) /
+        positionsPerPage;
       const pagesCount = Math.ceil(positionsCount / positionsPerPage);
-      const width =
-        elWidth * positionsCount + parseFloat(RootVariables.thinBorderSize) * 2;
+      // const width =
+      //   elWidth * positionsCount -
+      //   parseFloat(RootVariables.thinBorderSize) * positionsPerPage;
+      const width = elWidth * positionsCount;
 
       this.layoutInfo.positionsPerPage = positionsPerPage;
       this.layoutInfo.pageIndexMax = pagesCount - 1;
@@ -694,7 +698,16 @@ class CalendarTable extends Reactor {
 
     // const scrollLeft =
     //   targetElement.offsetLeft - parseFloat(RootVariables.thinBorderSize);
-    const scrollLeft = targetElement.offsetLeft;
+    // const scrollLeft = targetElement.offsetLeft;
+    const targetElRect = targetElement.getBoundingClientRect();
+    const wrapperRect = this.layoutComponents.wrapper.getBoundingClientRect();
+    const scrollLeft =
+      targetElRect.left -
+      wrapperRect.left +
+      this.layoutComponents.wrapper.scrollLeft;
+    console.log(scrollLeft);
+
+    window.currentWrapper = this.layoutComponents.wrapper;
 
     this.layoutComponents.wrapper.scrollTo({
       top: 0,

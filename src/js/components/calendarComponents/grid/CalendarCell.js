@@ -45,11 +45,9 @@ class CalendarCell {
       ondragleave: e => {
         e.target.style.background = '';
       },
-      /*
       ondropdeactivate: e => {
-        // e.target.style.background = '';
-      }, 
-      */
+        e.target.style.background = '';
+      },
     });
     interact(this.el).styleCursor(false);
 

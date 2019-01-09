@@ -13,6 +13,10 @@ $calendar-main-width-start: $calendar-cell-width * 5;
 
 $visits-info-right-margin: 60px;
 
+.calendar-border {
+  border: dotted $thin-border-size $color-secondary-border;
+}
+
 .calendarCard {
   @extend .elevation-min;
 
@@ -116,16 +120,16 @@ $visits-info-right-margin: 60px;
         grid-template-rows: $padding-card auto;
 
         // horizontal borders
-        box-shadow: ($padding-card / 2 + 1) ($padding-card / 2 - 1) 0
-            (-1 * $padding-card / 2) black,
-          (-1 * $padding-card / 2 - 1) ($padding-card / 2 - 1) 0
-            (-1 * $padding-card / 2) black;
+        // box-shadow: ($padding-card / 2 + 1) ($padding-card / 2 - 1) 0
+        //     (-1 * $padding-card / 2) black,
+        //   (-1 * $padding-card / 2 - 1) ($padding-card / 2 - 1) 0
+        // (-1 * $padding-card / 2) black;
 
         // only right border
         // box-shadow: ($padding-card / 2 + 1) ($padding-card / 2 - 1) 0
         //   (-1 * $padding-card / 2) black;
 
-        padding-left: $thin-border-size;
+        // padding-left: $thin-border-size;
 
         grid-template-areas:
           'positions'
@@ -150,6 +154,7 @@ $visits-info-right-margin: 60px;
             // align-items: center;
             // justify-content: center;
             box-shadow: none;
+            border: none;
 
             padding-left: $padding-normal * 2;
             height: $padding-card;
@@ -158,12 +163,15 @@ $visits-info-right-margin: 60px;
         }
 
         .stickyContainer {
+          // @extend .calendar-border;
+
           position: fixed;
           top: $thin-border-size;
           overflow-x: hidden;
-          box-shadow: 0 0 0 $thin-border-size black;
-          width: calc(var(--wrapper-width) - #{$thin-border-size});
-          // width: var(--wrapper-width);
+          // box-shadow: 0 0 0 $thin-border-size black;
+          // width: calc(var(--wrapper-width) - #{$thin-border-size});
+
+          width: var(--wrapper-width);
 
           &.dockBottom {
             position: absolute;
@@ -201,6 +209,8 @@ $visits-info-right-margin: 60px;
           .item {
             // border-left: solid black $thin-border-size;
             // border-right: solid black $thin-border-size;
+            margin-right: -1 * $thin-border-size;
+            margin-bottom: -1 * $thin-border-size;
           }
         }
       }
@@ -220,6 +230,7 @@ $visits-info-right-margin: 60px;
           align-items: center;
           justify-content: center;
           box-shadow: none;
+          border: none;
 
           .timeWrapper {
             .minutes {
@@ -232,14 +243,13 @@ $visits-info-right-margin: 60px;
 
       // default calendar cell item
       .item {
+        @extend .calendar-border;
+
         position: relative;
         background: white;
         font-size: 16px;
-        box-shadow: 0 0 0 $thin-border-size black;
         overflow: visible;
-      }
-
-      .calendarCell {
+        // box-shadow: 0 0 0 $thin-border-size black;
       }
     }
   }
