@@ -34,9 +34,7 @@ $visits-info-right-margin: 60px;
       margin: 0;
       display: flex;
       justify-content: space-between;
-      width: calc(
-        100% - #{$p-l} - #{$padding-card} - #{$visits-info-right-margin}
-      );
+      width: calc(100% - #{$p-l} - #{$visits-info-right-margin});
       position: relative;
       margin-bottom: -$padding-normal * 2;
       z-index: 100;
@@ -92,7 +90,7 @@ $visits-info-right-margin: 60px;
         'time wrapper';
 
       grid-template-columns: $calendar-time-cell-width auto;
-      grid-template-rows: $calendar-cell-height auto;
+      grid-template-rows: $padding-card auto;
 
       padding-bottom: $thin-border-size; // * 2;
       // overflow: visible;
@@ -115,12 +113,18 @@ $visits-info-right-margin: 60px;
         padding-bottom: 2px;
 
         grid-template-columns: auto;
-        grid-template-rows: $calendar-cell-height auto;
+        grid-template-rows: $padding-card auto;
 
-        // box-shadow: 0 0 0 $thin-border-size black;
-        box-shadow: ($calendar-cell-height / 2 + 1)
-          ($calendar-cell-height / 2 - 1) 0 (-1 * $calendar-cell-height / 2)
-          black;
+        // horizontal borders
+        box-shadow: ($padding-card / 2 + 1) ($padding-card / 2 - 1) 0
+            (-1 * $padding-card / 2) black,
+          (-1 * $padding-card / 2 - 1) ($padding-card / 2 - 1) 0
+            (-1 * $padding-card / 2) black;
+
+        // only right border
+        // box-shadow: ($padding-card / 2 + 1) ($padding-card / 2 - 1) 0
+        //   (-1 * $padding-card / 2) black;
+
         padding-left: $thin-border-size;
 
         grid-template-areas:
@@ -134,16 +138,22 @@ $visits-info-right-margin: 60px;
           grid-area: positions;
 
           grid-template-columns: repeat(var(--positions-count), 1fr);
-          grid-template-rows: repeat(auto-fit, $calendar-cell-height);
+          grid-template-rows: repeat(auto-fit, $padding-card);
 
           width: var(--calendar-main-width);
+          height: $padding-card;
 
           .item {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 23px;
+            @extend .font-primary-semibold;
+
+            // display: flex;
+            // align-items: center;
+            // justify-content: center;
             box-shadow: none;
+
+            padding-left: $padding-normal * 2;
+            height: $padding-card;
+            line-height: $padding-card;
           }
         }
 
@@ -153,6 +163,7 @@ $visits-info-right-margin: 60px;
           overflow-x: hidden;
           box-shadow: 0 0 0 $thin-border-size black;
           width: calc(var(--wrapper-width) - #{$thin-border-size});
+          // width: var(--wrapper-width);
 
           &.dockBottom {
             position: absolute;
@@ -184,7 +195,8 @@ $visits-info-right-margin: 60px;
           grid-template-columns: repeat(var(--positions-count), 1fr);
           grid-template-rows: repeat(auto-fit, $calendar-cell-height);
 
-          width: var(--calendar-main-width);
+          // width: var(--calendar-main-width);
+          width: calc(var(--calendar-main-width) + #{$thin-border-size});
 
           .item {
             // border-left: solid black $thin-border-size;
@@ -198,13 +210,23 @@ $visits-info-right-margin: 60px;
         grid-area: time;
 
         .item {
+          &:first-child {
+            height: $padding-card;
+          }
+
+          @extend .font-primary-semibold;
           display: flex;
           height: $calendar-cell-height;
           align-items: center;
           justify-content: center;
           box-shadow: none;
 
-          font-size: 12px;
+          .timeWrapper {
+            .minutes {
+              @extend .font-secondary-little;
+              vertical-align: top;
+            }
+          }
         }
       }
 

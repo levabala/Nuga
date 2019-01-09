@@ -477,7 +477,15 @@ class CalendarTable extends Reactor {
     function generateTimeColumn(timeStamps: Array<moment.Moment>): HTMLElement {
       const times = [el('div', { class: 'item' }, '')].concat(
         timeStamps.map(stamp =>
-          el('div', { class: 'item' }, `${stamp.format('HH:mm')}`),
+          // el('div', { class: 'item' }, `${stamp.format('HH:mm')}`),
+          el(
+            'div',
+            { class: 'item' },
+            el('div', { class: 'timeWrapper' }, [
+              el('span', { class: 'hours' }, `${stamp.format('HH')}`),
+              el('span', { class: 'minutes' }, `${stamp.format('mm')}`),
+            ]),
+          ),
         ),
       );
 
@@ -684,8 +692,9 @@ class CalendarTable extends Reactor {
     const targetElement = this.layoutComponents.cells[targetElementIndex];
     // targetElement.style.background = 'red';
 
-    const scrollLeft =
-      targetElement.offsetLeft - parseFloat(RootVariables.thinBorderSize);
+    // const scrollLeft =
+    //   targetElement.offsetLeft - parseFloat(RootVariables.thinBorderSize);
+    const scrollLeft = targetElement.offsetLeft;
 
     this.layoutComponents.wrapper.scrollTo({
       top: 0,
