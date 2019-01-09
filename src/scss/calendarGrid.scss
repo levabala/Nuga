@@ -18,6 +18,8 @@ $visits-info-right-margin: 60px;
 // personCell variables
 $marker-width: 3px;
 $avatar-left-margin: 8px;
+$points-right-margin: 10px;
+$points-size: 30px;
 
 .calendar-border {
   border: dotted $thin-border-size $color-secondary-border;
@@ -296,6 +298,8 @@ $avatar-left-margin: 8px;
     background: green;
   }
 
+  $avatar-width: $calendar-cell-height - $avatar-left-margin * 2 -
+    $thin-border-size;
   .avatar {
     position: absolute;
 
@@ -303,14 +307,34 @@ $avatar-left-margin: 8px;
     top: $avatar-left-margin;
     bottom: $avatar-left-margin;
 
-    width: $calendar-cell-height - $avatar-left-margin * 2 - $thin-border-size;
+    width: $avatar-width;
 
     background: lightblue;
   }
 
   .mainInfo {
+    position: absolute;
+    left: $avatar-width + $avatar-left-margin * 2;
+    top: 0;
+    bottom: 0;
+
+    width: 80px;
+
+    display: flex;
+    justify-content: center;
+    align-items: left;
+
+    background: cadetblue;
   }
 
   .points {
+    position: absolute;
+    right: $points-right-margin;
+    top: 0;
+    bottom: 0;
+
+    width: $points-size;
+
+    background: darkgrey;
   }
 }
