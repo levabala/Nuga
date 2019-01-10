@@ -68,6 +68,16 @@ class CalendarCard extends Card {
   }
 
   // DEBUG_FUNC
+  countAllActiveTables() {
+    return this.days.reduce(
+      (count: number, day: CalendarDay) =>
+        // console.log(day.table.layoutInfo.hidden);
+        count + (day.table.layoutInfo.hidden ? 0 : 1),
+      0,
+    );
+  }
+
+  // DEBUG_FUNC
   countAllActiveDropzones() {
     return this.days.reduce(
       (count: number, day: CalendarDay) =>

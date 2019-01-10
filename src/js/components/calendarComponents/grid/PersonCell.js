@@ -27,8 +27,27 @@ class PersonCell {
     this.el = el('div', { class: 'personCell' }, [
       el('div', { class: 'marker' }),
       el('div', { class: 'avatar' }),
-      el('div', { class: 'mainInfo' }),
-      el('div', { class: 'points' }),
+      el(
+        'div',
+        { class: 'mainInfoWrapper' },
+        el('div', [
+          el('div', { class: 'content' }, [
+            el('span', { class: 'surname' }, 'Surname '),
+            el('span', { class: 'name' }, 'Name '),
+            el('span', { class: 'patronymic' }, 'P. '),
+            el('span', { class: 'visits' }, '34 '),
+            el('span', { class: 'grade' }, 'B'),
+          ]),
+          el('div', { class: 'content' }, [
+            el('span', { class: 'number' }, '7871332'),
+          ]),
+        ]),
+      ),
+      el(
+        'div',
+        { class: 'pointsWrapper' },
+        el('div', { class: 'content' }, '13'),
+      ),
     ]);
     this.el.personCell = this;
 

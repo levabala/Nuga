@@ -1,5 +1,6 @@
 @import 'root.scss';
 @import 'fonts.scss';
+@import 'colors.scss';
 // @import 'style.scss';
 // @import 'animations.scss';
 
@@ -19,7 +20,8 @@ $visits-info-right-margin: 60px;
 $marker-width: 3px;
 $avatar-left-margin: 8px;
 $points-right-margin: 10px;
-$points-size: 30px;
+$points-size: 25px;
+$visits-count-margin: 2px;
 
 .calendar-border {
   border: dotted $thin-border-size $color-secondary-border;
@@ -269,11 +271,11 @@ $points-size: 30px;
   left: 0px;
   top: 0px;
 
-  font-size: 20px;
-  background: rgb(255, 255, 227);
   height: 100%;
   width: 100%;
   // border: solid darkcyan $thin-border-size;
+
+  background: white;
 
   display: flex;
   align-items: center;
@@ -308,26 +310,57 @@ $points-size: 30px;
     bottom: $avatar-left-margin;
 
     width: $avatar-width;
+    border-radius: 50%;
 
-    background: lightblue;
+    background: lightgrey;
   }
 
-  .mainInfo {
+  .mainInfoWrapper {
     position: absolute;
     left: $avatar-width + $avatar-left-margin * 2;
     top: 0;
     bottom: 0;
-
-    width: 80px;
+    right: $points-right-margin + $points-size + $avatar-left-margin;
 
     display: flex;
-    justify-content: center;
-    align-items: left;
+    justify-content: left;
+    align-items: center;
 
-    background: cadetblue;
+    // background: cadetblue;
+
+    .content {
+      // background: lightcyan;
+
+      // width: 100%;
+      overflow-wrap: break-word;
+
+      .surname,
+      .name,
+      .patronymic,
+      .grade {
+        @extend .font-primary-semibold;
+      }
+
+      .grade {
+        color: green;
+      }
+
+      .visits {
+        @extend .font-secondary-little-semibold;
+        margin-left: $visits-count-margin;
+        margin-right: $visits-count-margin;
+        padding: 0;
+        color: black;
+        vertical-align: top;
+      }
+
+      .number {
+        @extend .font-secondary-middle;
+      }
+    }
   }
 
-  .points {
+  .pointsWrapper {
     position: absolute;
     right: $points-right-margin;
     top: 0;
@@ -335,6 +368,24 @@ $points-size: 30px;
 
     width: $points-size;
 
-    background: darkgrey;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    // background: darkgrey;
+
+    .content {
+      @extend .font-points-circle;
+
+      background: $color-calendar-points-background;
+      width: $points-size;
+      height: $points-size;
+
+      border-radius: 50%;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
 }

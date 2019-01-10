@@ -202,6 +202,7 @@ class CalendarTable extends Reactor {
 
   updateAll() {
     this.updateMainWidth();
+    this.updatePersonCellsVisibility();
   }
 
   tryToHide(rect: DOMRect) {
@@ -392,7 +393,6 @@ class CalendarTable extends Reactor {
     if (y > window.innerHeight - scrollTrigger) {
       // check if bottom is overflowing
       if (rect.height + rect.top > window.innerHeight) {
-        console.log('argh');
         const middle = window.scrollY + window.innerHeight / 2;
         window.scrollTo({
           top: middle,
@@ -594,13 +594,14 @@ class CalendarTable extends Reactor {
       positionsCount,
       mainGridWidth: 0,
       mainGridWidthInner: 0,
-      minElWidth: 200,
+      minElWidth: 230,
       pageIndex: 0,
       pageIndexMax: 1,
       positionsPerPage: 1,
       positionsRowSticky: false,
       turnCooldownMax: 500,
       turnCooldowned: true,
+      scrolledFirstIndex: 0,
     });
 
     this.layoutComponents = {
