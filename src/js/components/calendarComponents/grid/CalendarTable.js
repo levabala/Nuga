@@ -63,44 +63,8 @@ class CalendarTable extends Reactor {
 
     this.registerEvent('visibilityChanged');
 
-    this.setData(data);
-
-    window.addEventListener('keydown', e => {
-      switch (e.code) {
-        case 'ArrowRight':
-          if (this.isBodyPercentInViewByHeight(0.4)) this.turnPageRight();
-          break;
-        case 'ArrowLeft':
-          if (this.isBodyPercentInViewByHeight(0.4)) this.turnPageLeft();
-          break;
-        default:
-          break;
-      }
-    });
-
-    let updateTimeout = null;
-    const updateIntervalLength = 100;
-    window.addEventListener('resize', () => {
-      const updateAll = () => {
-        setTimeout(() => {
-          this.updateAll();
-        }, 0);
-
-        clearTimeout(updateTimeout);
-        updateTimeout = setTimeout(() => {
-          updateTimeout = null;
-        }, updateIntervalLength);
-      };
-
-      if (updateTimeout === null) updateAll();
-    });
-
-    window.addEventListener('scroll', () => {
-      this.scrollHandler();
-    });
-
-    const totalUpdateInterval = 501;
-    setInterval(this.updateAll.bind(this), totalUpdateInterval);
+    if (data !== null) this.setData(data);
+    else this.setDataMock();
   }
 
   scrollHandler() {
@@ -201,8 +165,10 @@ class CalendarTable extends Reactor {
   }
 
   updateAll() {
+    if (this.layoutInfo.hidden) return;
+
     this.updateMainWidth();
-    this.updatePersonCellsVisibility();
+    setTimeout(() => this.updatePersonCellsVisibility());
   }
 
   tryToHide(rect: DOMRect) {
@@ -220,6 +186,8 @@ class CalendarTable extends Reactor {
       this.layoutComponents.gridCells.forEach(cell => {
         cell.activateDropzone();
       });
+
+      this.updateAll();
     };
 
     // DEBUG_VAR
@@ -384,6 +352,7 @@ class CalendarTable extends Reactor {
     cellHeight: number,
   ) {
     const table = sender.tempTable || sender.currentTable;
+
     if (!table.layoutInfo.turnCooldowned) return;
 
     const scrollTrigger = cellHeight;
@@ -407,6 +376,7 @@ class CalendarTable extends Reactor {
       const tableIndex = table.otherDays.findIndex(day => day.id === table.id);
       const newTempDay = table.otherDays[tableIndex + 1];
       sender.assignTempTable(newTempDay.table);
+
       const top =
         newTempDay.el.getBoundingClientRect().y -
         document.body.getBoundingClientRect().top;
@@ -426,6 +396,8 @@ class CalendarTable extends Reactor {
       const newTempDay = table.otherDays[tableIndex - 1];
       sender.assignTempTable(newTempDay.table);
 
+      // console.log(table.otherDays.map(d => `${d.el.offsetTop}, ${d.id}`));
+
       const top =
         newTempDay.el.getBoundingClientRect().y -
         document.body.getBoundingClientRect().top;
@@ -443,6 +415,7 @@ class CalendarTable extends Reactor {
     const rightBorder = rect.left + rect.width;
     if (x + cellWidth - rightBorder > turnTrigger) {
       table.turnPageRight();
+      console.log(table.el, 'turn right');
       return;
     }
 
@@ -451,6 +424,13 @@ class CalendarTable extends Reactor {
     if (leftBorder - x > turnTrigger) {
       table.turnPageLeft();
     }
+  }
+
+  /* eslint-disable-next-line */
+  setDataMock() {
+    this.el = el('div', {
+      class: 'calendarTable unloaded',
+    });
   }
 
   setData(data: DayData) {
@@ -561,7 +541,7 @@ class CalendarTable extends Reactor {
         .minute(0),
       moment
         .max(allDates)
-        .hour(16)
+        .hour(7)
         .minute(0),
     ];
     const interval = [60, 'minutes'];
@@ -633,6 +613,44 @@ class CalendarTable extends Reactor {
   }
 
   initLayout() {
+    window.addEventListener('keydown', e => {
+      switch (e.code) {
+        case 'ArrowRight':
+          if (this.isBodyPercentInViewByHeight(0.4)) this.turnPageRight();
+          break;
+        case 'ArrowLeft':
+          if (this.isBodyPercentInViewByHeight(0.4)) this.turnPageLeft();
+          break;
+        default:
+          break;
+      }
+    });
+
+    let updateTimeout = null;
+    const updateIntervalLength = 100;
+    window.addEventListener('resize', () => {
+      const updateAll = () => {
+        setTimeout(() => {
+          this.updateAll();
+        }, 0);
+
+        clearTimeout(updateTimeout);
+        updateTimeout = setTimeout(() => {
+          updateTimeout = null;
+        }, updateIntervalLength);
+      };
+
+      if (updateTimeout === null) updateAll();
+    });
+
+    window.addEventListener('scroll', () => {
+      this.scrollHandler();
+    });
+
+    const totalUpdateInterval = 501;
+    setInterval(this.updateAll.bind(this), totalUpdateInterval);
+
+    // main initializing
     this.updateMainWidth();
     this.layoutInfo.loaded = true;
 

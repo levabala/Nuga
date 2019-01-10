@@ -3,7 +3,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 // const autoprefixer = require('autoprefixer');
 
 module.exports = {
-  entry: ['./src/js/main.js'], // , './src/app.scss'
+  entry: ['babel-polyfill', './src/js/main.js'], // , './src/app.scss'
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',

@@ -72,7 +72,7 @@ for (let i = 0; i < persons.count * scale; i++)
       y: 2018,
       M: 11,
       d: Math.round(Math.random() * 6),
-      h: 7 + Math.round(Math.random() * 8),
+      h: 7 + Math.round(Math.random() * 0),
       m: Math.round(Math.random() * 59),
     }),
     client: persons.getByIndex(Math.floor(i / scale)),
@@ -90,25 +90,9 @@ const days: Array<DayData> = [
   }),
 ];
 
-const loadTopDayCallback = (newestDay: DayData) => {
-  const date = newestDay.date.clone().add(1, 'days');
-  return new DayData({
-    date,
-    visits:
-      visits.filter(
-        visit =>
-          Math.abs(
-            visit.date
-              .clone()
-              .startOf('day')
-              .diff(date.clone().startOf('day'), 'days'),
-          ) < 1 && visit.date.day() === date.day(),
-      ) || [],
-  });
-};
+const loadNewDay = async (date: moment.Moment) => {
+  await new Promise(resolve => setTimeout(resolve, 1000));
 
-const loadBottomDayCallback = (oldestDay: DayData) => {
-  const date = oldestDay.date.clone().subtract(1, 'days');
   return new DayData({
     date,
     visits:
@@ -120,13 +104,12 @@ const loadBottomDayCallback = (oldestDay: DayData) => {
               .startOf('day')
               .diff(date.clone().startOf('day'), 'days'),
           ) < 1 && visit.date.day() === date.day(),
-        // visit.date.diff(date, 'days') < 1 && visit.date.day() === date.day(),
       ) || [],
   });
 };
 
 console.log(days);
-const card = new CalendarCard(days, loadTopDayCallback, loadBottomDayCallback);
+const card = new CalendarCard(days, loadNewDay);
 
 window.testCard = card;
 

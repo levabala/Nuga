@@ -39,6 +39,7 @@
     "babel-loader": "^8.0.0",
     "babel-plugin-transform-flow-comments": "^6.22.0",
     "babel-plugin-transform-metadata": "^4.0.2",
+    "babel-polyfill": "^6.26.0",
     "concurrently": "^4.0.1",
     "css-loader": "^1.0.0",
     "eslint": "^5.8.0",
