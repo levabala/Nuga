@@ -32,21 +32,25 @@ class PersonCell {
         { class: 'mainInfoWrapper' },
         el('div', [
           el('div', { class: 'content' }, [
-            el('span', { class: 'surname' }, 'Surname '),
-            el('span', { class: 'name' }, 'Name '),
-            el('span', { class: 'patronymic' }, 'P. '),
-            el('span', { class: 'visits' }, '34 '),
-            el('span', { class: 'grade' }, 'B'),
+            el('span', { class: 'surname' }, `${person.surname} `),
+            el('span', { class: 'name' }, `${person.name} `),
+            el(
+              'span',
+              { class: 'patronymic' },
+              `${person.patronymic.length ? `${person.patronymic[0]}.` : ''} `,
+            ),
+            el('span', { class: 'visits' }, `${person.visitsCount} `),
+            el('span', { class: 'grade' }, `${person.grade}`),
           ]),
           el('div', { class: 'content' }, [
-            el('span', { class: 'number' }, '7871332'),
+            el('span', { class: 'number' }, `${person.code}`),
           ]),
         ]),
       ),
       el(
         'div',
         { class: 'pointsWrapper' },
-        el('div', { class: 'content' }, '13'),
+        el('div', { class: 'content' }, `${person.points}`),
       ),
     ]);
     this.el.personCell = this;

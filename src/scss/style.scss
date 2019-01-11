@@ -9,6 +9,7 @@ body {
   background: #faf9f7;
   overflow-x: hidden;
   margin: 0;
+  overscroll-behavior-y: contain;
 }
 
 // .avatar {

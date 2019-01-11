@@ -22,8 +22,12 @@ function generateConfig(moveCallback): interact.DraggableOptions {
 
     cell.classList.add('hidden');
     tempNode.classList.add('moving');
-    tempNode.style.top = y;
-    tempNode.style.left = x;
+    // tempNode.style.top = y;
+    // tempNode.style.left = x;
+    tempNode.style.top = 0;
+    tempNode.style.left = 0;
+    tempNode.style.transform = `translate(${x}px, ${y}px)`;
+
     tempNode.style.width = `${width}px`;
     tempNode.style.height = `${height}px`;
     lastScrollY = window.scrollY;
@@ -33,13 +37,8 @@ function generateConfig(moveCallback): interact.DraggableOptions {
     // make person cell unfixed
     const cell: HTMLElement = e.target;
     cell.classList.remove('hidden');
-    /*
-    cell.classList.remove('moving');
-    cell.style.top = '';
-    cell.style.left = '';
-    cell.style.width = '';
-    cell.style.height = '';
-    */
+    tempNode.style.transform = ``;
+
     document.body.removeChild(tempNode);
   }
 
@@ -50,8 +49,10 @@ function generateConfig(moveCallback): interact.DraggableOptions {
     y += e.dy - scrollDiff;
 
     // TODO: realize it via transform-translate
-    tempNode.style.top = y;
-    tempNode.style.left = x;
+    // tempNode.style.top = y;
+    // tempNode.style.left = x;
+    tempNode.style.transform = `translate(${x}px, ${y}px)`;
+
     lastScrollY = window.scrollY;
 
     // console.log(...[x, y, width, height].map(Math.round));

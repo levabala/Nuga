@@ -1,7 +1,7 @@
 @import 'root.scss';
 @import 'fonts.scss';
 @import 'colors.scss';
-// @import 'style.scss';
+@import 'style.scss';
 // @import 'animations.scss';
 
 // calendar variables
@@ -276,6 +276,7 @@ $visits-count-margin: 2px;
   // border: solid darkcyan $thin-border-size;
 
   background: white;
+  touch-action: none;
 
   display: flex;
   align-items: center;
