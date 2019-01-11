@@ -1,6 +1,6 @@
 import interact from 'interactjs';
 import * as moment from 'moment';
-import { el, mount, setAttr } from 'redom';
+import { el, mount } from 'redom';
 import Card from './Card';
 import DayData from '../classes/dataTypes/DayData';
 import CalendarDay from './calendarComponents/CalendarDay';
@@ -25,13 +25,16 @@ class CalendarCard extends Card {
     this.hiddenDays = 0;
     this.idCounter = 0;
 
+    this.addDayCooldowned = true;
+    this.addDayCountdown = 30;
+
     const averageIndex = Math.floor(this.data.length / 2);
     this.loadedBorder = [averageIndex, averageIndex];
 
     this.wrapper = el('div', { class: 'calendarCard' });
     mount(this.el, this.wrapper);
 
-    // window.addEventListener('scroll', this.handleVerticalBorders.bind(this));
+    window.addEventListener('scroll', this.handleVerticalBorders.bind(this));
 
     this.handleVerticalBorders();
     setTimeout(() => this.handleVerticalBorders());
@@ -76,6 +79,8 @@ class CalendarCard extends Card {
   }
 
   handleVerticalBorders() {
+    if (!this.addDayCooldowned) return;
+
     const bodyRect = document.body.getBoundingClientRect();
     const trigger = window.innerHeight * 2;
 
@@ -87,6 +92,14 @@ class CalendarCard extends Card {
     const diff = bodyRect.bottom - window.innerHeight;
     const needLoadBottom = diff < trigger;
     if (needLoadBottom) this.loadBottomDay();
+
+    if (needLoadTop || needLoadBottom) {
+      this.addDayCooldowned = false;
+      setTimeout(() => {
+        this.addDayCooldowned = true;
+        this.handleVerticalBorders();
+      }, this.addDayCountdown);
+    }
   }
 
   loadTopDay() {
@@ -102,7 +115,6 @@ class CalendarCard extends Card {
   }
 
   async loadNewDay(date: moment.Moment, older: boolean) {
-    console.log('loadNewDay');
     const topIndex = this.loadedBorder[0] - 1;
     const day = new CalendarDay(
       ++this.idCounter,
@@ -113,25 +125,29 @@ class CalendarCard extends Card {
 
     const mockDayData = new DayData({ date, visits: [] });
     let renderedDay = null;
+    const scrollBefore = window.scrollY;
     if (older) {
       this.days.push(day);
       this.data.push(mockDayData);
 
       [renderedDay] = this.days;
+
+      mount(this.wrapper, day);
     } else {
       this.days.unshift(day);
       this.data.unshift(mockDayData);
       renderedDay = this.days[this.days.length - 1];
+
+      mount(this.wrapper, day, this.wrapper.children[0]);
     }
 
     setTimeout(() => {
-      const scroll = renderedDay.el.getBoundingClientRect().height;
-      window.scrollTo(0, scroll * 10);
+      if (older || scrollBefore !== window.scrollY) return;
 
-      console.log(scroll, day.el);
+      const scroll = renderedDay.el.offsetHeight;
+
+      window.scrollBy(0, scroll);
     });
-
-    mount(this.wrapper, day);
 
     const dayData = await this.requestNewDay(date);
     day.setData(dayData);

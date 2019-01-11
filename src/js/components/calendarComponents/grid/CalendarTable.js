@@ -1,6 +1,6 @@
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
-import { el } from 'redom';
+import { el, setChildren } from 'redom';
 import { Reactor } from 'assemblies';
 import DayData from '../../../classes/dataTypes/DayData';
 import '../../../../scss/calendarGrid.scss';
@@ -12,6 +12,12 @@ import CalendarDay from '../CalendarDay';
 const moment = extendMoment(Moment);
 
 class CalendarTable extends Reactor {
+  eventCallbacks: {
+    scrollCallback: ?() => void,
+    resizeCallback: ?() => void,
+    keydownCallback: ?() => void,
+  };
+
   layoutInfo: {
     timeStamps: number,
     positionsCount: number,
@@ -56,10 +62,15 @@ class CalendarTable extends Reactor {
     this.isFirst = isFirst;
     this.otherDays = otherDays;
     this.layoutInfo = {
-      hidden: false,
+      hidden: true,
       loaded: false,
     };
     this.layoutComponents = {};
+    this.eventCallbacks = {
+      scrollCallback: null,
+      keydownCallback: null,
+      resizeCallback: null,
+    };
 
     this.registerEvent('visibilityChanged');
 
@@ -171,38 +182,37 @@ class CalendarTable extends Reactor {
     setTimeout(() => this.updatePersonCellsVisibility());
   }
 
+  hideTable() {
+    this.layoutComponents.calendarTable.classList.add('hidden');
+    this.layoutInfo.hidden = true;
+    this.layoutComponents.gridCells.forEach(cell => {
+      cell.disactivateDropzone();
+    });
+    this.removeEventListeners();
+  }
+
+  showTable() {
+    this.layoutComponents.calendarTable.classList.remove('hidden');
+    this.layoutInfo.hidden = false;
+    this.layoutComponents.gridCells.forEach(cell => {
+      cell.activateDropzone();
+    });
+    this.setEventListeners();
+
+    this.updateAll();
+  }
+
   tryToHide(rect: DOMRect) {
-    const hide = () => {
-      this.layoutComponents.calendarTable.classList.add('hidden');
-      this.layoutInfo.hidden = true;
-      this.layoutComponents.gridCells.forEach(cell => {
-        cell.disactivateDropzone();
-      });
-    };
-
-    const show = () => {
-      this.layoutComponents.calendarTable.classList.remove('hidden');
-      this.layoutInfo.hidden = false;
-      this.layoutComponents.gridCells.forEach(cell => {
-        cell.activateDropzone();
-      });
-
-      this.updateAll();
-    };
-
     // DEBUG_VAR
     if (window.freezedHiding) return;
 
-    // const rect = this.layoutComponents.calendarTable.getBoundingClientRect();
     const buffer = rect.height * 2;
     const couldHide =
       rect.top < -buffer || rect.bottom > window.innerHeight + buffer;
 
-    const lastState = this.layoutComponents.calendarTable.classList.contains(
-      'hidden',
-    );
-    if (couldHide) hide();
-    else show();
+    const lastState = this.layoutInfo.hidden;
+    if (couldHide && !this.layoutInfo.hidden) this.hideTable();
+    else if (!couldHide && this.layoutInfo.hidden) this.showTable();
 
     if (lastState !== this.layoutInfo.hidden) {
       this.dispatchEvent('visibilityChanged', {
@@ -426,14 +436,22 @@ class CalendarTable extends Reactor {
     }
   }
 
-  /* eslint-disable-next-line */
   setDataMock() {
-    this.el = el('div', {
-      class: 'calendarTable unloaded',
-    });
+    this.setWrappingLayout();
   }
 
-  setData(data: DayData) {
+  static generateTimeStamps(
+    range: [moment.Moment, moment.Moment],
+    interval: [number, string], // amount, metric unit
+  ) {
+    const timeRange = moment.range(...range);
+    const timeStamps = Array.from(
+      timeRange.by(interval[1], { step: interval[0] }),
+    );
+    return timeStamps;
+  }
+
+  setWrappingLayout() {
     function generatePositionsRow(
       prefix: string,
       range: [number, number],
@@ -446,17 +464,6 @@ class CalendarTable extends Reactor {
       }
 
       return el('div', { class: 'positionsRow' }, positions);
-    }
-
-    function generateTimeStamps(
-      range: [moment.Moment, moment.Moment],
-      interval: [number, string], // amount, metric unit
-    ) {
-      const timeRange = moment.range(...range);
-      const timeStamps = Array.from(
-        timeRange.by(interval[1], { step: interval[0] }),
-      );
-      return timeStamps;
     }
 
     function generateTimeColumn(timeStamps: Array<moment.Moment>): HTMLElement {
@@ -497,6 +504,71 @@ class CalendarTable extends Reactor {
       return el('div', { class: 'mainGrid' }, cells);
     }
 
+    this.el = el('div', {
+      class: 'calendarTable unloaded hidden',
+    });
+
+    const positionsCount = 13;
+
+    // using min&max dates
+    const range = [
+      moment()
+        .hour(7)
+        .minute(0),
+      moment()
+        .hour(13)
+        .minute(0),
+    ];
+    const interval = [60, 'minutes'];
+    const timeStamps = this.constructor.generateTimeStamps(range, interval);
+
+    const timeColumn = generateTimeColumn(timeStamps);
+    const positionsRow = generatePositionsRow('Position', [1, positionsCount]);
+    const gridCells = generateGridCells(
+      this,
+      positionsRow.childElementCount,
+      timeColumn.childElementCount - 1, // -1 because of 1 mock time cell in left-top corner
+      this.tryToFreeUpGridCell.bind(this),
+    );
+
+    const mainGrid = generateGrid(gridCells);
+    const wrapper = el('div', { class: 'wrapper' }, [positionsRow, mainGrid]);
+
+    this.scrollableArea = wrapper;
+
+    setChildren(this.el, [timeColumn, wrapper]);
+
+    Object.assign(this.layoutInfo, {
+      timeStamps,
+      positionsCount,
+      mainGridWidth: 0,
+      mainGridWidthInner: 0,
+      minElWidth: 230,
+      pageIndex: 0,
+      pageIndexMax: 1,
+      positionsPerPage: 1,
+      positionsRowSticky: false,
+      turnCooldownMax: 500,
+      turnCooldowned: true,
+      scrolledFirstIndex: 0,
+      hidden: false,
+    });
+
+    this.layoutComponents = {
+      calendarTable: this.el,
+      cells: mainGrid.children,
+      mainGrid,
+      gridCells,
+      wrapper,
+      timeColumn,
+      positionsRow,
+      stickyRowContainer: false,
+    };
+
+    this.setPositionsCount(this.layoutInfo.positionsCount);
+  }
+
+  setData(data: DayData) {
     function generateClientCells(
       allDates: Array<moment.Moment>,
       interval: [number, string], // amount, metric unit
@@ -541,59 +613,16 @@ class CalendarTable extends Reactor {
         .minute(0),
       moment
         .max(allDates)
-        .hour(7)
+        .hour(13)
         .minute(0),
     ];
+
     const interval = [60, 'minutes'];
-    const timeStamps = generateTimeStamps(range, interval);
-
-    const timeColumn = generateTimeColumn(timeStamps);
-    const positionsRow = generatePositionsRow('Position', [1, positionsCount]);
-    const gridCells = generateGridCells(
-      this,
-      positionsRow.childElementCount,
-      timeColumn.childElementCount - 1, // -1 because of 1 mock time cell in left-top corner
-      this.tryToFreeUpGridCell.bind(this),
-    );
-
-    const mainGrid = generateGrid(gridCells);
-    const wrapper = el('div', { class: 'wrapper' }, [positionsRow, mainGrid]);
-
-    this.scrollableArea = wrapper;
-
-    this.el = el(
-      'div',
-      {
-        class: 'calendarTable unloaded',
-      },
-      [timeColumn, wrapper],
-    );
+    const timeStamps = this.constructor.generateTimeStamps(range, interval);
 
     Object.assign(this.layoutInfo, {
       timeStamps,
-      positionsCount,
-      mainGridWidth: 0,
-      mainGridWidthInner: 0,
-      minElWidth: 230,
-      pageIndex: 0,
-      pageIndexMax: 1,
-      positionsPerPage: 1,
-      positionsRowSticky: false,
-      turnCooldownMax: 500,
-      turnCooldowned: true,
-      scrolledFirstIndex: 0,
     });
-
-    this.layoutComponents = {
-      calendarTable: this.el,
-      cells: mainGrid.children,
-      mainGrid,
-      gridCells,
-      wrapper,
-      timeColumn,
-      positionsRow,
-      stickyRowContainer: false,
-    };
 
     const clientCells = generateClientCells(
       timeStamps,
@@ -601,6 +630,7 @@ class CalendarTable extends Reactor {
       this.constructor.personCellMoveHandler,
     );
 
+    const { gridCells } = this.layoutComponents;
     clientCells.forEach(cell => {
       const index = cell.cellX + cell.cellY * positionsCount;
       const gridCell = gridCells[index];
@@ -608,53 +638,84 @@ class CalendarTable extends Reactor {
       gridCell.assignPersonCell(cell);
     });
 
-    this.setPositionsCount(this.layoutInfo.positionsCount);
     setTimeout(() => this.initLayout(), 0);
   }
 
-  initLayout() {
-    window.addEventListener('keydown', e => {
-      switch (e.code) {
-        case 'ArrowRight':
-          if (this.isBodyPercentInViewByHeight(0.4)) this.turnPageRight();
-          break;
-        case 'ArrowLeft':
-          if (this.isBodyPercentInViewByHeight(0.4)) this.turnPageLeft();
-          break;
-        default:
-          break;
-      }
-    });
+  removeEventListeners() {
+    const {
+      keydownCallback,
+      // scrollCallback,
+      resizeCallback,
+    } = this.eventCallbacks;
 
+    window.removeEventListener('keydown', keydownCallback);
+    window.removeEventListener('resize', resizeCallback);
+    // we mustn't disable scroll callback!
+    // window.removeEventListener('scroll', scrollCallback);
+  }
+
+  setEventListeners() {
+    // set&cache keydownCallback
+    const keydownCallback =
+      this.eventCallbacks.keydownCallback ||
+      (e => {
+        switch (e.code) {
+          case 'ArrowRight':
+            if (this.isBodyPercentInViewByHeight(0.4)) this.turnPageRight();
+            break;
+          case 'ArrowLeft':
+            if (this.isBodyPercentInViewByHeight(0.4)) this.turnPageLeft();
+            break;
+          default:
+            break;
+        }
+      });
+    this.eventCallbacks.keydownCallback = keydownCallback;
+    window.addEventListener('keydown', keydownCallback);
+
+    // set&cache resizeCallback
     let updateTimeout = null;
     const updateIntervalLength = 100;
-    window.addEventListener('resize', () => {
-      const updateAll = () => {
-        setTimeout(() => {
-          this.updateAll();
-        }, 0);
+    const resizeCallback =
+      this.eventCallbacks.resizeCallback ||
+      (() => {
+        const updateAll = () => {
+          setTimeout(() => {
+            this.updateAll();
+          }, 0);
 
-        clearTimeout(updateTimeout);
-        updateTimeout = setTimeout(() => {
-          updateTimeout = null;
-        }, updateIntervalLength);
-      };
+          clearTimeout(updateTimeout);
+          updateTimeout = setTimeout(() => {
+            updateTimeout = null;
+          }, updateIntervalLength);
+        };
 
-      if (updateTimeout === null) updateAll();
-    });
+        if (updateTimeout === null) updateAll();
+      });
+    this.eventCallbacks.resizeCallback = resizeCallback;
+    window.addEventListener('resize', resizeCallback);
+  }
 
-    window.addEventListener('scroll', () => {
-      this.scrollHandler();
-    });
+  initLayout() {
+    this.setEventListeners();
 
+    // launch just updating
     const totalUpdateInterval = 501;
     setInterval(this.updateAll.bind(this), totalUpdateInterval);
+
+    // set&cache scrollCallback
+    const scrollCallback =
+      this.eventCallbacks.scrollCallback || (() => this.scrollHandler());
+    this.eventCallbacks.scrollCallback = scrollCallback;
+    window.addEventListener('scroll', scrollCallback);
 
     // main initializing
     this.updateMainWidth();
     this.layoutInfo.loaded = true;
 
+    // showing
     this.el.classList.remove('unloaded');
+    this.showTable();
   }
 
   isInViewport() {

@@ -108,7 +108,6 @@ const loadNewDay = async (date: moment.Moment) => {
   });
 };
 
-console.log(days);
 const card = new CalendarCard(days, loadNewDay);
 
 window.testCard = card;

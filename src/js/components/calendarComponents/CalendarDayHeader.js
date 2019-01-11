@@ -1,4 +1,4 @@
-import { el } from 'redom';
+import { el, setChildren } from 'redom';
 import DayData from '../../classes/dataTypes/DayData';
 
 class CalendarDayHeader {
@@ -27,21 +27,13 @@ class CalendarDayHeader {
             'span',
             { class: 'visitsInfoPotential' },
             `Было: `,
-            el(
-              'span',
-              { class: 'font-primary-semibold' },
-              Math.round(Math.random() * 100),
-            ),
+            el('span', { class: 'font-primary-semibold' }, 'n'),
           ),
           el(
             'span',
             { class: 'visitsInfoReal' },
             `Не пришли: `,
-            el(
-              'span',
-              { class: 'fontPrimarySemibold' },
-              Math.round(Math.random() * 100),
-            ),
+            el('span', { class: 'fontPrimarySemibold' }, 'n'),
           ),
         ),
       ),
@@ -49,9 +41,7 @@ class CalendarDayHeader {
   }
 
   setData(data: DayData) {
-    this.el = el(
-      'div',
-      { class: 'calendarHeader' },
+    setChildren(this.el, [
       el(
         'p',
         { style: 'float: left' },
@@ -85,7 +75,7 @@ class CalendarDayHeader {
           ),
         ),
       ),
-    );
+    ]);
   }
 }
 
