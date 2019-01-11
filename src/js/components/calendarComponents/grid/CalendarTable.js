@@ -425,7 +425,6 @@ class CalendarTable extends Reactor {
     const rightBorder = rect.left + rect.width;
     if (x + cellWidth - rightBorder > turnTrigger) {
       table.turnPageRight();
-      console.log(table.el, 'turn right');
       return;
     }
 
