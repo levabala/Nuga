@@ -72,7 +72,7 @@ for (let i = 0; i < persons.count * scale; i++)
       y: 2018,
       M: 11,
       d: Math.round(Math.random() * 6),
-      h: 7 + Math.round(Math.random() * 0),
+      h: 7 + Math.round(Math.random() * 5),
       m: Math.round(Math.random() * 59),
     }),
     client: persons.getByIndex(Math.floor(i / scale)),

@@ -182,7 +182,7 @@ $visits-count-margin: 2px;
           width: var(--wrapper-width);
 
           &.dockBottom {
-            position: absolute;
+            position: fixed;
             bottom: $thin-border-size;
             left: $thin-border-size;
             top: unset;
@@ -190,7 +190,7 @@ $visits-count-margin: 2px;
           }
 
           &.dockTop {
-            position: absolute;
+            position: fixed;
             top: 0;
             z-index: 100;
           }

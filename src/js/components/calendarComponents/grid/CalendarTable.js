@@ -517,7 +517,7 @@ class CalendarTable extends Reactor {
         .hour(7)
         .minute(0),
       moment()
-        .hour(13)
+        .hour(16)
         .minute(0),
     ];
     const interval = [60, 'minutes'];
@@ -544,7 +544,7 @@ class CalendarTable extends Reactor {
       positionsCount,
       mainGridWidth: 0,
       mainGridWidthInner: 0,
-      minElWidth: 230,
+      minElWidth: 260,
       pageIndex: 0,
       pageIndexMax: 1,
       positionsPerPage: 1,
@@ -614,7 +614,7 @@ class CalendarTable extends Reactor {
         .minute(0),
       moment
         .max(allDates)
-        .hour(13)
+        .hour(16)
         .minute(0),
     ];
 
