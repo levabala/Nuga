@@ -34,7 +34,16 @@ class CalendarCard extends Card {
     this.wrapper = el('div', { class: 'calendarCard' });
     mount(this.el, this.wrapper);
 
-    window.addEventListener('scroll', this.handleVerticalBorders.bind(this));
+    let isScrolling;
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        window.clearTimeout(isScrolling);
+        isScrolling = setTimeout(() => this.handleVerticalBorders(), 66);
+      },
+      false,
+    );
 
     this.handleVerticalBorders();
     setTimeout(() => this.handleVerticalBorders());
@@ -116,14 +125,14 @@ class CalendarCard extends Card {
 
   async loadNewDay(date: moment.Moment, older: boolean) {
     const topIndex = this.loadedBorder[0] - 1;
+    const mockDayData = new DayData({ date, visits: [] });
     const day = new CalendarDay(
       ++this.idCounter,
-      null,
+      mockDayData,
       topIndex === 0,
       this.days,
     );
 
-    const mockDayData = new DayData({ date, visits: [] });
     let renderedDay = null;
     const scrollBefore = window.scrollY;
     if (older) {

@@ -74,8 +74,10 @@ class CalendarTable extends Reactor {
 
     this.registerEvent('visibilityChanged');
 
-    if (data !== null) this.setData(data);
-    else this.setDataMock();
+    if (data !== null) {
+      this.setWrappingLayout();
+      this.setData(data);
+    } else this.setDataMock();
   }
 
   scrollHandler() {

@@ -6,12 +6,19 @@ class CalendarDayHeader {
     this.data = data;
 
     if (data === null) this.setDataMock();
+    else {
+      this.setWrappingLayout();
+      this.setData(data);
+    }
+  }
+
+  setWrappingLayout() {
+    this.el = el('div', { class: 'calendarHeader' });
   }
 
   setDataMock() {
-    this.el = el(
-      'div',
-      { class: 'calendarHeader' },
+    this.setWrappingLayout();
+    setChildren(this.el, [
       el(
         'p',
         { style: 'float: left' },
@@ -37,7 +44,7 @@ class CalendarDayHeader {
           ),
         ),
       ),
-    );
+    ]);
   }
 
   setData(data: DayData) {
