@@ -60,6 +60,8 @@ function generateConfig(moveCallback): interact.DraggableOptions {
   }
 
   return {
+    autoScroll: false,
+    inertia: false,
     onstart: startHandler,
     onend: endHandler,
     onmove: moveHandler,

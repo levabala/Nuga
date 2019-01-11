@@ -1,5 +1,6 @@
 import interact from 'interactjs';
-import { el, mount, setAttr } from 'redom';
+import * as moment from 'moment';
+import { el, mount } from 'redom';
 import Card from './Card';
 import DayData from '../classes/dataTypes/DayData';
 import CalendarDay from './calendarComponents/CalendarDay';
@@ -13,38 +14,25 @@ class CalendarCard extends Card {
 
   constructor(
     data: Array<DayData>,
-    requestTopDay: () => ?void = () => null,
-    requestBottomDay: () => ?void = () => null,
+    requestNewDay: (date: moment.Moment) => DayData,
   ) {
     super();
 
     this.data = data;
-    this.requestTopDay = requestTopDay;
-    this.requestBottomDay = requestBottomDay;
+    this.requestNewDay = requestNewDay;
     this.days = [];
     this.stickyPositionsRow = null;
     this.hiddenDays = 0;
     this.idCounter = 0;
 
+    this.addDayCooldowned = true;
+    this.addDayCountdown = 30;
+
     const averageIndex = Math.floor(this.data.length / 2);
     this.loadedBorder = [averageIndex, averageIndex];
 
-    const day = new CalendarDay(
-      this.idCounter,
-      data[averageIndex],
-      averageIndex === 0,
-      this.days,
-    );
-
-    day.table.addEventListener(
-      'visibilityChanged',
-      this.handleTableHiding.bind(this),
-    );
-
-    const child = el('div', { class: 'calendarCard' }, day);
-    this.days.push(day);
-    setAttr(this.el, 'id', 'calendarContainer');
-    mount(this.el, child);
+    this.wrapper = el('div', { class: 'calendarCard' });
+    mount(this.el, this.wrapper);
 
     window.addEventListener('scroll', this.handleVerticalBorders.bind(this));
 
@@ -91,6 +79,8 @@ class CalendarCard extends Card {
   }
 
   handleVerticalBorders() {
+    if (!this.addDayCooldowned) return;
+
     const bodyRect = document.body.getBoundingClientRect();
     const trigger = window.innerHeight * 2;
 
@@ -103,14 +93,71 @@ class CalendarCard extends Card {
     const needLoadBottom = diff < trigger;
     if (needLoadBottom) this.loadBottomDay();
 
-    if (needLoadTop || needLoadBottom)
-      setTimeout(() => this.handleVerticalBorders());
+    if (needLoadTop || needLoadBottom) {
+      this.addDayCooldowned = false;
+      setTimeout(() => {
+        this.addDayCooldowned = true;
+        this.handleVerticalBorders();
+      }, this.addDayCountdown);
+    }
   }
 
   loadTopDay() {
+    const newDate = this.data[0].date.clone().add(1, 'days');
+    this.loadNewDay(newDate, false);
+  }
+
+  loadBottomDay() {
+    const newDate = this.data[this.data.length - 1].date
+      .clone()
+      .subtract(1, 'days');
+    this.loadNewDay(newDate, true);
+  }
+
+  async loadNewDay(date: moment.Moment, older: boolean) {
+    const topIndex = this.loadedBorder[0] - 1;
+    const day = new CalendarDay(
+      ++this.idCounter,
+      null,
+      topIndex === 0,
+      this.days,
+    );
+
+    const mockDayData = new DayData({ date, visits: [] });
+    let renderedDay = null;
+    const scrollBefore = window.scrollY;
+    if (older) {
+      this.days.push(day);
+      this.data.push(mockDayData);
+
+      [renderedDay] = this.days;
+
+      mount(this.wrapper, day);
+    } else {
+      this.days.unshift(day);
+      this.data.unshift(mockDayData);
+      renderedDay = this.days[this.days.length - 1];
+
+      mount(this.wrapper, day, this.wrapper.children[0]);
+    }
+
+    setTimeout(() => {
+      if (older || scrollBefore !== window.scrollY) return;
+
+      const scroll = renderedDay.el.offsetHeight;
+
+      window.scrollBy(0, scroll);
+    });
+
+    const dayData = await this.requestNewDay(date);
+    day.setData(dayData);
+  }
+
+  /*
+  async loadTopDay() {
     let topIndex = this.loadedBorder[0] - 1;
     if (topIndex < 0) {
-      const topDay = this.requestTopDay(this.data[0]);
+      const topDay = await this.requestTopDay(this.data[0]);
       if (topDay === null) return;
 
       topIndex++;
@@ -146,10 +193,12 @@ class CalendarCard extends Card {
     // console.log('Loaded TOP day');
   }
 
-  loadBottomDay() {
+  async loadBottomDay() {
     const bottomIndex = this.loadedBorder[1] + 1;
     if (bottomIndex >= this.data.length) {
-      const bottomDay = this.requestBottomDay(this.data[this.data.length - 1]);
+      const bottomDay = await this.requestBottomDay(
+        this.data[this.data.length - 1],
+      );
       if (bottomDay === null) return;
 
       this.data.push(bottomDay);
@@ -175,6 +224,7 @@ class CalendarCard extends Card {
 
     // console.log('Loaded BOTTOM day');
   }
+  */
 
   // UNUSABLE
   hadleResizing() {

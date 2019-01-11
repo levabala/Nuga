@@ -65,6 +65,7 @@ class PersonCell {
     this.el.calendarCell = targetCell;
 
     this.currentTable = targetCell.parentTable;
+    this.assignTempTable(this.currentTable);
   }
 
   assignTempTable(calendarTable: CalendarTable) {

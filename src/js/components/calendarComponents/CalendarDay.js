@@ -6,19 +6,26 @@ import CalendarDayHeader from './CalendarDayHeader';
 class CalendarDay {
   constructor(
     id: number,
-    data: DayData,
+    data: ?DayData,
     isFirst: boolean = false,
     otherDays: Array<CalendarDay>,
   ) {
     this.id = id;
     this.otherDays = otherDays;
+    this.data = data;
     this.table = new CalendarTable(id, data, isFirst, otherDays);
-    this.el = el(
-      'div',
-      { class: 'calendarDay', tabindex: 0 },
-      new CalendarDayHeader(data),
-      this.table,
-    );
+    this.header = new CalendarDayHeader(data);
+
+    this.el = el('div', { class: 'calendarDay', tabindex: 0 }, [
+      this.header.el,
+      this.table.el,
+    ]);
+  }
+
+  setData(data: DayData) {
+    this.data = data;
+    this.table.setData(data);
+    this.header.setData(data);
   }
 }
 

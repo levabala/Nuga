@@ -30,10 +30,11 @@ class CalendarCell {
   activateDropzone() {
     interact(this.el).dropzone({
       ondrop: e => {
-        const { personCell } = e.relatedTarget;
+        const { personCell }: { personCell: PersonCell } = e.relatedTarget;
         if (
           personCell.cellX === this.xCoord &&
-          personCell.cellY === this.yCoord
+          personCell.cellY === this.yCoord &&
+          personCell.currentTable.id === this.parentTable.id
         )
           return;
 
